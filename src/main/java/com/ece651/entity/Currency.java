@@ -23,6 +23,10 @@ import javax.persistence.Table;
 @Table(name = "CURRENCY", schema = "freex_db")
 public class Currency implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private int cid;
 	private String cname;
 
@@ -46,7 +50,7 @@ public class Currency implements Serializable {
 		this.cid = cid;
 	}
 
-	@Column(name = "CNAME", nullable = false, length = 20)
+	@Column(name = "CNAME", nullable = false, length = 256)
 	public String getCname() {
 		return cname;
 	}

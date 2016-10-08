@@ -10,6 +10,7 @@ import com.ece651.entity.User;
 import com.ece651.service.UserService;
 
 //使用Spring提供的@Service注解将UserServiceImpl标注为一个Service
+
 @Service("userService")
 public class UserServiceImpl implements UserService {
 	

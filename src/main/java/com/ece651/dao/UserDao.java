@@ -5,8 +5,6 @@ package com.ece651.dao;
 
 import java.io.Serializable;
 
-import org.springframework.stereotype.Repository;
-
 import com.ece651.entity.User;
 
 /**
@@ -21,10 +19,38 @@ import com.ece651.entity.User;
 public interface UserDao {
 	
 	/**
-	 * 保存用户
+	 * insert user
 	 * @param user
 	 * @return
 	*/
 	Serializable save(User user); 
+	
+	/**
+	 * update user
+	 * @param user
+	 * @return
+	*/
+	 void update(User user); 
+	 
+	 /**
+		 * find user by condition
+		 * @param user
+		 * @return
+		*/
+	 Serializable findByCondition(User condition); 
+	 
+//	 /**
+//		 * find user by id
+//		 * @param user
+//		 * @return
+//		*/
+//	 public User findById(Integer id);
+//	 
+//	 /**
+//		 * find user by email
+//		 * @param user
+//		 * @return
+//		*/
+//	 public User findByEmail(String email);
 
 }

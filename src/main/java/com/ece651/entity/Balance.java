@@ -4,7 +4,6 @@
 package com.ece651.entity;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -23,16 +22,20 @@ import javax.persistence.Table;
 @Table(name = "BALANCE", schema = "freex_db" )
 public class Balance implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private int bid;
 	private int buid;
 	private int bcid;
-	private BigDecimal bamount;
+	private String bamount;
 	
 	public Balance() {
 		super();
 	}
 
-	public Balance(int bid, int buid, int bcid, BigDecimal bamount) {
+	public Balance(int bid, int buid, int bcid, String bamount) {
 		super();
 		this.bid = bid;
 		this.buid = buid;
@@ -68,16 +71,16 @@ public class Balance implements Serializable{
 		this.bcid = bcid;
 	}
 
-	@Column(name = "BAMOUNT", nullable = false)
-	public BigDecimal getBamount() {
+
+	@Column(name = "BAMOUNT", nullable = false, length = 256)
+	public String getBamount() {
 		return bamount;
 	}
 
-	public void setBamount(BigDecimal bamount) {
+	public void setBamount(String bamount) {
 		this.bamount = bamount;
 	}
 	
 	
-	
-	
 }
+

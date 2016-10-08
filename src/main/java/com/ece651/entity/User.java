@@ -23,6 +23,10 @@ import javax.persistence.Table;
 @Table(name = "USER", schema = "freex_db" )
 public class User implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private int uid;
 	private String username;
 	private String password;
@@ -50,7 +54,7 @@ public class User implements Serializable {
 		this.uid = uid;
 	}
 
-	@Column(name = "USERNAME", nullable = false, length = 20)
+	@Column(name = "USERNAME", nullable = false, length = 256)
 	public String getUsername() {
 		return username;
 	}
@@ -59,7 +63,7 @@ public class User implements Serializable {
 		this.username = username;
 	}
 
-	@Column(name = "PASSWORD", nullable = false, length = 20)
+	@Column(name = "PASSWORD", nullable = false, length = 256)
 	public String getPassword() {
 		return password;
 	}
@@ -68,7 +72,7 @@ public class User implements Serializable {
 		this.password = password;
 	}
 
-	@Column(name = "EMAIL", nullable = false, length = 20)
+	@Column(name = "EMAIL", nullable = false, length = 256)
 	public String getEmail() {
 		return email;
 	}

@@ -23,6 +23,10 @@ import javax.persistence.Table;
 @Table(name = "USER_HISTORY", schema = "freex_db" )
 public class User_history implements Serializable{
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private int uhid;
 	private int uhuid;
 	private Date uhtime;
@@ -68,7 +72,7 @@ public class User_history implements Serializable{
 		this.uhtime = uhtime;
 	}
 
-	@Column(name = "ACTION", nullable = false, length= 20)
+	@Column(name = "ACTION", nullable = false, length= 256)
 	public String getAction() {
 		return action;
 	}

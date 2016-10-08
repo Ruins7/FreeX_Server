@@ -4,7 +4,6 @@
 package com.ece651.entity;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -24,12 +23,16 @@ import javax.persistence.Table;
 @Table(name = "TRANSACTION_HISTORY", schema = "freex_db" )
 public class Transaction_history implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private int thid;
 	private int thuid;
 	private int cidout;
 	private int cidin;
-	private BigDecimal thamount;
-	private Double rate;
+	private String thamount;
+	private String rate;
 	private Date thtime;
 	
 	public Transaction_history() {
@@ -37,7 +40,7 @@ public class Transaction_history implements Serializable{
 	}
 
 	public Transaction_history(int thid, int thuid, int cidout, int cidin,
-			BigDecimal thamount, Double rate, Date thtime) {
+			String thamount, String rate, Date thtime) {
 		super();
 		this.thid = thid;
 		this.thuid = thuid;
@@ -85,21 +88,21 @@ public class Transaction_history implements Serializable{
 		this.cidin = cidin;
 	}
 
-	@Column(name = "THAMOUNT", nullable = false)
-	public BigDecimal getThamount() {
+	@Column(name = "THAMOUNT", nullable = false, length = 256)
+	public String getThamount() {
 		return thamount;
 	}
-
-	public void setThamount(BigDecimal thamount) {
+	
+	public void setThamount(String thamount) {
 		this.thamount = thamount;
 	}
 
-	@Column(name = "RATE", nullable = false)
-	public Double getRate() {
+	@Column(name = "RATE", nullable = false, length = 256)
+	public String getRate() {
 		return rate;
 	}
 
-	public void setRate(Double rate) {
+	public void setRate(String rate) {
 		this.rate = rate;
 	}
 
