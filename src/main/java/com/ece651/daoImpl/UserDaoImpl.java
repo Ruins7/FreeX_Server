@@ -7,9 +7,7 @@ import java.io.Serializable;
 import java.util.List;
 
 import org.hibernate.SessionFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate3.support.HibernateDaoSupport;
-import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ece651.dao.UserDao;
@@ -23,14 +21,9 @@ import com.ece651.entity.User;
  * @version        V1.0  
  * @Date           2016年9月30日 下午9:28:30 
  */
-@Repository("userDao")
-public class UserDaoImpl extends HibernateDaoSupport implements UserDao{
 
-	/**
-     * 使用@Autowired注解将sessionFactory注入到UserDaoImpl中
-     */
+public class UserDaoImpl extends HibernateDaoSupport implements UserDao{
 	
-    @Autowired
     private SessionFactory sessionFactory;
     
     @Transactional 
