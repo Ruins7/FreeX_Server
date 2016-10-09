@@ -6,11 +6,6 @@ package com.ece651.entity;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
 /**
  * @ClassName:     Transaction_history.java
  * @Description:   TODO(用一句话描述该文件做什么) 
@@ -19,13 +14,8 @@ import javax.persistence.Table;
  * @version        V1.0  
  * @Date           2016年10月1日 下午2:06:32 
  */
-@Entity
-@Table(name = "TRANSACTION_HISTORY", schema = "freex_db" )
 public class Transaction_history implements Serializable{
 	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private int thid;
 	private int thuid;
@@ -51,8 +41,6 @@ public class Transaction_history implements Serializable{
 		this.thtime = thtime;
 	}
 
-	@Id
-	@Column(name = "THID", unique = true, nullable = false, length = 8)
 	public int getThid() {
 		return thid;
 	}
@@ -61,7 +49,6 @@ public class Transaction_history implements Serializable{
 		this.thid = thid;
 	}
 
-	@Column(name = "THUID", nullable = false, length = 8)
 	public int getThuid() {
 		return thuid;
 	}
@@ -70,7 +57,6 @@ public class Transaction_history implements Serializable{
 		this.thuid = thuid;
 	}
 
-	@Column(name = "CIDOUT", length = 8)
 	public int getCidout() {
 		return cidout;
 	}
@@ -79,7 +65,6 @@ public class Transaction_history implements Serializable{
 		this.cidout = cidout;
 	}
 
-	@Column(name = "CIDIN", length = 8)
 	public int getCidin() {
 		return cidin;
 	}
@@ -88,16 +73,14 @@ public class Transaction_history implements Serializable{
 		this.cidin = cidin;
 	}
 
-	@Column(name = "THAMOUNT", nullable = false, length = 256)
 	public String getThamount() {
 		return thamount;
 	}
-	
+
 	public void setThamount(String thamount) {
 		this.thamount = thamount;
 	}
 
-	@Column(name = "RATE", nullable = false, length = 256)
 	public String getRate() {
 		return rate;
 	}
@@ -106,7 +89,6 @@ public class Transaction_history implements Serializable{
 		this.rate = rate;
 	}
 
-	@Column(name = "THTIME", nullable = false)
 	public Date getThtime() {
 		return thtime;
 	}
@@ -114,8 +96,7 @@ public class Transaction_history implements Serializable{
 	public void setThtime(Date thtime) {
 		this.thtime = thtime;
 	}
-	
-	
+
 	
 
 }

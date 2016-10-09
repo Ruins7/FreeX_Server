@@ -5,11 +5,6 @@ package com.ece651.entity;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
 /**
  * @ClassName: User.java
  * @Description: TODO(用一句话描述该文件做什么)
@@ -19,13 +14,8 @@ import javax.persistence.Table;
  * @Date 2016年9月30日 下午9:13:54
  */
 
-@Entity
-@Table(name = "USER", schema = "freex_db" )
 public class User implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private int uid;
 	private String username;
@@ -44,8 +34,6 @@ public class User implements Serializable {
 		this.email = email;
 	}
 
-	@Id
-	@Column(name = "UID", unique = true, nullable = false, length = 8)
 	public int getUid() {
 		return uid;
 	}
@@ -54,7 +42,6 @@ public class User implements Serializable {
 		this.uid = uid;
 	}
 
-	@Column(name = "USERNAME", nullable = false, length = 256)
 	public String getUsername() {
 		return username;
 	}
@@ -63,7 +50,6 @@ public class User implements Serializable {
 		this.username = username;
 	}
 
-	@Column(name = "PASSWORD", nullable = false, length = 256)
 	public String getPassword() {
 		return password;
 	}
@@ -72,7 +58,6 @@ public class User implements Serializable {
 		this.password = password;
 	}
 
-	@Column(name = "EMAIL", nullable = false, length = 256)
 	public String getEmail() {
 		return email;
 	}
@@ -81,4 +66,5 @@ public class User implements Serializable {
 		this.email = email;
 	}
 
+	
 }

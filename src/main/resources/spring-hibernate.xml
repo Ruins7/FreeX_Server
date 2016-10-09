@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:tx="http://www.springframework.org/schema/tx"
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:aop="http://www.springframework.org/schema/aop"
 	xsi:schemaLocation="
@@ -12,21 +14,23 @@ http://www.springframework.org/schema/aop
 http://www.springframework.org/schema/aop/spring-aop-3.1.xsd
 http://www.springframework.org/schema/context 
 http://www.springframework.org/schema/context/spring-context-3.1.xsd"
->
-	
-	<!-- 引入属性文件,config.properties位于src/main/resources目录下 -->
-	<!-- <context:property-placeholder location="classpath:config.properties" /> -->
-	
+ default-autowire="byName">
+
+	<!-- 引入属性文件,config.properties位于src/main/resources目录下    此段代码与下面一段读取属性文件有相同效果 -->
+	<!-- <context:property-placeholder location="classpath:config.properties" 
+		/> -->
+
 	<!-- 读取属性文件 -->
-    <!-- <bean id="propertyConfig" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-        <property name="location">
-              <value>classpath:config.properties</value>
-        </property>
-    </bean> -->
+	<bean id="propertyConfig"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location">
+			<value>classpath:config.properties</value>
+		</property>
+	</bean>
 
 	<!-- 配置数据源 -->
-	<bean name="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
-		destroy-method="close">
+	<bean name="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+		<property name="driverClassName" value="${driverClassName}"/>
 		<property name="url" value="${jdbc_url}" />
 		<property name="username" value="${jdbc_username}" />
 		<property name="password" value="${jdbc_password}" />
@@ -44,16 +48,15 @@ http://www.springframework.org/schema/context/spring-context-3.1.xsd"
 		<!--removeAbandoned: 是否自动回收超时连接 -->
 		<property name="removeAbandoned" value="true" />
 		<!--removeAbandonedTimeout: 超时时间(以秒数为单位) -->
-		<property name="removeAbandonedTimeout" value="10" />
+		<property name="removeAbandonedTimeout" value="5" />
 		<!--maxWait: 超时等待时间以毫秒为单位 1000等于60秒 -->
-		<property name="maxWait" value="1000" />
+		<property name="maxWait" value="500" />
 		<!-- 在空闲连接回收器线程运行期间休眠的时间值,以毫秒为单位. -->
 		<property name="timeBetweenEvictionRunsMillis" value="10000" />
 		<!-- 在每次空闲连接回收器线程(如果有)运行时检查的连接数量 -->
 		<property name="numTestsPerEvictionRun" value="10" />
 		<!-- 1000 * 60 * 30 连接在池中保持空闲而不被空闲连接回收器线程 -->
 		<property name="minEvictableIdleTimeMillis" value="10000" />
-		<property name="validationQuery" value="SELECT NOW() FROM DUAL" />
 	</bean>
 
 	<!-- 配置hibernate session工厂 -->
@@ -76,57 +79,44 @@ http://www.springframework.org/schema/context/spring-context-3.1.xsd"
 
 		<!-- 指定映射文件的路径，加载资源（该路径下所有配置文件） -->
 		<property name="mappingDirectoryLocations">
-		     <value>classpath:com/ece651/entity</value>
+			<value>classpath:com/ece651/entity</value>
 		</property>
 	</bean>
 
 	<!-- 配置文件形式注入bean -->
-	<bean id="userAction" class="com.ece651.action.UserAction" scope="prototype"/>
-	<bean id="userService" class="com.ece651.serviceImpl.UserServiceImpl" scope="prototype"/>
-	<bean id="userDao" class="com.ece651.daoImpl.UserDaoImpl" scope="prototype"/>
-
-
+	<bean id="userDao" class="com.ece651.daoImpl.UserDaoImpl" scope="prototype"></bean>
+	<bean id="userService" class="com.ece651.serviceImpl.UserServiceImpl" scope="prototype"></bean>
+	<bean id="userAction" class="com.ece651.action.UserAction" scope="prototype"></bean>
+	
+	
+	
 	<!-- 配置事务管理器 -->
 	<bean name="transactionManager"
 		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
 		<property name="sessionFactory" ref="sessionFactory"></property>
 	</bean>
-	
-	<!-- 注解方式配置事物 -->
-	<tx:annotation-driven transaction-manager="transactionManager" />
 
-	<!-- 拦截器方式配置事物 -->
-	<tx:advice id="transactionAdvice" transaction-manager="transactionManager">
-
+	<!-- 定义事务通知 -->
+	<tx:advice id="txAdvice" transaction-manager="transactionManager">
+		<!-- 指定事务规则 -->
 		<tx:attributes>
-			<!-- 以如下关键字开头的方法使用事物 -->
-			<tx:method name="add*" />
-			<tx:method name="save*" />
-			<tx:method name="update*" />
-			<tx:method name="modify*" />
-			<tx:method name="edit*" />
-			<tx:method name="delete*" />
-			<tx:method name="remove*" />
-			<tx:method name="repair" />
-			<tx:method name="deleteAndRepair" />
-			<!-- 以如下关键字开头的方法不使用事物 -->
+			<!-- get开头的方法使用support事务规则 -->
 			<tx:method name="get*" propagation="SUPPORTS" />
-			<tx:method name="find*" propagation="SUPPORTS" />
-			<tx:method name="load*" propagation="SUPPORTS" />
-			<tx:method name="search*" propagation="SUPPORTS" />
-			<tx:method name="datagrid*" propagation="SUPPORTS" />
-			<!-- 其他方法不使用事物 -->
-			<tx:method name="*" propagation="SUPPORTS" />
+			<!-- 其他方法使用support事务规则 -->
+			<tx:method name="*" propagation="REQUIRED"
+				rollback-for="
+		    DataAccessException,IllegalArgumentException"
+				no-rollback-for="NullPointerException,ClassCastException" />
 		</tx:attributes>
 	</tx:advice>
-	<!-- 切面，将事物用在哪些对象上 -->
-	<aop:config proxy-target-class="true" />
+	<!-- 定义一个切面 组合事务通知和切面 -->
 	<aop:config>
-
-		<aop:pointcut id="transactionPointcut"
-			expression="execution(* com.ece651.service..*Impl.*(..))" />
-		<aop:advisor pointcut-ref="transactionPointcut"
-			advice-ref="transactionAdvice" />
+		<!-- 对业务处于下面的所有类的所有方法有应用事务规则 -->
+		<aop:pointcut expression="execution(* com.ece651.serviceImpl.*.*(..))"
+			id="serviceMethods" />
+		<!-- 组合事务通知和切面 -->
+		<aop:advisor advice-ref="txAdvice" pointcut-ref="serviceMethods" />
+		
 	</aop:config>
 
 </beans>

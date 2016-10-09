@@ -5,11 +5,6 @@ package com.ece651.entity;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
 /**
  * @ClassName:     Balance.java
  * @Description:   TODO(用一句话描述该文件做什么) 
@@ -18,13 +13,8 @@ import javax.persistence.Table;
  * @version        V1.0  
  * @Date           2016年10月1日 下午1:58:30 
  */
-@Entity
-@Table(name = "BALANCE", schema = "freex_db" )
 public class Balance implements Serializable{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private int bid;
 	private int buid;
@@ -43,8 +33,6 @@ public class Balance implements Serializable{
 		this.bamount = bamount;
 	}
 
-	@Id
-	@Column(name = "BID", unique = true, nullable = false, length = 8)
 	public int getBid() {
 		return bid;
 	}
@@ -53,7 +41,6 @@ public class Balance implements Serializable{
 		this.bid = bid;
 	}
 
-	@Column(name = "BUID", nullable = false, length = 8)
 	public int getBuid() {
 		return buid;
 	}
@@ -62,7 +49,6 @@ public class Balance implements Serializable{
 		this.buid = buid;
 	}
 
-	@Column(name = "BCID", nullable = false, length = 8)
 	public int getBcid() {
 		return bcid;
 	}
@@ -71,8 +57,6 @@ public class Balance implements Serializable{
 		this.bcid = bcid;
 	}
 
-
-	@Column(name = "BAMOUNT", nullable = false, length = 256)
 	public String getBamount() {
 		return bamount;
 	}
@@ -80,7 +64,7 @@ public class Balance implements Serializable{
 	public void setBamount(String bamount) {
 		this.bamount = bamount;
 	}
-	
+
 	
 }
 

@@ -6,11 +6,6 @@ package com.ece651.entity;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
 /**
  * @ClassName:     User_history.java
  * @Description:   TODO(用一句话描述该文件做什么) 
@@ -19,13 +14,10 @@ import javax.persistence.Table;
  * @version        V1.0  
  * @Date           2016年10月1日 下午2:03:01 
  */
-@Entity
-@Table(name = "USER_HISTORY", schema = "freex_db" )
+
 public class User_history implements Serializable{
 
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = 1L;
 	private int uhid;
 	private int uhuid;
@@ -44,8 +36,6 @@ public class User_history implements Serializable{
 		this.action = action;
 	}
 
-	@Id
-	@Column(name = "UHID", unique = true, nullable = false, length = 8)
 	public int getUhid() {
 		return uhid;
 	}
@@ -54,7 +44,6 @@ public class User_history implements Serializable{
 		this.uhid = uhid;
 	}
 
-	@Column(name = "UHUID", nullable = false, length = 8)
 	public int getUhuid() {
 		return uhuid;
 	}
@@ -62,8 +51,7 @@ public class User_history implements Serializable{
 	public void setUhuid(int uhuid) {
 		this.uhuid = uhuid;
 	}
-	
-	@Column(name = "UHTIME", nullable = false)
+
 	public Date getUhtime() {
 		return uhtime;
 	}
@@ -72,7 +60,6 @@ public class User_history implements Serializable{
 		this.uhtime = uhtime;
 	}
 
-	@Column(name = "ACTION", nullable = false, length= 256)
 	public String getAction() {
 		return action;
 	}
@@ -80,7 +67,6 @@ public class User_history implements Serializable{
 	public void setAction(String action) {
 		this.action = action;
 	}
-	
-	
+
 	
 }

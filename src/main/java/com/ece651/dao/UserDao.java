@@ -30,7 +30,7 @@ public interface UserDao {
 	 * @param user
 	 * @return
 	*/
-	 void update(User user); 
+	void update(User user); 
 	 
 	 /**
 		 * find user by condition
