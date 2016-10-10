@@ -23,18 +23,14 @@ public class UserAction extends ActionSupport {
 //	@Result(name = "error", location = "/index.jsp")
 //}
 	public String login(){
-//		ApplicationContext ac = new ClassPathXmlApplicationContext("spring-hibernate.xml");
-//		userService = (UserService) ac.getBean("userService");
-		System.out.println("进入TestAction");
-		// UserService.test();
+		 System.out.println("进入TestAction");
 		 User user = new User();
 		 user.setUid(1);
-		 user.setUsername("jasmine");
+		 user.setUsername("jasmine222");
 		 user.setPassword("123123");
 		 user.setEmail("12312312@hotmail.com");
 		 userService.update(user);
-		return null;
-		
+		return null;	
 	}
 
 }

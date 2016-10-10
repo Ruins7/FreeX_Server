@@ -83,9 +83,12 @@ http://www.springframework.org/schema/context/spring-context-3.1.xsd"
 		</property>
 	</bean>
 
-	<!-- 配置文件形式注入bean -->
-	<bean id="userDao" class="com.ece651.daoImpl.UserDaoImpl" scope="prototype"></bean>
+	<!-- 配置文件形式注入bean, 非自动注入，需要set方法 -->
+	<!-- Dao -->
+	<bean id="baseDao" class="com.ece651.daoImpl.BaseDaoImpl" scope="prototype"></bean>
+	<!-- service -->
 	<bean id="userService" class="com.ece651.serviceImpl.UserServiceImpl" scope="prototype"></bean>
+	<!-- action -->
 	<bean id="userAction" class="com.ece651.action.UserAction" scope="prototype"></bean>
 	
 	
