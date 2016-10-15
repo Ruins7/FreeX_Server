@@ -4,6 +4,7 @@ import java.util.List;
 
 /**
  * 分页封装类, 不参与hibernate的数据持久化 用于做分页查询的基础类，封装了一些分页的相关属性
+ * 			首次分页查询时必须指定 pageNo 和 pageSize
  * 
  * @author Ruins7
  * @version v1.0
@@ -17,7 +18,7 @@ public class PageResults<T> {
 	// 当前页
 	private int currentPage;
 
-	// 每页个个数
+	// 每页个数
 	private int pageSize;
 
 	// 总条数
@@ -37,10 +38,22 @@ public class PageResults<T> {
 		this.pageCount = pageCount;
 	}
 
+	/**
+	 * 获取请求页的页码
+	 * @return
+	 */
 	public int getPageNo() {
-		if (pageNo <= 0) {
-			return 1;
-		} else {
+		if(pageCount == 0){
+			//第一次查询，没有pageCount   or  db没有任何数据
+			if(pageNo <= 0) {
+				return 1;
+			} 
+			return pageNo;
+		}
+		else {
+			if(pageNo <= 0) {
+				return 1;
+			} 
 			return pageNo > pageCount ? pageCount : pageNo;
 		}
 	}

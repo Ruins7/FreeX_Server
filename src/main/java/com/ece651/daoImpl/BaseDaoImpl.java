@@ -5,7 +5,6 @@ package com.ece651.daoImpl;
 
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -23,9 +22,9 @@ import org.hibernate.ScrollableResults;
 import org.hibernate.SessionFactory;
 import org.hibernate.jdbc.Work;
 
-import com.ece651.toolsUnits.RowMapper;
 import com.ece651.dao.BaseDao;
 import com.ece651.entity.PageResults;
+import com.ece651.toolsUnits.RowMapper;
 
 /**
  * @ClassName: BaseDaoImpl.java
@@ -52,7 +51,8 @@ public class BaseDaoImpl<T, ID extends Serializable> implements BaseDao<T, ID> {
 	// 使用反射机制获取编译期的准确类型
 	protected Class<T> getEntityClass() {
 		if (entityClass == null) {
-			entityClass = (Class<T>) ((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+			entityClass = (Class<T>) ((ParameterizedType) this.getClass()
+					.getGenericSuperclass()).getActualTypeArguments()[0];
 		}
 		return entityClass;
 	}
@@ -95,7 +95,7 @@ public class BaseDaoImpl<T, ID extends Serializable> implements BaseDao<T, ID> {
 	}
 
 	@Override
-	public int queryHql(String hqlString, Object... values) {
+	public int queryHql(String hqlString, Object[] values) {
 		Query query = sessionFactory.getCurrentSession().createQuery(hqlString);
 		if (values != null) {
 			for (int i = 0; i < values.length; i++) {
@@ -106,9 +106,9 @@ public class BaseDaoImpl<T, ID extends Serializable> implements BaseDao<T, ID> {
 	}
 
 	@Override
-	public int querySql(String sqlString, Object... values) {
+	public int querySql(String sqlString, Object[] values) {
 		Query query = sessionFactory.getCurrentSession().createSQLQuery(
-				sqlString);
+				sqlString).addEntity(getEntityClass());
 		if (values != null) {
 			for (int i = 0; i < values.length; i++) {
 				query.setParameter(i, values[i]);
@@ -118,30 +118,30 @@ public class BaseDaoImpl<T, ID extends Serializable> implements BaseDao<T, ID> {
 	}
 
 	@Override
-	public Object[] getByHQL(String hqlString, Object... values) {
+	public T getByHQL(String hqlString, Object[] values) {
 		Query query = sessionFactory.getCurrentSession().createQuery(hqlString);
 		if (values != null) {
 			for (int i = 0; i < values.length; i++) {
 				query.setParameter(i, values[i]);
 			}
 		}
-		return (Object[]) query.uniqueResult();
+		return (T) query.uniqueResult();
 	}
 
 	@Override
-	public Object[] getBySQL(String sqlString, Object[] values) {
+	public T getBySQL(String sqlString, Object[] values) {
 		Query query = sessionFactory.getCurrentSession().createSQLQuery(
-				sqlString);
+				sqlString).addEntity(getEntityClass());
 		if (values != null) {
 			for (int i = 0; i < values.length; i++) {
 				query.setParameter(i, values[i]);
 			}
 		}
-		return (Object[]) query.uniqueResult();
+		return (T) query.uniqueResult();
 	}
 
 	@Override
-	public List<T> getListByHQL(String hqlString, Object... values) {
+	public List<T> getListByHQL(String hqlString, Object[] values) {
 		Query query = sessionFactory.getCurrentSession().createQuery(hqlString);
 		if (values != null) {
 			for (int i = 0; i < values.length; i++) {
@@ -152,9 +152,9 @@ public class BaseDaoImpl<T, ID extends Serializable> implements BaseDao<T, ID> {
 	}
 
 	@Override
-	public List<T> getListBySQL(String sqlString, Object... values) {
+	public List<T> getListBySQL(String sqlString, Object[] values) {
 		Query query = sessionFactory.getCurrentSession().createSQLQuery(
-				sqlString);
+				sqlString).addEntity(getEntityClass());
 		if (values != null) {
 			for (int i = 0; i < values.length; i++) {
 				query.setParameter(i, values[i]);
@@ -216,23 +216,23 @@ public class BaseDaoImpl<T, ID extends Serializable> implements BaseDao<T, ID> {
 	}
 
 	@Override
-	public Long countByHql(String hql, Object... values) {
-		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+	public Long countBySql(String sql, Object[] values) {
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql).addEntity(getEntityClass());
 		if (values != null) {
 			for (int i = 0; i < values.length; i++) {
 				query.setParameter(i, values[i]);
 			}
 		}
-		return (Long) query.uniqueResult();
+		return (long) query.list().size();
 	}
 
 	/**
-	 * <HQL分页查询>
+	 * <SQL分页查询>
 	 * 
-	 * @param hql
-	 *            HQL语句
-	 * @param countHql
-	 *            查询记录条数的HQL语句
+	 * @param sql
+	 *            SQL语句
+	 * @param countSql
+	 *            查询记录条数的SQL语句
 	 * @param pageNo
 	 *            下一页
 	 * @param pageSize
@@ -242,10 +242,12 @@ public class BaseDaoImpl<T, ID extends Serializable> implements BaseDao<T, ID> {
 	 * @return PageResults的封装类，里面包含了页码的信息以及查询的数据List集合
 	 */
 	@Override
-	public PageResults<T> findPageByFetchedHql(String hql, String countHql,
-			int pageNo, int pageSize, Object... values) {
+	public PageResults<T> findPageByFetchedHql(String sql, String countSql,
+			int pageNo, int pageSize, Object[] values) {
 		PageResults<T> retValue = new PageResults<T>();
-		Query query = sessionFactory.getCurrentSession().createQuery(hql);
+		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql)
+				.addEntity(getEntityClass());// addEntity()
+				// 将查处的Object[]转换为对应的实体类
 		if (values != null) {
 			for (int i = 0; i < values.length; i++) {
 				query.setParameter(i, values[i]);
@@ -254,17 +256,17 @@ public class BaseDaoImpl<T, ID extends Serializable> implements BaseDao<T, ID> {
 		int currentPage = pageNo > 1 ? pageNo : 1;
 		retValue.setCurrentPage(currentPage);
 		retValue.setPageSize(pageSize);
-		if (countHql == null) {
+		if (countSql == null) {
 			ScrollableResults results = query.scroll();
 			results.last();
 			retValue.setTotalCount(results.getRowNumber() + 1);// 设置总记录数
 		} else {
-			Long count = countByHql(countHql, values);
+			Long count = countBySql(countSql, values);
 			retValue.setTotalCount(count.intValue());
 		}
 		retValue.resetPageNo();
-		List<T> itemList = query.setFirstResult((currentPage - 1) * pageSize)
-				.setMaxResults(pageSize).list();
+		@SuppressWarnings("unchecked")
+		List<T> itemList = query.setFirstResult((currentPage - 1) * pageSize).setMaxResults(pageSize).list();
 		if (itemList == null) {
 			itemList = new ArrayList<T>();
 		}
@@ -310,7 +312,8 @@ public class BaseDaoImpl<T, ID extends Serializable> implements BaseDao<T, ID> {
 
 	@Override
 	public T load(ID id) {
-		return (T) sessionFactory.getCurrentSession().load(getEntityClass(), id);
+		return (T) sessionFactory.getCurrentSession()
+				.load(getEntityClass(), id);
 	}
 
 	@Override

@@ -85,14 +85,14 @@ public interface BaseDao<T, ID extends Serializable> {
 	 * @param hqlString  hql
 	 * @param values  不定参数数组
 	 */
-	public abstract int queryHql(String hqlString, Object... values);
+	public abstract int queryHql(String hqlString, Object[] values);
 
 	/**
 	 * <执行Sql语句>
 	 * @param sqlString  sql
 	 * @param values  不定参数数组
 	 */
-	public abstract int querySql(String sqlString, Object... values);
+	public abstract int querySql(String sqlString, Object[] values);
 
 	/**
 	 * <根据HQL语句查找唯一实体>
@@ -100,7 +100,7 @@ public interface BaseDao<T, ID extends Serializable> {
 	 * @param values 不定参数的Object数组
 	 * @return 查询实体
 	 */
-	public abstract Object[] getByHQL(String hqlString, Object... values);
+	public abstract T getByHQL(String hqlString, Object[] values);
 
 	/**
 	 * <根据SQL语句查找唯一实体>
@@ -108,7 +108,7 @@ public interface BaseDao<T, ID extends Serializable> {
 	 * @param values 不定参数的Object数组
 	 * @return 查询实体
 	 */
-	public abstract Object[] getBySQL(String sqlString, Object[] values);
+	public abstract T getBySQL(String sqlString, Object[] values);
 
 	/**
 	 * <根据HQL语句，得到对应的list>
@@ -116,7 +116,7 @@ public interface BaseDao<T, ID extends Serializable> {
 	 * @param values  不定参数的Object数组
 	 * @return 查询多个实体的List集合
 	 */
-	public abstract List<T> getListByHQL(String hqlString, Object... values);
+	public abstract List<T> getListByHQL(String hqlString, Object[] values);
 
 	/**
 	 * <根据SQL语句，得到对应的list>
@@ -124,7 +124,7 @@ public interface BaseDao<T, ID extends Serializable> {
 	 * @param values 不定参数的Object数组
 	 * @return 查询多个实体的List集合
 	 */
-	public abstract List<T> getListBySQL(String sqlString, Object... values);
+	public abstract List<T> getListBySQL(String sqlString, Object[] values);
 
 	/**
 	 * 由sql语句得到List
@@ -134,7 +134,7 @@ public interface BaseDao<T, ID extends Serializable> {
 	 * @return List
 	 */
 	public List findListBySql(final String sql, final RowMapper map,
-			final Object... values);
+			final Object[] values);
 
 	/**
 	 * <refresh>
@@ -151,23 +151,23 @@ public interface BaseDao<T, ID extends Serializable> {
 	public abstract void update(T t);
 
 	/**
-	 * <根据HQL得到记录数>
-	 * @param hql HQL语句
+	 * <根据SQL得到记录数>
+	 * @param Sql SQL语句
 	 * @param values 不定参数的Object数组
 	 * @return 记录总数
 	 */
-	public abstract Long countByHql(String hql, Object... values);
+	public abstract Long countBySql(String sql, Object[] values);
 
 	/**
-	 * <HQL分页查询>
-	 * @param hql  HQL语句
-	 * @param countHql 查询记录条数的HQL语句
+	 * <SQL分页查询>
+	 * @param sql  SQL语句
+	 * @param countHql 查询记录条数的SQL语句
 	 * @param pageNo  下一页
 	 * @param pageSize  一页总条数
 	 * @param values  不定Object数组参数
 	 * @return PageResults的封装类，里面包含了页码的信息以及查询的数据List集合
 	 */
-	public abstract PageResults<T> findPageByFetchedHql(String hql,
-			String countHql, int pageNo, int pageSize, Object... values);
+	public abstract PageResults<T> findPageByFetchedHql(String sql,
+			String countSql, int pageNo, int pageSize, Object[] values);
 
 }

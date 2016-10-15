@@ -8,7 +8,7 @@ import java.sql.SQLException;
 
 /**
  * @ClassName: RowMapper.java
- * @Description: TODO(用一句话描述该文件做什么)
+ * @Description: 配合Dao底层的批量JDBC操作接口
  * 
  * @author Ruins7
  * @version V1.0
