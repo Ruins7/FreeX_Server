@@ -7,11 +7,12 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
+import com.ece651.toolsUnits.RowMapper;
 import com.ece651.entity.PageResults;
 
 /**
  * @ClassName: BaseDao.java
- * @Description: Hibernate4 所有常用的数据持久化方法接口
+ * @Description: Hibernate4 所有常用的数据持久化方法接口，使用泛型
  * @author Ruins7
  * @version V1.0
  * @Date 2016年10月9日 下午8:34:11
@@ -70,6 +71,7 @@ public interface BaseDao<T, ID extends Serializable> {
 	 * @return 是否删除成功
 	 */
 	public abstract boolean deleteById(ID Id);
+	
 
 	/**
 	 * <删除所有>
@@ -83,14 +85,14 @@ public interface BaseDao<T, ID extends Serializable> {
 	 * @param hqlString  hql
 	 * @param values  不定参数数组
 	 */
-	public abstract void queryHql(String hqlString, Object... values);
+	public abstract int queryHql(String hqlString, Object... values);
 
 	/**
 	 * <执行Sql语句>
 	 * @param sqlString  sql
 	 * @param values  不定参数数组
 	 */
-	public abstract void querySql(String sqlString, Object... values);
+	public abstract int querySql(String sqlString, Object... values);
 
 	/**
 	 * <根据HQL语句查找唯一实体>
@@ -98,7 +100,7 @@ public interface BaseDao<T, ID extends Serializable> {
 	 * @param values 不定参数的Object数组
 	 * @return 查询实体
 	 */
-	public abstract T getByHQL(String hqlString, Object... values);
+	public abstract Object[] getByHQL(String hqlString, Object... values);
 
 	/**
 	 * <根据SQL语句查找唯一实体>
@@ -106,7 +108,7 @@ public interface BaseDao<T, ID extends Serializable> {
 	 * @param values 不定参数的Object数组
 	 * @return 查询实体
 	 */
-	public abstract T getBySQL(String sqlString, Object... values);
+	public abstract Object[] getBySQL(String sqlString, Object[] values);
 
 	/**
 	 * <根据HQL语句，得到对应的list>

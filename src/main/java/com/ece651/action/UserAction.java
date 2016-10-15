@@ -25,11 +25,12 @@ public class UserAction extends ActionSupport {
 	public String login(){
 		 System.out.println("进入TestAction");
 		 User user = new User();
-		 user.setUid(1);
-		 user.setUsername("jasmine222");
-		 user.setPassword("123123");
-		 user.setEmail("12312312@hotmail.com");
-		 userService.update(user);
+		 user.setUid(5);
+		 user.setUsername("jasmine111");
+		 user.setPassword("awsedas");
+//		 user.setEmail("12312312@hotmail.com");
+		 user = userService.findbyNameAndPassword(user);
+		 //System.out.println(user.getUid());
 		return null;	
 	}
 
