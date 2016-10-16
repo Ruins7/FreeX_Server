@@ -6,7 +6,6 @@ package com.ece651.dao;
 import java.io.Serializable;
 import java.util.List;
 
-import com.ece651.entity.Balance;
 import com.ece651.entity.PageResults;
 import com.ece651.entity.User;
 

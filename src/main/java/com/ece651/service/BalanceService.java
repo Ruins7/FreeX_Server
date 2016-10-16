@@ -30,6 +30,6 @@ public interface BalanceService {
 
 	public List<Balance> searchAllBalOfUser(Balance balance);
 
-	public Balance searchOneCurrOfUser(User user, Currency currency);
+	public Balance searchOneCurrOfUser(Balance balance);
 
 }

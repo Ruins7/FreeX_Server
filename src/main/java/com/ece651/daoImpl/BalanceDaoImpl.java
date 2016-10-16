@@ -24,7 +24,7 @@ public class BalanceDaoImpl extends BaseDaoImpl<Balance, Integer> implements Bal
 
 	/**
 	 * 添加一条新的币种的余额记录
-	 * @param Balance
+	 * @param Balance(no need bid)
 	 * @return bid
 	 */
 	@Override

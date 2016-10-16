@@ -9,7 +9,6 @@ import java.util.List;
 import com.ece651.dao.UserDao;
 import com.ece651.entity.PageResults;
 import com.ece651.entity.User;
-import com.ece651.toolsUnits.PackObjTools;
 import com.ece651.toolsUnits.PackSQLTools;
 import com.ece651.toolsUnits.PackValuesTools;
 
@@ -46,7 +45,7 @@ public class UserDaoImpl extends BaseDaoImpl<User, Integer> implements UserDao{
 	
 	/**
 	 * 新增用户
-	 * @param User
+	 * @param User(no need uid)
 	 * @return uid
 	 */
 	@Override

@@ -8,8 +8,6 @@ import java.util.List;
 
 import com.ece651.dao.BalanceDao;
 import com.ece651.entity.Balance;
-import com.ece651.entity.Currency;
-import com.ece651.entity.User;
 import com.ece651.service.BalanceService;
 
 /**
@@ -69,6 +67,11 @@ public class BalanceServiceImpl implements BalanceService{
 		return 1;
 	}
 
+	/**
+	 * 删除某一个币种的余额记录，只有当该币种的余额为0 才可以调用（在service层检查余额是否为0）
+	 * @param Balance
+	 * @return int
+	 */
 	@Override
 	public int deleteCurrencyBalance(Balance balance) {
 		//TODO 添加逻辑
@@ -77,6 +80,11 @@ public class BalanceServiceImpl implements BalanceService{
 		return 1;
 	}
 
+	/**
+	 * 查询某个用户所有的币种余额
+	 * @param Balance
+	 * @return List<Balance>
+	 */
 	@Override
 	public List<Balance> searchAllBalOfUser(Balance balance) {
 		//TODO 添加逻辑
@@ -84,12 +92,14 @@ public class BalanceServiceImpl implements BalanceService{
 		return balanceDao.findMoreByConditions(balance);	
 	}
 
+	/**
+	 * 查询某个用户某一币种余额(交易，取钱之前的检查)
+	 * @param Balance
+	 * @return Balance
+	 */
 	@Override
-	public Balance searchOneCurrOfUser(User user, Currency currency) {
+	public Balance searchOneCurrOfUser(Balance balance) {
 		//TODO 添加逻辑
-		Balance balance = new Balance();
-		balance.setBuid(user.getUid());
-		balance.setBcid(currency.getCid());
 		
 		return balanceDao.findbyConditions(balance);
 	}
