@@ -4,6 +4,7 @@
 package com.ece651.daoImpl;
 
 import java.io.Serializable;
+import java.util.List;
 
 import com.ece651.dao.UserDao;
 import com.ece651.entity.PageResults;
@@ -70,7 +71,7 @@ public class UserDaoImpl extends BaseDaoImpl<User, Integer> implements UserDao{
 	 */
 	@Override
 	public User findbyConditions(User user) {
-		return  getBySQL(PackSQLTools.packSQL(user), PackValuesTools.packValues(user));
+		return getBySQL(PackSQLTools.packSQL(user), PackValuesTools.packValues(user));
 	}
 
 	/**
@@ -84,6 +85,16 @@ public class UserDaoImpl extends BaseDaoImpl<User, Integer> implements UserDao{
 		String sql = PackSQLTools.packSQL(user);
 		Object[] values = PackValuesTools.packValues(user);
 		return findPageByFetchedHql(sql, sql, pageInfo.getPageNo(), pageInfo.getPageSize(), values);	
+	}
+
+	/**
+	 * 条件查询
+	 * @param User
+	 * @return List<User>
+	 */
+	@Override
+	public List<User> findMoreByConditions(User user) {
+		return getListBySQL(PackSQLTools.packSQL(user), PackValuesTools.packValues(user));
 	}
 	
 

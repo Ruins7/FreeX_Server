@@ -1,6 +1,7 @@
 package com.ece651.serviceImpl;
 
 import java.io.Serializable;
+import java.util.List;
 
 import com.ece651.dao.UserDao;
 import com.ece651.entity.PageResults;
@@ -31,7 +32,7 @@ public class UserServiceImpl implements UserService {
      * @return userid(Serializable)
      */
 	@Override
-	public Serializable save(User user) {
+	public Serializable signup(User user) {
 		//TODO 添加逻辑
 		
 		return userDao.saveUser(user);
@@ -43,7 +44,7 @@ public class UserServiceImpl implements UserService {
      * @return int
      */
 	@Override
-	public int update(User user) {
+	public int modify(User user) {
 		//TODO 添加逻辑
 		
 		return userDao.updateUser(user);
@@ -55,7 +56,7 @@ public class UserServiceImpl implements UserService {
      * @return int
      */
 	@Override
-	public int delete(User user) {
+	public int deleteUser(User user) {
 		//TODO 添加逻辑
 		
 		return userDao.deleteUser(user);
@@ -67,10 +68,10 @@ public class UserServiceImpl implements UserService {
      * @return user
      */
 	@Override
-	public User findByID(User user) {
+	public User searchUserByID(User user) {
 		//TODO 添加逻辑
 		
-		return userDao.get(user.getUid());
+		return userDao.findById(user);
 	}
 
 	/**
@@ -80,7 +81,7 @@ public class UserServiceImpl implements UserService {
      * @return user
      */
 	@Override
-	public User findbyName(User user) {
+	public User checkIfUnameAvail(User user) {
 		//TODO 添加逻辑
 		
 		return userDao.findbyConditions(user);
@@ -103,7 +104,7 @@ public class UserServiceImpl implements UserService {
      * @return user
      */
 	@Override
-	public User findbyNameAndPassword(User user) {
+	public User login(User user) {
 		//TODO 添加逻辑
 		
 		return user = userDao.findbyConditions(user);
@@ -119,6 +120,17 @@ public class UserServiceImpl implements UserService {
 		//TODO 添加逻辑
 		
 		return userDao.findMoreByCondition(user, pageInfo);
+	}
+
+	/**
+     * 条件查询所有user
+     * @param user
+     * @return List<User>
+     */
+	@Override
+	public List<User> searchAllUsersByConditions(User user) {
+		
+		return userDao.findMoreByConditions(user);
 	}
 
 }

@@ -4,11 +4,11 @@
 package com.ece651.daoImpl;
 
 import java.io.Serializable;
+import java.util.List;
 
 import com.ece651.dao.BalanceDao;
 import com.ece651.entity.Balance;
 import com.ece651.entity.PageResults;
-import com.ece651.toolsUnits.PackObjTools;
 import com.ece651.toolsUnits.PackSQLTools;
 import com.ece651.toolsUnits.PackValuesTools;
 
@@ -75,6 +75,16 @@ public class BalanceDaoImpl extends BaseDaoImpl<Balance, Integer> implements Bal
 		String sql = PackSQLTools.packSQL(balance);
 		Object[] values = PackValuesTools.packValues(balance);
 		return findPageByFetchedHql(sql, sql, pageInfo.getPageNo(), pageInfo.getPageSize(), values);	
+	}
+
+	/**
+	 * 条件查询
+	 * @param Balance
+	 * @return List<Balance>
+	 */
+	@Override
+	public List<Balance> findMoreByConditions(Balance balance) {
+		return getListBySQL(PackSQLTools.packSQL(balance), PackValuesTools.packValues(balance));
 	}
 
 }

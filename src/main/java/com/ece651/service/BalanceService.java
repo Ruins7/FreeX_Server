@@ -4,8 +4,10 @@
 package com.ece651.service;
 
 import java.io.Serializable;
+import java.util.List;
 
-import com.ece651.entity.PageResults;
+import com.ece651.entity.Balance;
+import com.ece651.entity.Currency;
 import com.ece651.entity.User;
 
 /**
@@ -18,5 +20,16 @@ import com.ece651.entity.User;
  */
 public interface BalanceService {
 
-	 
+	public Serializable addNewCurrencyBalance(Balance balance);
+
+	public int deposit(Balance balance);
+
+	public int withdrawal(Balance balance);
+
+	public int deleteCurrencyBalance(Balance balance);
+
+	public List<Balance> searchAllBalOfUser(Balance balance);
+
+	public Balance searchOneCurrOfUser(User user, Currency currency);
+
 }
