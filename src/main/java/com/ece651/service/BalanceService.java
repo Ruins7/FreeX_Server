@@ -7,16 +7,14 @@ import java.io.Serializable;
 import java.util.List;
 
 import com.ece651.entity.Balance;
-import com.ece651.entity.Currency;
-import com.ece651.entity.User;
 
 /**
  * @ClassName: BalanceService.java
- * @Description: Balance对象的业务逻辑类接口
+ * @Description: Balance serivce interface
  * 
- * @author Ruins7
+ * @author Freddy Lee
  * @version V1.0
- * @Date 2016年10月15日 下午6:12:32
+ * @Date 2016.10.15  6:12:32 PM
  */
 public interface BalanceService {
 

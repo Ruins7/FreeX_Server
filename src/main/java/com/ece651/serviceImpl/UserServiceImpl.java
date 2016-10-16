@@ -11,9 +11,9 @@ import com.ece651.service.UserService;
 /**
  * @ClassName:     UserServiceImpl.java
  * @Description:   User对象的业务逻辑类 
- * @author         Ruins7
+ * @author         Freddy Lee
  * @version        V1.0  
- * @Date           2016年10月15日 下午2:38:12 
+ * @Date           2016.10.15   2:38:12 PM
  */
 public class UserServiceImpl implements UserService {
 	

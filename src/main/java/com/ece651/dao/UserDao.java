@@ -11,10 +11,10 @@ import com.ece651.entity.User;
 
 /**
  * @ClassName: UserDao.java
- * @Description: User对象的持久层接口，继承泛型持久层接口
- * @author Ruins7
+ * @Description: User dao interface，extends generic dao interface
+ * @author Freddy Lee
  * @version V1.0
- * @Date 2016年10月14日 下午5:22:30
+ * @Date 2016.10.14 5:22:30 PM
  */
 public interface UserDao extends BaseDao<User, Integer> {
 

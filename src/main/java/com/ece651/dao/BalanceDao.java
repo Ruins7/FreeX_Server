@@ -11,11 +11,12 @@ import com.ece651.entity.PageResults;
 
 /**
  * @ClassName: TransactionDao.java
- * @Description: 用户个人账户存取，用户之间交易的持久层接口,继承泛型持久层接口
- * 
- * @author Ruins7
+ * @Description: personal account deposit and withdraw
+ * 				 trade bwtween users dao interface
+ * 				 extends generic dao interface
+ * @author Freddy Lee
  * @version V1.0
- * @Date 2016年10月15日 下午1:51:37
+ * @Date 2016.10.15 1:51:37 PM
  */
 public interface BalanceDao extends BaseDao<Balance, Integer> {
 

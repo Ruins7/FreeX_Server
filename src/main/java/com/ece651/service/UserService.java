@@ -8,10 +8,10 @@ import com.ece651.entity.User;
 
 /**
  * @ClassName: UserService.java
- * @Description: User对象的业务逻辑类接口
- * @author Ruins7
+ * @Description: User serivce interface
+ * @author Freddy Lee
  * @version V1.0
- * @Date 2016年10月15日 下午2:38:12
+ * @Date 2016.10.15 2:38:12 PM
  */
 public interface UserService {
 
@@ -28,7 +28,7 @@ public interface UserService {
 	public User login(User user);
 
 	public User findbyEmail(User user);
-	
+
 	public List<User> searchAllUsersByConditions(User user);
 
 	public PageResults<User> findUsersByConditionAndPage(User user,

@@ -14,16 +14,15 @@ import com.ece651.toolsUnits.PackValuesTools;
 
 /**
  * @ClassName:     BalanceDaoImpl.java
- * @Description:   Balance对象的持久层实现类，实现其自身接口，继承泛型持久层实现类 
- * 
- * @author         Ruins7
+ * @Description:   Balance dao class, implements BalanceDao interface, extends BaseDaoImpl
+ * @author         Freddy Lee
  * @version        V1.0  
- * @Date           2016年10月15日 下午2:11:19 
+ * @Date           2016.10.15 2:11:19 PM 
  */
 public class BalanceDaoImpl extends BaseDaoImpl<Balance, Integer> implements BalanceDao {
 
 	/**
-	 * 添加一条新的币种的余额记录
+	 * add new type of currency balance record
 	 * @param Balance(no need bid)
 	 * @return bid
 	 */
@@ -33,7 +32,7 @@ public class BalanceDaoImpl extends BaseDaoImpl<Balance, Integer> implements Bal
 	}
 
 	/**
-	 * 更新账户余额
+	 * update balance
 	 * @param Balance
 	 * @return int
 	 */
@@ -44,7 +43,7 @@ public class BalanceDaoImpl extends BaseDaoImpl<Balance, Integer> implements Bal
 	}
 
 	/**
-	 * 删除某一个币种的余额记录，只有当该币种的余额为0 才可以调用（在service层检查余额是否为0）
+	 * delete ceratin balance record, invoke only when the balance is 0(check on service layer)
 	 * @param Balance
 	 * @return int
 	 */
@@ -55,7 +54,7 @@ public class BalanceDaoImpl extends BaseDaoImpl<Balance, Integer> implements Bal
 	}
 
 	/**
-	 * 单一对象条件查询
+	 * search one obj by conditions
 	 * @param Balance
 	 * @return Balance
 	 */
@@ -65,20 +64,18 @@ public class BalanceDaoImpl extends BaseDaoImpl<Balance, Integer> implements Bal
 	}
 
 	/**
-	 * 分页条件查询
+	 * search by conditions by pages 
 	 * @param Balance
 	 * @param PageResults
 	 * @return PageResults<Balance>
 	 */
 	@Override
 	public PageResults<Balance> findMoreByCondition(Balance balance, PageResults pageInfo) {
-		String sql = PackSQLTools.packSQL(balance);
-		Object[] values = PackValuesTools.packValues(balance);
-		return findPageByFetchedHql(sql, sql, pageInfo.getPageNo(), pageInfo.getPageSize(), values);	
+		return findPageByFetchedHql(PackSQLTools.packSQL(balance), PackSQLTools.packSQL(balance), pageInfo.getPageNo(), pageInfo.getPageSize(), PackValuesTools.packValues(balance));	
 	}
 
 	/**
-	 * 条件查询
+	 * search by conditions by list
 	 * @param Balance
 	 * @return List<Balance>
 	 */

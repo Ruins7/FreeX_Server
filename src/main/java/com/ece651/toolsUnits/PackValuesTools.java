@@ -8,14 +8,15 @@ import java.util.ArrayList;
 import com.ece651.entity.Balance;
 import com.ece651.entity.Transaction_history;
 import com.ece651.entity.User;
+import com.ece651.entity.User_history;
 
 /**
  * @ClassName:     PackValues.java
  * @Description:   用于拼接SQL查询条件的工具类
  * 
- * @author         Ruins7
+ * @author         Freddy Lee
  * @version        V1.0  
- * @Date           2016年10月15日 下午2:37:27 
+ * @Date           2016.10.15  2:37:27 PM 
  */
 public class PackValuesTools {
 
@@ -107,6 +108,36 @@ public class PackValuesTools {
 			list.add(transactionHistory.getThtime());
 		}
 		
+		Object[] values = new Object[list.size()];
+		for (int i = 0; i < list.size(); i++) {
+			values[i] = list.get(i);
+		}
+		return values;
+	}
+	
+	/**
+	 * 为User_History表拼接查询条件Values
+	 * @return Object[]
+	 * @param User_History
+	 */
+	public static Object[] packValues(User_history userHistory){
+		if(userHistory == null){
+			return null;
+		}
+		ArrayList list = new ArrayList();
+		if (userHistory.getUhid() != 0) {
+			list.add(userHistory.getUhid());
+		}
+		if (userHistory.getUhuid() != 0) {
+			list.add(userHistory.getUhuid());
+		}
+		if (userHistory.getUhtime() != null) {
+			list.add(userHistory.getUhtime());
+		}
+		if (userHistory.getAction() != null) {
+			list.add(userHistory.getAction());
+		}
+
 		Object[] values = new Object[list.size()];
 		for (int i = 0; i < list.size(); i++) {
 			values[i] = list.get(i);

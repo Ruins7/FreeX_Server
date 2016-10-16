@@ -8,11 +8,10 @@ import java.util.Date;
 
 /**
  * @ClassName:     User_history.java
- * @Description:   TODO(用一句话描述该文件做什么) 
- * 
- * @author         Ruins7
+ * @Description:   User_history entity
+ * @author         Freddy Lee
  * @version        V1.0  
- * @Date           2016年10月1日 下午2:03:01 
+ * @Date           2016.10.1 2:03:01 PM 
  */
 
 public class User_history implements Serializable{

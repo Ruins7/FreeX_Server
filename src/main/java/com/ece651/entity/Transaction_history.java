@@ -8,11 +8,10 @@ import java.util.Date;
 
 /**
  * @ClassName:     Transaction_history.java
- * @Description:   TODO(用一句话描述该文件做什么) 
- * 
- * @author         Ruins7
+ * @Description:   Transaction_history entity
+ * @author         Freddy Lee
  * @version        V1.0  
- * @Date           2016年10月1日 下午2:06:32 
+ * @Date           2016.10.1 2:06:32  PM
  */
 public class Transaction_history implements Serializable{
 	

@@ -13,10 +13,9 @@ import com.ece651.service.BalanceService;
 /**
  * @ClassName:     BalanceServiceImpl.java
  * @Description:   Balance对象的业务逻辑类 
- * 
- * @author         Ruins7
+ * @author         Freddy Lee
  * @version        V1.0  
- * @Date           2016年10月15日 下午6:37:33 
+ * @Date           2016.10.15  6:37:33 PM
  */
 public class BalanceServiceImpl implements BalanceService{
 

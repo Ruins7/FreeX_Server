@@ -8,14 +8,14 @@ import java.util.ArrayList;
 import com.ece651.entity.Balance;
 import com.ece651.entity.Transaction_history;
 import com.ece651.entity.User;
+import com.ece651.entity.User_history;
 
 /**
  * @ClassName:     PackSQLTools.java
  * @Description:   用于拼接SQL查询语句的工具类 
- * 
- * @author         Ruins7
+ * @author         Freddy Lee
  * @version        V1.0  
- * @Date           2016年10月15日 下午2:37:49 
+ * @Date           2016.10.15  2:37:49  PM
  */
 public class PackSQLTools {
 
@@ -47,18 +47,7 @@ public class PackSQLTools {
 		if (user.getEmail() != null) {
 			list.add(sqlemail);
 		}
-
-		for (int i = 0; i < list.size(); i++) {
-			sqlselect.append(list.get(i));
-		}
-
-		// 添加and
-		for (int i = 0; i < sqlselect.length(); i++) {
-			if (sqlselect.charAt(i) == '?' && i != sqlselect.length() - 1) {
-				sqlselect.insert(i + 1, " and");
-			}
-		}
-		return sqlselect.toString();
+		return insertAnd(list, sqlselect);
 	}
 	
 	/**
@@ -89,18 +78,7 @@ public class PackSQLTools {
 		if (balance.getBamount() != null) {
 			list.add(sqlamount);
 		}
-
-		for (int i = 0; i < list.size(); i++) {
-			sqlselect.append(list.get(i));
-		}
-
-		// 添加and
-		for (int i = 0; i < sqlselect.length(); i++) {
-			if (sqlselect.charAt(i) == '?' && i != sqlselect.length() - 1) {
-				sqlselect.insert(i + 1, " and");
-			}
-		}
-		return sqlselect.toString();
+		return insertAnd(list, sqlselect);
 	}
 	
 	/**
@@ -143,17 +121,60 @@ public class PackSQLTools {
 		if (transactionHistory.getThtime() != null) {
 			list.add(sqltime);
 		}
+		return insertAnd(list, sqlselect);
+	}
+	
+	/**
+	 * 为User_history表拼接SQL 条件查询
+	 * @return String 
+	 * @param User_history
+	 */
+	public static String packSQL(User_history userHistory) {
+		if(userHistory == null){
+			return "select * from user_history";
+		}
+		StringBuffer sqlselect = new StringBuffer("select * from user_history where");
+		StringBuffer sqlid = new StringBuffer(" uhid = ?");
+		StringBuffer sqlthuid = new StringBuffer(" uhuid = ?");
+		StringBuffer sqltime = new StringBuffer(" uhtime = ?");
+		StringBuffer sqlaction = new StringBuffer(" action = ?");
+		ArrayList<StringBuffer> list = new ArrayList<StringBuffer>();
 
-		for (int i = 0; i < list.size(); i++) {
-			sqlselect.append(list.get(i));
+		if (userHistory.getUhid() != 0) {
+			list.add(sqlid);
+		}
+		if (userHistory.getUhuid() != 0) {
+			list.add(sqlthuid);
+		}
+		if (userHistory.getUhtime() != null) {
+			list.add(sqltime);
+		}
+		if (userHistory.getAction() != null) {
+			list.add(sqlaction);
 		}
 
 		// 添加and
+		/*for (int i = 0; i < list.size(); i++) {
+			sqlselect.append(list.get(i));
+		}
+		
+		for (int i = 0; i < sqlselect.length(); i++) {
+			if (sqlselect.charAt(i) == '?' && i != sqlselect.length() - 1) {
+				sqlselect.insert(i + 1, " and");
+			}
+		}*/
+		return insertAnd(list, sqlselect);
+	}
+	
+	private static String insertAnd(ArrayList list, StringBuffer sqlselect){
+		for (int i = 0; i < list.size(); i++) {
+			sqlselect.append(list.get(i));
+		}
 		for (int i = 0; i < sqlselect.length(); i++) {
 			if (sqlselect.charAt(i) == '?' && i != sqlselect.length() - 1) {
 				sqlselect.insert(i + 1, " and");
 			}
 		}
-		return sqlselect.toString();
+		return sqlselect.toString();	
 	}
 }

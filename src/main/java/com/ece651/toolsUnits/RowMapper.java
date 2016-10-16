@@ -10,9 +10,9 @@ import java.sql.SQLException;
  * @ClassName: RowMapper.java
  * @Description: 配合Dao底层的批量JDBC操作接口
  * 
- * @author Ruins7
+ * @author Freddy Lee
  * @version V1.0
- * @Date 2016年10月9日 下午8:52:39
+ * @Date 2016.10.9  8:52:39 PM
  */
 public interface RowMapper {
 	

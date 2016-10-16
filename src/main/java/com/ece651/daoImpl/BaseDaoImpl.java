@@ -28,18 +28,19 @@ import com.ece651.toolsUnits.RowMapper;
 
 /**
  * @ClassName: BaseDaoImpl.java
- * @Description: Hibernate4 所有常用的数据持久化方法实现， 使用泛型
- * 
- * @author Ruins7
+ * @Description: Hibernate4 all generic functions for data persistence
+ * @author Freddy Lee
  * @version V1.0
- * @Date 2016年10月9日 下午9:05:14
+ * @Date 2016.10.9 9:05:14 PM
  */
 public class BaseDaoImpl<T, ID extends Serializable> implements BaseDao<T, ID> {
 
 	protected Class<T> entityClass;
 	protected SessionFactory sessionFactory;
 
-	// set注入
+	/**
+	 *  set injection
+	 */
 	public void setSessionFactory(SessionFactory sessionFactory) {
 		this.sessionFactory = sessionFactory;
 	}
@@ -48,35 +49,61 @@ public class BaseDaoImpl<T, ID extends Serializable> implements BaseDao<T, ID> {
 		super();
 	}
 
-	// 使用反射机制获取编译期的准确类型
+	/**
+	 * using java reflection to get the exact type
+	 */
 	protected Class<T> getEntityClass() {
 		if (entityClass == null) {
-			entityClass = (Class<T>) ((ParameterizedType) this.getClass()
-					.getGenericSuperclass()).getActualTypeArguments()[0];
+			entityClass = (Class<T>) ((ParameterizedType) this.getClass().getGenericSuperclass()).getActualTypeArguments()[0];
 		}
 		return entityClass;
 	}
 
+	/**
+	 * insert obj
+	 * @param t
+	 * @return Serializable(id)
+	 */
 	@Override
 	public Serializable save(T t) {
 		return sessionFactory.getCurrentSession().save(t);
 	}
 
+	/**
+	 * insert or update obj
+	 * @param t
+	 * @return void
+	 */
 	@Override
 	public void SaveOrUpdate(T t) {
 		sessionFactory.getCurrentSession().saveOrUpdate(t);
 	}
 
+	/**
+	 * if contains
+	 * @param t
+	 * @return boolean
+	 */
 	@Override
 	public boolean contains(T t) {
 		return sessionFactory.getCurrentSession().contains(t);
 	}
 
+	/**
+	 * delete
+	 * @param t
+	 * @return void
+	 */
 	@Override
 	public void delete(T t) {
 		sessionFactory.getCurrentSession().delete(t);
 	}
 
+	/**
+	 * delete by id
+	 * @param Id
+	 * @return boolean
+	 */
 	@Override
 	public boolean deleteById(ID Id) {
 		T t = get(Id);
@@ -87,6 +114,11 @@ public class BaseDaoImpl<T, ID extends Serializable> implements BaseDao<T, ID> {
 		return true;
 	}
 
+	/**
+	 * delete all obj
+	 * @param entities
+	 * @return void
+	 */
 	@Override
 	public void deleteAll(Collection<T> entities) {
 		for (Object entity : entities) {
@@ -94,6 +126,12 @@ public class BaseDaoImpl<T, ID extends Serializable> implements BaseDao<T, ID> {
 		}
 	}
 
+	/**
+	 * query by HQL
+	 * @param String  
+	 * @param Object[] 
+	 * @return int
+	 */
 	@Override
 	public int queryHql(String hqlString, Object[] values) {
 		Query query = sessionFactory.getCurrentSession().createQuery(hqlString);
@@ -105,6 +143,11 @@ public class BaseDaoImpl<T, ID extends Serializable> implements BaseDao<T, ID> {
 		return query.executeUpdate();
 	}
 
+	/**
+	 * query by SQL
+	 * @param sqlString  values
+	 * @return int
+	 */
 	@Override
 	public int querySql(String sqlString, Object[] values) {
 		Query query = sessionFactory.getCurrentSession().createSQLQuery(
@@ -117,6 +160,12 @@ public class BaseDaoImpl<T, ID extends Serializable> implements BaseDao<T, ID> {
 		return query.executeUpdate();
 	}
 
+	/**
+	 * search only one obj by HQL
+	 * @param hqlString 
+	 * @param values
+	 * @return T
+	 */
 	@Override
 	public T getByHQL(String hqlString, Object[] values) {
 		Query query = sessionFactory.getCurrentSession().createQuery(hqlString);
@@ -128,6 +177,12 @@ public class BaseDaoImpl<T, ID extends Serializable> implements BaseDao<T, ID> {
 		return (T) query.uniqueResult();
 	}
 
+	/**
+	 * search only one obj by SQL
+	 * @param sqlString 
+	 * @param values 
+	 * @return T
+	 */
 	@Override
 	public T getBySQL(String sqlString, Object[] values) {
 		Query query = sessionFactory.getCurrentSession().createSQLQuery(
@@ -140,6 +195,12 @@ public class BaseDaoImpl<T, ID extends Serializable> implements BaseDao<T, ID> {
 		return (T) query.uniqueResult();
 	}
 
+	/**
+	 * query by HQL to get list
+	 * @param hqlString
+	 * @param values
+	 * @return List<T>
+	 */
 	@Override
 	public List<T> getListByHQL(String hqlString, Object[] values) {
 		Query query = sessionFactory.getCurrentSession().createQuery(hqlString);
@@ -151,6 +212,12 @@ public class BaseDaoImpl<T, ID extends Serializable> implements BaseDao<T, ID> {
 		return query.list();
 	}
 
+	/**
+	 * query by SQL to get list
+	 * @param sqlString
+	 * @param values
+	 * @return List<T>
+	 */
 	@Override
 	public List<T> getListBySQL(String sqlString, Object[] values) {
 		Query query = sessionFactory.getCurrentSession().createSQLQuery(
@@ -164,8 +231,7 @@ public class BaseDaoImpl<T, ID extends Serializable> implements BaseDao<T, ID> {
 	}
 
 	/**
-	 * 由sql语句得到List
-	 * 
+	 * SQL to get list
 	 * @param sql
 	 * @param map
 	 * @param values
@@ -205,16 +271,32 @@ public class BaseDaoImpl<T, ID extends Serializable> implements BaseDao<T, ID> {
 		return list;
 	}
 
+	/**
+	 * refresh
+	 * @param t
+	 * @return void
+	 */
 	@Override
 	public void refresh(T t) {
 		sessionFactory.getCurrentSession().refresh(t);
 	}
 
+	/**
+	 * update
+	 * @param t
+	 * @return void
+	 */
 	@Override
 	public void update(T t) {
 		sessionFactory.getCurrentSession().update(t);
 	}
 
+	/**
+	 * query sql to get total count for all records
+	 * @param Sql 
+	 * @param values 
+	 * @return total number of all records
+	 */
 	@Override
 	public Long countBySql(String sql, Object[] values) {
 		Query query = sessionFactory.getCurrentSession().createSQLQuery(sql).addEntity(getEntityClass());
@@ -227,19 +309,13 @@ public class BaseDaoImpl<T, ID extends Serializable> implements BaseDao<T, ID> {
 	}
 
 	/**
-	 * <SQL分页查询>
-	 * 
+	 * SQL query by page
 	 * @param sql
-	 *            SQL语句
 	 * @param countSql
-	 *            查询记录条数的SQL语句
 	 * @param pageNo
-	 *            下一页
 	 * @param pageSize
-	 *            一页总条数
 	 * @param values
-	 *            不定Object数组参数
-	 * @return PageResults的封装类，里面包含了页码的信息以及查询的数据List集合
+	 * @return PageResults，it contains all info includes info of pages and objs which from query
 	 */
 	@Override
 	public PageResults<T> findPageByFetchedHql(String sql, String countSql,
@@ -276,10 +352,8 @@ public class BaseDaoImpl<T, ID extends Serializable> implements BaseDao<T, ID> {
 
 	/**
 	 * 设置每行批处理参数
-	 * 
 	 * @param ps
-	 * @param pos
-	 *            ?占位符索引，从0开始
+	 * @param pos  ?占位符索引，从0开始
 	 * @param data
 	 * @throws SQLException
 	 * @see [类、类#方法、类#成员]
@@ -310,12 +384,21 @@ public class BaseDaoImpl<T, ID extends Serializable> implements BaseDao<T, ID> {
 		}
 	}
 
+	/**
+	 * load
+	 * @param id
+	 * @return T
+	 */
 	@Override
 	public T load(ID id) {
-		return (T) sessionFactory.getCurrentSession()
-				.load(getEntityClass(), id);
+		return (T) sessionFactory.getCurrentSession().load(getEntityClass(), id);
 	}
 
+	/**
+	 * get
+	 * @param id
+	 * @return T
+	 */
 	@Override
 	public T get(ID id) {
 		return (T) sessionFactory.getCurrentSession().get(getEntityClass(), id);

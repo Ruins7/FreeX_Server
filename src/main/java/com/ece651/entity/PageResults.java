@@ -6,7 +6,7 @@ import java.util.List;
  * 分页封装类, 不参与hibernate的数据持久化 用于做分页查询的基础类，封装了一些分页的相关属性
  * 			首次分页查询时必须指定 pageNo 和 pageSize
  * 
- * @author Ruins7
+ * @author Freddy Lee
  * @version v1.0
  * @param <T>
  */

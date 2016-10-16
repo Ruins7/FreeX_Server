@@ -4,6 +4,7 @@
 package com.ece651.daoImpl;
 
 import java.io.Serializable;
+import java.util.List;
 
 import com.ece651.dao.TransactionHistoryDao;
 import com.ece651.entity.PageResults;
@@ -13,17 +14,17 @@ import com.ece651.toolsUnits.PackValuesTools;
 
 /**
  * @ClassName: TransactionHistoryDaoImpl.java
- * @Description: Transaction_History对象的持久层实现类，实现其自身接口，继承泛型持久层实现类
- * @author Ruins7
+ * @Description: Transaction_History dao class, implements TransactionHistoryDao interface, extends BaseDaoImpl
+ * @author Freddy Lee
  * @version V1.0
- * @Date 2016年10月15日 下午2:46:56
+ * @Date 2016.10.15 2:46:56 PM
  */
 public class TransactionHistoryDaoImpl extends
 		BaseDaoImpl<Transaction_history, Integer> implements
 		TransactionHistoryDao {
 
 	/**
-	 * 添加一条新交易记录
+	 * add new trade history
 	 * @param Transaction_history(no need thid)
 	 * @return thid
 	 */
@@ -35,7 +36,7 @@ public class TransactionHistoryDaoImpl extends
 	}
 
 	/**
-	 * 修改交易记录(一般不可以修改)
+	 * modify(usually it can not be modified)
 	 * @param Transaction_history
 	 * @return int
 	 */
@@ -46,7 +47,7 @@ public class TransactionHistoryDaoImpl extends
 	}
 
 	/**
-	 * 删除交易记录
+	 * delete trade history
 	 * @param Transaction_history
 	 * @return int
 	 */
@@ -57,7 +58,7 @@ public class TransactionHistoryDaoImpl extends
 	}
 
 	/**
-	 * 单一对象条件查询
+	 * search one obj
 	 * @param Transaction_history
 	 * @return Transaction_history
 	 */
@@ -69,7 +70,7 @@ public class TransactionHistoryDaoImpl extends
 	}
 
 	/**
-	 * 分页条件查询
+	 * search by page
 	 * @param Transaction_history
 	 * @param PageResults
 	 * @return PageResults<Transaction_history>
@@ -77,10 +78,19 @@ public class TransactionHistoryDaoImpl extends
 	@Override
 	public PageResults<Transaction_history> findMoreByCondition(
 			Transaction_history transactionHistory, PageResults pageInfo) {
-		String sql = PackSQLTools.packSQL(transactionHistory);
-		Object[] values = PackValuesTools.packValues(transactionHistory);
-		return findPageByFetchedHql(sql, sql, pageInfo.getPageNo(),
-				pageInfo.getPageSize(), values);
+		return findPageByFetchedHql(PackSQLTools.packSQL(transactionHistory), PackSQLTools.packSQL(transactionHistory), pageInfo.getPageNo(),
+				pageInfo.getPageSize(), PackValuesTools.packValues(transactionHistory));
+	}
+
+	/**
+	 * search by conditions
+	 * @param Transaction_history
+	 * @return List<Transaction_history>
+	 */
+	@Override
+	public List<Transaction_history> findMoreByConditions(
+			Transaction_history transactionHistory) {
+		return getListBySQL(PackSQLTools.packSQL(transactionHistory), PackValuesTools.packValues(transactionHistory));
 	}
 
 }

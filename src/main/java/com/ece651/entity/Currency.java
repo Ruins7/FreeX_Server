@@ -7,11 +7,10 @@ import java.io.Serializable;
 
 /**
  * @ClassName: Currency.java
- * @Description: TODO(用一句话描述该文件做什么)
- * 
- * @author Ruins7
+ * @Description: Currency entity
+ * @author Freddy Lee
  * @version V1.0
- * @Date 2016年10月1日 下午1:55:05
+ * @Date 2016.10.1 1:55:05 pm
  */
 
 public class Currency implements Serializable {

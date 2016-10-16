@@ -14,15 +14,15 @@ import com.ece651.toolsUnits.PackValuesTools;
 
 /**
  * @ClassName:     UserDaoImpl.java
- * @Description:   User对象的持久层实现类，实现其自身接口，继承泛型持久层实现类 
- * @author         Ruins7
+ * @Description:   User dao class, implements UserDao interface, extends BaseDaoImpl
+ * @author         Freddy Lee
  * @version        V1.0  
- * @Date           2016年10月14日 下午5:28:19 
+ * @Date           2016.10.14 5:28:19 PM 
  */
 public class UserDaoImpl extends BaseDaoImpl<User, Integer> implements UserDao{
 	
 	/**
-	 * 修改用户
+	 * modefy
 	 * @param User
 	 * @return int
 	 */
@@ -33,7 +33,7 @@ public class UserDaoImpl extends BaseDaoImpl<User, Integer> implements UserDao{
 	}
 	
 	/**
-	 * 删除用户
+	 * delete
 	 * @param User
 	 * @return int
 	 */
@@ -44,7 +44,7 @@ public class UserDaoImpl extends BaseDaoImpl<User, Integer> implements UserDao{
 	}
 	
 	/**
-	 * 新增用户
+	 * add new user
 	 * @param User(no need uid)
 	 * @return uid
 	 */
@@ -54,7 +54,7 @@ public class UserDaoImpl extends BaseDaoImpl<User, Integer> implements UserDao{
 	}
 	
 	/**
-	 * 单一对象id查询
+	 * search one user by id
 	 * @param User
 	 * @return User
 	 */
@@ -64,7 +64,7 @@ public class UserDaoImpl extends BaseDaoImpl<User, Integer> implements UserDao{
 	}
 
 	/**
-	 * 单一对象条件查询
+	 * search on user by conditions
 	 * @param User
 	 * @return User
 	 */
@@ -74,20 +74,18 @@ public class UserDaoImpl extends BaseDaoImpl<User, Integer> implements UserDao{
 	}
 
 	/**
-	 * 分页条件查询
+	 * saerch users by conditions and page
 	 * @param User
 	 * @param PageResults
 	 * @return PageResults<User>
 	 */
 	@Override
 	public PageResults<User> findMoreByCondition(User user, PageResults pageInfo) {
-		String sql = PackSQLTools.packSQL(user);
-		Object[] values = PackValuesTools.packValues(user);
-		return findPageByFetchedHql(sql, sql, pageInfo.getPageNo(), pageInfo.getPageSize(), values);	
+		return findPageByFetchedHql(PackSQLTools.packSQL(user), PackSQLTools.packSQL(user), pageInfo.getPageNo(), pageInfo.getPageSize(), PackValuesTools.packValues(user));	
 	}
 
 	/**
-	 * 条件查询
+	 * search users by conditions by list
 	 * @param User
 	 * @return List<User>
 	 */

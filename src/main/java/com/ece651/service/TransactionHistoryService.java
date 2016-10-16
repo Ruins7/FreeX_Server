@@ -10,11 +10,10 @@ import com.ece651.entity.Transaction_history;
 
 /**
  * @ClassName: TransactionHistoryService.java
- * @Description: Transaction_history对象的业务逻辑类接口
- * 
- * @author Ruins7
+ * @Description: Transaction_history serivce interface
+ * @author Freddy Lee
  * @version V1.0
- * @Date 2016年10月16日 上午11:25:10
+ * @Date 2016.10.16 11:25:10 AM
  */
 public interface TransactionHistoryService {
 

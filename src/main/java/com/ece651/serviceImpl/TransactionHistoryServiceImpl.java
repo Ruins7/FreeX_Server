@@ -13,10 +13,9 @@ import com.ece651.service.TransactionHistoryService;
 /**
  * @ClassName:     TransactionHistoryServiceImpl.java
  * @Description:   Transaction_history对象的业务逻辑类 
- * 
- * @author         Ruins7
+ * @author         Freddy Lee
  * @version        V1.0  
- * @Date           2016年10月16日 上午11:31:24 
+ * @Date           2016.10.16  11:31:24  AM
  */
 public class TransactionHistoryServiceImpl implements TransactionHistoryService{
 
@@ -56,7 +55,7 @@ public class TransactionHistoryServiceImpl implements TransactionHistoryService{
 	/**
      * 查询所有交易记录(分页)
      * @param PageResults
-     * @return PageResults
+     * @return PageResults<Transaction_history>
      */
 	@Override
 	public PageResults<Transaction_history> searchAllTranHis(PageResults pageInfo) {

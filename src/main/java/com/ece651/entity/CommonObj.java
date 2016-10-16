@@ -8,11 +8,10 @@ import java.util.Date;
 
 /**
  * @ClassName:     CommonObj.java
- * @Description:   这是一个通用实体类，用于层间参数封装，不参与数据持久化
- * 
- * @author         Ruins7
+ * @Description:   Common entity, for the value passing, not for persistence
+ * @author         Freddy Lee
  * @version        V1.0  
- * @Date           2016年10月14日 上午11:02:13 
+ * @Date           2016.10.14 11:02:13 AM 
  */
 public class CommonObj implements Serializable{
 	
