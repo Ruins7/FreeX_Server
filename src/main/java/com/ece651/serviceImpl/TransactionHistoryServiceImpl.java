@@ -44,7 +44,7 @@ public class TransactionHistoryServiceImpl implements TransactionHistoryService{
 	/**
      * 删除交易记录
      * @param Transaction_history
-     * @return int
+     * @return int,1=true,0=false
      */
 	@Override
 	public int deleTranHis(Transaction_history transactionHistory) {

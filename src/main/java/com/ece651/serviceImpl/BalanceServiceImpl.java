@@ -44,7 +44,7 @@ public class BalanceServiceImpl implements BalanceService{
 	/**
      * 存钱
      * @param Balance
-     * @return int
+     * @return int,1=true,0=false
      */
 	@Override
 	public int deposit(Balance balance) {
@@ -57,7 +57,7 @@ public class BalanceServiceImpl implements BalanceService{
 	/**
 	 * 取钱
 	 * @param Balance
-	 * @return int
+	 * @return int,1=true,0=false
 	 */
 	@Override
 	public int withdrawal(Balance balance) {
@@ -70,7 +70,7 @@ public class BalanceServiceImpl implements BalanceService{
 	/**
 	 * 删除某一个币种的余额记录，只有当该币种的余额为0 才可以调用（在service层检查余额是否为0）
 	 * @param Balance
-	 * @return int
+	 * @return int,1=true,0=false
 	 */
 	@Override
 	public int deleteCurrencyBalance(Balance balance) {

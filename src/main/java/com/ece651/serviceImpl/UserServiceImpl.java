@@ -29,7 +29,7 @@ public class UserServiceImpl implements UserService {
     /**
      * 新增用户
      * @param user(no need uid)
-     * @return userid(Serializable)
+     * @return Serializable userid
      */
 	@Override
 	public Serializable signup(User user) {
@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
 	 /**
      * 更新用户
      * @param user
-     * @return int
+     * @return int,1=true,0=false
      */
 	@Override
 	public int modify(User user) {
@@ -53,7 +53,7 @@ public class UserServiceImpl implements UserService {
 	/**
      * 删除用户
      * @param user
-     * @return int
+     * @return int, 1=true,0=false
      */
 	@Override
 	public int deleteUser(User user) {
