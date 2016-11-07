@@ -72,7 +72,7 @@ public class UserAction extends ActionSupport {
 		}	
 	}
 	
-	@Action(value = "userinfo", results={ @Result(name = "success", type = "JSON")})
+	@Action(value = "userinfo")
 	public String returnhistroy() throws IOException{
 		//返回用户的历史记录
 		JSONObject respObject=new JSONObject();
@@ -85,10 +85,6 @@ public class UserAction extends ActionSupport {
 		return "success";
 	}
 
-	@Override
-	public String execute() throws Exception {
-		// TODO Auto-generated method stub
-		return super.execute();
-	}  
+	 
 
 }
