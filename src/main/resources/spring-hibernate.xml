@@ -89,10 +89,12 @@ http://www.springframework.org/schema/context/spring-context-3.1.xsd"
 	<bean id="userDao" class="com.ece651.daoImpl.UserDaoImpl" scope="prototype"></bean>
 	<bean id="balanceDao" class="com.ece651.daoImpl.BalanceDaoImpl" scope="prototype"></bean>
 	<bean id="transactionHistoryDao" class="com.ece651.daoImpl.TransactionHistoryDaoImpl" scope="prototype"></bean>
+	<bean id="userHistoryDao" class="com.ece651.daoImpl.UserHistoryDaoImpl" scope="prototype"></bean>
 	<!-- service -->
 	<bean id="userService" class="com.ece651.serviceImpl.UserServiceImpl" scope="prototype"></bean>
 	<bean id="balanceService" class="com.ece651.serviceImpl.BalanceServiceImpl" scope="prototype"></bean>
 	<bean id="transactionHistoryService" class="com.ece651.serviceImpl.TransactionHistoryServiceImpl" scope="prototype"></bean>
+	<bean id="UserHistoryService" class="com.ece651.serviceImpl.UserHistoryServiceImpl" scope="prototype"></bean>
 	<!-- action -->
 	<bean id="userAction" class="com.ece651.action.UserAction" scope="prototype"></bean>
 	
