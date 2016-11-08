@@ -84,4 +84,14 @@ public class BalanceDaoImpl extends BaseDaoImpl<Balance, Integer> implements Bal
 		return getListBySQL(PackSQLTools.packSQL(balance), PackValuesTools.packValues(balance));
 	}
 
+	/**
+	 * search if a user already has a type of currency
+	 * @param Balance
+	 * @return boolean
+	 */
+	@Override
+	public Boolean ifExistCurrency(Balance balance) {
+		return contains(balance);
+	}
+
 }
