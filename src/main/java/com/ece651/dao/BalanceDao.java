@@ -28,6 +28,8 @@ public interface BalanceDao extends BaseDao<Balance, Integer> {
 
 	public Balance findbyConditions(Balance balance);
 	
+	public Boolean ifExistCurrency(Balance balance);
+	
 	public List<Balance> findMoreByConditions(Balance balance);
 
 	public PageResults<Balance> findMoreByCondition(Balance balance,

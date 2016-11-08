@@ -41,7 +41,7 @@ public class BalanceServiceImpl implements BalanceService{
 	}
 
 	/**
-     * 存钱
+     * 存钱(已经存在该币种，update)
      * @param Balance
      * @return int,1=true,0=false
      */
@@ -101,6 +101,18 @@ public class BalanceServiceImpl implements BalanceService{
 		//TODO 添加逻辑
 		
 		return balanceDao.findbyConditions(balance);
+	}
+
+	/**
+	 * 查询某个用户是否已经存在某一币种余额(存钱之前检查)
+	 * @param Balance(buid,bcid)
+	 * @return Balance
+	 */
+	@Override
+	public Boolean searchOneCurrExist(Balance balance) {
+		//TODO 添加逻辑
+		
+		return balanceDao.ifExistCurrency(balance);
 	}
 
 }

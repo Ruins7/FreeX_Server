@@ -29,5 +29,7 @@ public interface BalanceService {
 	public List<Balance> searchAllBalOfUser(Balance balance);
 
 	public Balance searchOneCurrOfUser(Balance balance);
+	
+	public Boolean searchOneCurrExist(Balance balance);
 
 }
