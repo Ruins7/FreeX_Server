@@ -97,6 +97,8 @@ http://www.springframework.org/schema/context/spring-context-3.1.xsd"
 	<bean id="UserHistoryService" class="com.ece651.serviceImpl.UserHistoryServiceImpl" scope="prototype"></bean>
 	<!-- action -->
 	<bean id="userAction" class="com.ece651.action.UserAction" scope="prototype"></bean>
+	<bean id="balanceAction" class="com.ece651.action.BalanceAction" scope="prototype"></bean>
+	<bean id="testAction" class="com.ece651.action.TestAction" scope="prototype"></bean>
 	
 	
 	
