@@ -47,6 +47,7 @@ public class UserAction extends ActionSupport {
      */
 	@Action(value = "login")
 	public String login() throws IOException {
+		System.out.println("login....");
 		// 设置JSON格式
 		request.setCharacterEncoding("utf-8");
 		response.setContentType("text/json;charset=utf-8");
@@ -64,6 +65,7 @@ public class UserAction extends ActionSupport {
 		// 将JSONObject转换为对象
 		loginuser = new User();
 		loginuser = (User) JSONObject.toBean(reqObject, User.class);
+		System.out.println("user:"+loginuser.getUsername() +"  "+ loginuser.getPassword());
 		// 调用service层
 		loginuser = userService.login(loginuser);
 
@@ -138,6 +140,7 @@ public class UserAction extends ActionSupport {
      */
 	@Action(value = "register")
 	public String register() throws IOException {
+		System.out.println("register....");
 		// 设置JSON格式
 		request.setCharacterEncoding("utf-8");
 		response.setContentType("text/json;charset=utf-8");
@@ -151,6 +154,7 @@ public class UserAction extends ActionSupport {
 		}
 		br.close();
 		// 将获取到的数据转换为JSONObjec
+		System.out.println("register...."+sb.toString());
 		JSONObject reqObject = JSONObject.fromObject(sb.toString());
 		// 将JSONObject转换为对象
 		loginuser = new User();
