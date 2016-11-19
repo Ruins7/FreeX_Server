@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -84,7 +85,7 @@ public class BalanceAction extends ActionSupport {
 		balance = new Balance();
 		balance.setBuid(tranhistory.getThuid());
 		balance.setBcid(tranhistory.getCidin());//入账
-		balance.setBamount(tranhistory.getThamount());
+		//balance.setBamount(tranhistory.getThamount());
 		//balance = (Balance) JSONObject.toBean(reqObject, Balance.class);
 		// 调用userService，设置当前用户为balance中所指用户
 		user = new User();
@@ -92,8 +93,13 @@ public class BalanceAction extends ActionSupport {
 		user = userService.searchUserByID(user);
 		// 调用balanceService层，获取当前用户的币种，如果没有则添加，如果有则直接更改余额
 		balance = balanceService.searchOneCurrOfUser(balance);
-		if (balance.getBid() == 0) {
+		if (balance == null) {
 			// this currency does not exist
+			balance = new Balance();
+			balance.setBuid(tranhistory.getThuid());
+			balance.setBcid(tranhistory.getCidin());//入账
+			balance.setBamount(tranhistory.getThamount());
+			
 			Serializable bid = balanceService.addNewCurrencyBalance(balance);
 			if (bid != null) {
 				// add new currency succeed
@@ -109,7 +115,9 @@ public class BalanceAction extends ActionSupport {
 			}
 		} else {
 			// this currency exists and update currency
-			balance.setBamount(balance.getBamount()+tranhistory.getThamount());
+		    BigDecimal bd_b=new BigDecimal(balance.getBamount());
+		    BigDecimal bd_t=new BigDecimal(tranhistory.getThamount());
+			balance.setBamount(bd_b.add(bd_t).toString());
 			int ret = balanceService.deposit(balance);
 			if (ret == 1) {
 				// succeed
@@ -164,7 +172,7 @@ public class BalanceAction extends ActionSupport {
 		// 调用service层
 		// 调用balanceService层，获取当前用户的币种，如果没有则返回WithdrawalFailed，如果有则直接更改余额
 		balance.setBid(balanceService.searchOneCurrOfUser(balance).getBid());
-		if (balance.getBuid() == 0) {
+		if (balance.getBid() == 0) {
 			// this currency does not exist
 			this.response.getWriter().write("WithdrawalFail");
 			return null;
