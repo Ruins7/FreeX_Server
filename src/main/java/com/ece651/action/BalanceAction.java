@@ -143,7 +143,7 @@ public class BalanceAction extends ActionSupport {
 	 *            (no need bid)
 	 * @return succeed:Balance; failed:WithdrawalFail
 	 */
-	@Action(value = "withdrawal", results = { @Result(name = "SUCCESS", type = "chain", location = "balancReduceHistory") })
+	@Action(value = "withdrawal", results = { @Result(name = "success", type = "chain", location = "balancReduceHistory") })
 	public String withdrawal() throws IOException {
 		// 设置JSON格式
 		request.setCharacterEncoding("utf-8");
@@ -158,6 +158,7 @@ public class BalanceAction extends ActionSupport {
 		}
 		br.close();
 		// 将获取到的数据转换为JSONObjec
+		System.out.println("blance..."+sb.toString());
 		JSONObject reqObject = JSONObject.fromObject(sb.toString());
 		// 将JSONObject转换为对象
 		// 将JSONObject转换为对象
@@ -177,6 +178,7 @@ public class BalanceAction extends ActionSupport {
 		// 调用service层
 		// 调用balanceService层，获取当前用户的币种，如果没有则返回WithdrawalFailed，如果有则直接更改余额
 		balance = balanceService.searchOneCurrOfUser(balance);
+		System.out.println("blance"+balance);
 		if (balance != null) {
 			if (balance.getBid() == 0) {
 				// this currency does not exist
@@ -186,9 +188,9 @@ public class BalanceAction extends ActionSupport {
 				// this currency exists and update currency
 				BigDecimal bd_b = new BigDecimal(balance.getBamount());
 				BigDecimal bd_t = new BigDecimal(tranhistory.getThamount());
-				balance.setBamount(bd_t.subtract(bd_b).toString());
 				int bret=bd_b.compareTo(bd_t);
 				if (bret>=0){
+					balance.setBamount(bd_b.subtract(bd_t).toString());
 					int ret = balanceService.withdrawal(balance);
 					if (ret == 1) {
 						// succeed
