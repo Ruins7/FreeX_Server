@@ -64,7 +64,7 @@ public class BalanceAction extends ActionSupport {
 	 *            (no need bid)
 	 * @return succeed:Balance; failed:DepositFail
 	 */
-	@Action(value = "deposit", results = { @Result(name = "SUCCESS", type = "chain", location = "balanceAddHistory") })
+	@Action(value = "deposit", results = { @Result(name = "success", type = "chain", location = "balanceAddHistory") })
 	public String deposit() throws IOException {
 		// 设置JSON格式
 		request.setCharacterEncoding("utf-8");
