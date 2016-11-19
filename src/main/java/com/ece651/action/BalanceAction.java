@@ -16,8 +16,10 @@ import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Result;
 
 import com.ece651.entity.Balance;
+import com.ece651.entity.Transaction_history;
 import com.ece651.entity.User;
 import com.ece651.service.BalanceService;
+import com.ece651.service.TransactionHistoryService;
 import com.ece651.service.UserService;
 import com.opensymphony.xwork2.ActionSupport;
 
@@ -30,6 +32,7 @@ import com.opensymphony.xwork2.ActionSupport;
  */
 public class BalanceAction extends ActionSupport {
 
+	private Transaction_history tranhistory;
 	private Balance balance;
 	private User user;
 	private HttpSession session;
@@ -37,6 +40,7 @@ public class BalanceAction extends ActionSupport {
 	private HttpServletResponse response = ServletActionContext.getResponse();
 	private UserService userService;
 	private BalanceService balanceService;
+	private TransactionHistoryService transactionhistoryservice;
 
 	// set注入
 	public void setUserService(UserService userService) {
@@ -46,13 +50,18 @@ public class BalanceAction extends ActionSupport {
 	public void setBalanceService(BalanceService balanceService) {
 		this.balanceService = balanceService;
 	}
+	
+	public void setTransactionHistoryService(
+			TransactionHistoryService transactionhistoryservice) {
+		this.transactionhistoryservice = transactionhistoryservice;
+	}
 
 	/**
      * deposit
      * @param  Balance(no need bid)
      * @return succeed:Balance; failed:DepositFail
      */
-	@Action(value = "deposit", results = { @Result(name = "success", type = "chain", location = "BalanceAddHistory") })
+	@Action(value = "deposit", results = { @Result(name = "success", type = "chain", location = "balanceAddHistory") })
 	public String deposit() throws IOException {
 		// 设置JSON格式
 		request.setCharacterEncoding("utf-8");
@@ -69,11 +78,17 @@ public class BalanceAction extends ActionSupport {
 		// 将获取到的数据转换为JSONObjec
 		JSONObject reqObject = JSONObject.fromObject(sb.toString());
 		// 将JSONObject转换为对象
+		tranhistory = new Transaction_history();
+		tranhistory = (Transaction_history) JSONObject.toBean(reqObject, Transaction_history.class);
+		//新建balance
 		balance = new Balance();
-		balance = (Balance) JSONObject.toBean(reqObject, Balance.class);
+		balance.setBuid(tranhistory.getThuid());
+		balance.setBcid(tranhistory.getCidin());//入账
+		balance.setBamount(tranhistory.getThamount());
+		//balance = (Balance) JSONObject.toBean(reqObject, Balance.class);
 		// 调用userService，设置当前用户为balance中所指用户
 		user = new User();
-		user.setUid(balance.getBuid());
+		user.setUid(tranhistory.getThuid());
 		user = userService.searchUserByID(user);
 		// 调用balanceService层，获取当前用户的币种，如果没有则添加，如果有则直接更改余额
 		balance = balanceService.searchOneCurrOfUser(balance);
@@ -131,8 +146,20 @@ public class BalanceAction extends ActionSupport {
 		// 将获取到的数据转换为JSONObjec
 		JSONObject reqObject = JSONObject.fromObject(sb.toString());
 		// 将JSONObject转换为对象
+		// 将JSONObject转换为对象
+		tranhistory = new Transaction_history();
+		tranhistory = (Transaction_history) JSONObject.toBean(reqObject,
+				Transaction_history.class);
+		// 新建balance
 		balance = new Balance();
-		balance = (Balance) JSONObject.toBean(reqObject, Balance.class);
+		balance.setBuid(tranhistory.getThuid());
+		balance.setBcid(tranhistory.getCidin());// 入账
+		balance.setBamount(tranhistory.getThamount());
+		// balance = (Balance) JSONObject.toBean(reqObject, Balance.class);
+		// 调用userService，设置当前用户为balance中所指用户
+		user = new User();
+		user.setUid(tranhistory.getThuid());
+		user = userService.searchUserByID(user);
 		// 调用service层
 		// 调用balanceService层，获取当前用户的币种，如果没有则返回WithdrawalFailed，如果有则直接更改余额
 		balance.setBid(balanceService.searchOneCurrOfUser(balance).getBid());
