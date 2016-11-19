@@ -183,7 +183,5 @@ public class TransactionHistoryAction extends ActionSupport {
 		this.response.setCharacterEncoding("UTF-8");
 		this.response.getWriter().write(respObject.toString());
 		return null;
-		
-		
 	}
 }

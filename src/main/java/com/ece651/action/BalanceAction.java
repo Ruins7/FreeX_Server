@@ -180,7 +180,6 @@ public class BalanceAction extends ActionSupport {
 				// failed
 				this.response.getWriter().write("WithdrawalFail");
 				return null;
-			
 				
 			}
 		}
