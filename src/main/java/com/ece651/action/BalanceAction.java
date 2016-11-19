@@ -92,7 +92,7 @@ public class BalanceAction extends ActionSupport {
 		user = userService.searchUserByID(user);
 		// 调用balanceService层，获取当前用户的币种，如果没有则添加，如果有则直接更改余额
 		balance = balanceService.searchOneCurrOfUser(balance);
-		if (balance.getBuid() == 0) {
+		if (balance.getBid() == 0) {
 			// this currency does not exist
 			Serializable bid = balanceService.addNewCurrencyBalance(balance);
 			if (bid != null) {
@@ -109,6 +109,7 @@ public class BalanceAction extends ActionSupport {
 			}
 		} else {
 			// this currency exists and update currency
+			balance.setBamount(balance.getBamount()+tranhistory.getThamount());
 			int ret = balanceService.deposit(balance);
 			if (ret == 1) {
 				// succeed
