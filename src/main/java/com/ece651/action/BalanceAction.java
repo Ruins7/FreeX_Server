@@ -64,7 +64,7 @@ public class BalanceAction extends ActionSupport {
 	 *            (no need bid)
 	 * @return succeed:Balance; failed:DepositFail
 	 */
-	@Action(value = "deposit", results = { @Result(name = "success", type = "chain", location = "balanceAddHistory") })
+	@Action(value = "deposit", results = { @Result(name = "SUCCESS", type = "chain", location = "balanceAddHistory") })
 	public String deposit() throws IOException {
 		// 设置JSON格式
 		request.setCharacterEncoding("utf-8");
@@ -143,7 +143,7 @@ public class BalanceAction extends ActionSupport {
 	 *            (no need bid)
 	 * @return succeed:Balance; failed:WithdrawalFail
 	 */
-	@Action(value = "withdrawal", results = { @Result(name = "success", type = "chain", location = "BalancReduceHistory") })
+	@Action(value = "withdrawal", results = { @Result(name = "SUCCESS", type = "chain", location = "balancReduceHistory") })
 	public String withdrawal() throws IOException {
 		// 设置JSON格式
 		request.setCharacterEncoding("utf-8");
@@ -186,6 +186,7 @@ public class BalanceAction extends ActionSupport {
 				// this currency exists and update currency
 				BigDecimal bd_b = new BigDecimal(balance.getBamount());
 				BigDecimal bd_t = new BigDecimal(tranhistory.getThamount());
+				balance.setBamount(bd_t.subtract(bd_b).toString());
 				int bret=bd_b.compareTo(bd_t);
 				if (bret>=0){
 					int ret = balanceService.withdrawal(balance);
@@ -199,7 +200,6 @@ public class BalanceAction extends ActionSupport {
 						// failed
 						this.response.getWriter().write("WithdrawalFail");
 						return null;
-
 					}
 				}else{
 					this.response.getWriter().write("WithdrawalFail");

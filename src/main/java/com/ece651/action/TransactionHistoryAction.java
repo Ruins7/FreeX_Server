@@ -89,7 +89,7 @@ public class TransactionHistoryAction extends ActionSupport {
 	}
 
 	// balance withdrawal history
-	@Action(value = "BalancReduceHistory")
+	@Action(value = "balancReduceHistory")
 	public String BalancReduceHistory() throws IOException {
 		// 设置JSON格式
 		request.setCharacterEncoding("utf-8");
