@@ -25,11 +25,11 @@ import com.ece651.service.UserService;
 import com.opensymphony.xwork2.ActionSupport;
 
 /**
- * @ClassName         BalanceAction.java
- * @Description       deposit,withdrawal
- * @author            Zhao
- * @time              2016年11月8日 下午1:20:53
- * @version			  v1.0
+ * @ClassName BalanceAction.java
+ * @Description deposit,withdrawal
+ * @author Zhao
+ * @time 2016年11月8日 下午1:20:53
+ * @version v1.0
  */
 public class BalanceAction extends ActionSupport {
 
@@ -51,17 +51,19 @@ public class BalanceAction extends ActionSupport {
 	public void setBalanceService(BalanceService balanceService) {
 		this.balanceService = balanceService;
 	}
-	
+
 	public void setTransactionHistoryService(
 			TransactionHistoryService transactionhistoryservice) {
 		this.transactionhistoryservice = transactionhistoryservice;
 	}
 
 	/**
-     * deposit
-     * @param  Balance(no need bid)
-     * @return succeed:Balance; failed:DepositFail
-     */
+	 * deposit
+	 * 
+	 * @param Balance
+	 *            (no need bid)
+	 * @return succeed:Balance; failed:DepositFail
+	 */
 	@Action(value = "deposit", results = { @Result(name = "success", type = "chain", location = "balanceAddHistory") })
 	public String deposit() throws IOException {
 		// 设置JSON格式
@@ -80,13 +82,14 @@ public class BalanceAction extends ActionSupport {
 		JSONObject reqObject = JSONObject.fromObject(sb.toString());
 		// 将JSONObject转换为对象
 		tranhistory = new Transaction_history();
-		tranhistory = (Transaction_history) JSONObject.toBean(reqObject, Transaction_history.class);
-		//新建balance
+		tranhistory = (Transaction_history) JSONObject.toBean(reqObject,
+				Transaction_history.class);
+		// 新建balance
 		balance = new Balance();
 		balance.setBuid(tranhistory.getThuid());
-		balance.setBcid(tranhistory.getCidin());//入账
-		//balance.setBamount(tranhistory.getThamount());
-		//balance = (Balance) JSONObject.toBean(reqObject, Balance.class);
+		balance.setBcid(tranhistory.getCidin());// 入账
+		// balance.setBamount(tranhistory.getThamount());
+		// balance = (Balance) JSONObject.toBean(reqObject, Balance.class);
 		// 调用userService，设置当前用户为balance中所指用户
 		user = new User();
 		user.setUid(tranhistory.getThuid());
@@ -97,9 +100,9 @@ public class BalanceAction extends ActionSupport {
 			// this currency does not exist
 			balance = new Balance();
 			balance.setBuid(tranhistory.getThuid());
-			balance.setBcid(tranhistory.getCidin());//入账
+			balance.setBcid(tranhistory.getCidin());// 入账
 			balance.setBamount(tranhistory.getThamount());
-			
+
 			Serializable bid = balanceService.addNewCurrencyBalance(balance);
 			if (bid != null) {
 				// add new currency succeed
@@ -115,8 +118,8 @@ public class BalanceAction extends ActionSupport {
 			}
 		} else {
 			// this currency exists and update currency
-		    BigDecimal bd_b=new BigDecimal(balance.getBamount());
-		    BigDecimal bd_t=new BigDecimal(tranhistory.getThamount());
+			BigDecimal bd_b = new BigDecimal(balance.getBamount());
+			BigDecimal bd_t = new BigDecimal(tranhistory.getThamount());
 			balance.setBamount(bd_b.add(bd_t).toString());
 			int ret = balanceService.deposit(balance);
 			if (ret == 1) {
@@ -132,12 +135,14 @@ public class BalanceAction extends ActionSupport {
 			}
 		}
 	}
-	
+
 	/**
-     * withdrawal
-     * @param  Balance(no need bid)
-     * @return succeed:Balance; failed:WithdrawalFail
-     */
+	 * withdrawal
+	 * 
+	 * @param Balance
+	 *            (no need bid)
+	 * @return succeed:Balance; failed:WithdrawalFail
+	 */
 	@Action(value = "withdrawal", results = { @Result(name = "success", type = "chain", location = "BalancReduceHistory") })
 	public String withdrawal() throws IOException {
 		// 设置JSON格式
@@ -163,7 +168,7 @@ public class BalanceAction extends ActionSupport {
 		balance = new Balance();
 		balance.setBuid(tranhistory.getThuid());
 		balance.setBcid(tranhistory.getCidin());// 入账
-		balance.setBamount(tranhistory.getThamount());
+		// balance.setBamount(tranhistory.getThamount());
 		// balance = (Balance) JSONObject.toBean(reqObject, Balance.class);
 		// 调用userService，设置当前用户为balance中所指用户
 		user = new User();
@@ -171,26 +176,41 @@ public class BalanceAction extends ActionSupport {
 		user = userService.searchUserByID(user);
 		// 调用service层
 		// 调用balanceService层，获取当前用户的币种，如果没有则返回WithdrawalFailed，如果有则直接更改余额
-		balance.setBid(balanceService.searchOneCurrOfUser(balance).getBid());
-		if (balance.getBid() == 0) {
-			// this currency does not exist
-			this.response.getWriter().write("WithdrawalFail");
-			return null;
-		} else {
-			// this currency exists and update currency
-			int ret = balanceService.withdrawal(balance);
-			if (ret == 1) {
-				// succeed
-				JSONObject respObject = JSONObject.fromObject(balance);
-				this.response.setCharacterEncoding("UTF-8");
-				this.response.getWriter().write(respObject.toString());
-				return SUCCESS;
-			} else {
-				// failed
+		balance = balanceService.searchOneCurrOfUser(balance);
+		if (balance != null) {
+			if (balance.getBid() == 0) {
+				// this currency does not exist
 				this.response.getWriter().write("WithdrawalFail");
 				return null;
+			} else {
+				// this currency exists and update currency
+				BigDecimal bd_b = new BigDecimal(balance.getBamount());
+				BigDecimal bd_t = new BigDecimal(tranhistory.getThamount());
+				int bret=bd_b.compareTo(bd_t);
+				if (bret>=0){
+					int ret = balanceService.withdrawal(balance);
+					if (ret == 1) {
+						// succeed
+						JSONObject respObject = JSONObject.fromObject(balance);
+						this.response.setCharacterEncoding("UTF-8");
+						this.response.getWriter().write(respObject.toString());
+						return SUCCESS;
+					} else {
+						// failed
+						this.response.getWriter().write("WithdrawalFail");
+						return null;
+
+					}
+				}else{
+					this.response.getWriter().write("WithdrawalFail");
+					return null;
+				}
 				
 			}
+		}else{
+			this.response.getWriter().write("WithdrawalFail");
+			return null;
 		}
+		
 	}
 }
