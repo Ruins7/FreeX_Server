@@ -5,11 +5,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.struts2.ServletActionContext;
@@ -168,7 +171,7 @@ public class BalanceAction extends ActionSupport {
 		// 新建balance
 		balance = new Balance();
 		balance.setBuid(tranhistory.getThuid());
-		balance.setBcid(tranhistory.getCidin());// 入账
+		balance.setBcid(tranhistory.getCidout());// 入账
 		// balance.setBamount(tranhistory.getThamount());
 		// balance = (Balance) JSONObject.toBean(reqObject, Balance.class);
 		// 调用userService，设置当前用户为balance中所指用户
@@ -188,8 +191,8 @@ public class BalanceAction extends ActionSupport {
 				// this currency exists and update currency
 				BigDecimal bd_b = new BigDecimal(balance.getBamount());
 				BigDecimal bd_t = new BigDecimal(tranhistory.getThamount());
-				int bret=bd_b.compareTo(bd_t);
-				if (bret>=0){
+				int bret = bd_b.compareTo(bd_t);
+				if (bret >= 0) {
 					balance.setBamount(bd_b.subtract(bd_t).toString());
 					int ret = balanceService.withdrawal(balance);
 					if (ret == 1) {
@@ -203,16 +206,67 @@ public class BalanceAction extends ActionSupport {
 						this.response.getWriter().write("WithdrawalFail");
 						return null;
 					}
-				}else{
+				} else {
 					this.response.getWriter().write("WithdrawalFail");
 					return null;
 				}
-				
+
 			}
-		}else{
+		} else {
 			this.response.getWriter().write("WithdrawalFail");
 			return null;
 		}
-		
+
+	}
+
+	/**
+	 * fetchBalance
+	 * 
+	 * @param User
+	 *            (no need uid)
+	 * @return succeed:JSONArray; failed:FetchFail
+	 */
+	@Action(value = "fetchBalance")
+	public String fetchBalance() throws IOException {
+		// 设置JSON格式
+		request.setCharacterEncoding("utf-8");
+		response.setContentType("text/json;charset=utf-8");
+		// 通过bufferreader获取json数据
+		BufferedReader br = new BufferedReader(new InputStreamReader(
+				request.getInputStream(), "utf-8"));
+		StringBuffer sb = new StringBuffer("");
+		String temp = "";
+		while ((temp = br.readLine()) != null) {
+			sb.append(temp);
+		}
+		br.close();
+		// 将获取到的数据转换为JSONObjec
+		JSONObject reqObject = JSONObject.fromObject(sb.toString());
+		// 将JSONObject转换为对象
+		user = new User();
+		user = (User) JSONObject.toBean(reqObject, Transaction_history.class);
+		user = userService.login(user);
+		//检测是否存在user
+		if(user.getUid()!=0)
+		{
+			//set balance
+			balance = new Balance();
+			balance.setBuid(user.getUid());
+			List <Balance> balanceList=new ArrayList<Balance>();
+			balanceList=balanceService.searchAllBalOfUser(balance);
+			if(balanceList!=null){
+				JSONArray jarray=JSONArray.fromObject(balanceList);
+				JSONObject respObject = JSONObject.fromObject(jarray);
+				this.response.setCharacterEncoding("UTF-8");
+				this.response.getWriter().write(respObject.toString());
+				return null;
+			}else{
+				this.response.getWriter().write("FetchFail");
+				return null;
+			}
+		}else{
+			this.response.getWriter().write("FetchFail");
+			return null;
+		}
 	}
 }

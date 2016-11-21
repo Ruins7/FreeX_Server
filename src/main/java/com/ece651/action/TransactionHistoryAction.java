@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.struts2.ServletActionContext;
@@ -25,11 +26,11 @@ import com.ece651.service.UserService;
 import com.opensymphony.xwork2.ActionSupport;
 
 /**
- * @ClassName         TransactionHistoryAction.java
- * @Description       tansaction history action
- * @author            Zhao
- * @time              2016年11月8日 上午9:52:13
- * @version			  v1.0
+ * @ClassName TransactionHistoryAction.java
+ * @Description tansaction history action
+ * @author Zhao
+ * @time 2016年11月8日 上午9:52:13
+ * @version v1.0
  */
 
 public class TransactionHistoryAction extends ActionSupport {
@@ -57,7 +58,6 @@ public class TransactionHistoryAction extends ActionSupport {
 	public void setBalanceService(BalanceService balanceService) {
 		this.balanceService = balanceService;
 	}
-	
 
 	// change transaction history
 	// balance add history
@@ -79,7 +79,8 @@ public class TransactionHistoryAction extends ActionSupport {
 		JSONObject reqObject = JSONObject.fromObject(sb.toString());
 		// 将JSONObject转换为对象
 		tranhistory = new Transaction_history();
-		tranhistory = (Transaction_history) JSONObject.toBean(reqObject, Transaction_history.class);
+		tranhistory = (Transaction_history) JSONObject.toBean(reqObject,
+				Transaction_history.class);
 		// 更新Transaction_history
 		tranhistory.setCidout(0);
 		tranhistory.setRate("1");
@@ -107,7 +108,8 @@ public class TransactionHistoryAction extends ActionSupport {
 		JSONObject reqObject = JSONObject.fromObject(sb.toString());
 		// 将JSONObject转换为对象
 		tranhistory = new Transaction_history();
-		tranhistory = (Transaction_history) JSONObject.toBean(reqObject, Transaction_history.class);
+		tranhistory = (Transaction_history) JSONObject.toBean(reqObject,
+				Transaction_history.class);
 		// 更新Transaction_history
 		tranhistory.setCidin(0);
 		tranhistory.setRate("1");
@@ -115,12 +117,14 @@ public class TransactionHistoryAction extends ActionSupport {
 		transactionhistoryservice.addNewTranHis(tranhistory);
 		return null;
 	}
-	
+
 	/**
-     * add new transaction history
-     * @param Transaction_history(no need thid)
-     * @return Succeed:"TransactionSuccess"
-     */
+	 * add new transaction history
+	 * 
+	 * @param Transaction_history
+	 *            (no need thid)
+	 * @return Succeed:"TransactionSuccess"
+	 */
 	@Action(value = "AddNewTransaction")
 	public String AddNewTransaction() throws IOException {
 		// 设置JSON格式
@@ -139,20 +143,24 @@ public class TransactionHistoryAction extends ActionSupport {
 		JSONObject reqObject = JSONObject.fromObject(sb.toString());
 		// 将JSONObject转换为对象
 		tranhistory = new Transaction_history();
-		tranhistory = (Transaction_history) JSONObject.toBean(reqObject, Transaction_history.class);
+		tranhistory = (Transaction_history) JSONObject.toBean(reqObject,
+				Transaction_history.class);
 		// 更新Transaction_history
-		Serializable thid=transactionhistoryservice.addNewTranHis(tranhistory);
-		if(thid!=null){
+		Serializable thid = transactionhistoryservice
+				.addNewTranHis(tranhistory);
+		if (thid != null) {
 			response.getWriter().write("TransactionSuccess");
 		}
 		return null;
 	}
-	
+
 	/**
-     * search transaction history
-     * @param Transaction_history(no need thid)
-     * @return Succeed:"SearchTransactionSuccess"
-     */
+	 * search transaction history
+	 * 
+	 * @param Transaction_history
+	 *            (no need thid)
+	 * @return Succeed:"SearchTransactionSuccess", fial:searchTFail
+	 */
 	@Action(value = "searchTransactionHistory")
 	public String searchTransaction() throws IOException {
 		// 设置JSON格式
@@ -171,17 +179,25 @@ public class TransactionHistoryAction extends ActionSupport {
 		JSONObject reqObject = JSONObject.fromObject(sb.toString());
 		// 将JSONObject转换为对象
 		tranhistory = new Transaction_history();
-		tranhistory = (Transaction_history) JSONObject.toBean(reqObject, Transaction_history.class);
+		tranhistory = (Transaction_history) JSONObject.toBean(reqObject,
+				Transaction_history.class);
 		// 创建PageResults
 		PageResults<Transaction_history> pageInfo = new PageResults<Transaction_history>();
 		pageInfo.setPageNo(1);
 		pageInfo.setPageSize(100);
 		// 查询Transaction_history
-		pageInfo=transactionhistoryservice.searchAllTranHisOfAUser(tranhistory, pageInfo);
-	    //返回Transaction_history
-		JSONObject respObject = JSONObject.fromObject(pageInfo);
-		this.response.setCharacterEncoding("UTF-8");
-		this.response.getWriter().write(respObject.toString());
-		return null;
+		pageInfo = transactionhistoryservice.searchAllTranHisOfAUser(
+				tranhistory, pageInfo);
+		if (pageInfo != null) {
+			// 返回Transaction_history
+			JSONArray jarray = JSONArray.fromObject(pageInfo.getResults());
+			JSONObject respObject = JSONObject.fromObject(jarray);
+			this.response.setCharacterEncoding("UTF-8");
+			this.response.getWriter().write(respObject.toString());
+			return null;
+		} else {
+			this.response.getWriter().write("searchTFail");
+			return null;
+		}
 	}
 }
