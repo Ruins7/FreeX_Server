@@ -23,6 +23,7 @@ import com.ece651.entity.User;
 import com.ece651.service.BalanceService;
 import com.ece651.service.TransactionHistoryService;
 import com.ece651.service.UserService;
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 
 /**
@@ -63,24 +64,20 @@ public class TransactionHistoryAction extends ActionSupport {
 	// balance add history
 	@Action(value = "balanceAddHistory")
 	public String BalanceAddHistory() throws IOException {
-		// 设置JSON格式
-		request.setCharacterEncoding("utf-8");
-		response.setContentType("text/json;charset=utf-8");
-		// 通过bufferreader获取json数据
-		BufferedReader br = new BufferedReader(new InputStreamReader(
-				request.getInputStream(), "utf-8"));
-		StringBuffer sb = new StringBuffer("");
-		String temp = "";
-		while ((temp = br.readLine()) != null) {
-			sb.append(temp);
-		}
-		br.close();
-		// 将获取到的数据转换为JSONObjec
-		JSONObject reqObject = JSONObject.fromObject(sb.toString());
-		// 将JSONObject转换为对象
+		/*
+		 * // 设置JSON格式 request.setCharacterEncoding("utf-8");
+		 * response.setContentType("text/json;charset=utf-8"); //
+		 * 通过bufferreader获取json数据 BufferedReader br = new BufferedReader(new
+		 * InputStreamReader( request.getInputStream(), "utf-8")); StringBuffer
+		 * sb = new StringBuffer(""); String temp = ""; while ((temp =
+		 * br.readLine()) != null) { sb.append(temp); } br.close(); //
+		 * 将获取到的数据转换为JSONObjec JSONObject reqObject =
+		 * JSONObject.fromObject(sb.toString()); // 将JSONObject转换为对象 tranhistory
+		 * = new Transaction_history(); tranhistory = (Transaction_history)
+		 * JSONObject.toBean(reqObject, Transaction_history.class);
+		 */
 		tranhistory = new Transaction_history();
-		tranhistory = (Transaction_history) JSONObject.toBean(reqObject,
-				Transaction_history.class);
+		tranhistory = (Transaction_history) ActionContext.getContext().get("T");
 		// 更新Transaction_history
 		tranhistory.setCidout(0);
 		tranhistory.setRate("1");
@@ -92,29 +89,31 @@ public class TransactionHistoryAction extends ActionSupport {
 	// balance withdrawal history
 	@Action(value = "balancReduceHistory")
 	public String BalancReduceHistory() throws IOException {
-		// 设置JSON格式
-		request.setCharacterEncoding("utf-8");
-		response.setContentType("text/json;charset=utf-8");
-		// 通过bufferreader获取json数据
-		BufferedReader br = new BufferedReader(new InputStreamReader(
-				request.getInputStream(), "utf-8"));
-		StringBuffer sb = new StringBuffer("");
-		String temp = "";
-		while ((temp = br.readLine()) != null) {
-			sb.append(temp);
-		}
-		br.close();
-		// 将获取到的数据转换为JSONObjec
-		JSONObject reqObject = JSONObject.fromObject(sb.toString());
-		// 将JSONObject转换为对象
+		/*
+		 * // 设置JSON格式 request.setCharacterEncoding("utf-8");
+		 * response.setContentType("text/json;charset=utf-8"); //
+		 * 通过bufferreader获取json数据 BufferedReader br = new BufferedReader(new
+		 * InputStreamReader( request.getInputStream(), "utf-8")); StringBuffer
+		 * sb = new StringBuffer(""); String temp = ""; while ((temp =
+		 * br.readLine()) != null) { sb.append(temp); } br.close(); //
+		 * 将获取到的数据转换为JSONObjec JSONObject reqObject =
+		 * JSONObject.fromObject(sb.toString()); // 将JSONObject转换为对象 tranhistory
+		 * = new Transaction_history(); tranhistory = (Transaction_history)
+		 * JSONObject.toBean(reqObject, Transaction_history.class);
+		 */
 		tranhistory = new Transaction_history();
-		tranhistory = (Transaction_history) JSONObject.toBean(reqObject,
-				Transaction_history.class);
+		tranhistory = (Transaction_history) ActionContext.getContext().get("T");
 		// 更新Transaction_history
 		tranhistory.setCidin(0);
 		tranhistory.setRate("1");
 		tranhistory.setThtime(new Date());
-		transactionhistoryservice.addNewTranHis(tranhistory);
+		Serializable thid = transactionhistoryservice
+				.addNewTranHis(tranhistory);
+		if (thid != null) {
+			response.getWriter().write("TransactionSuccess");
+		} else {
+			response.getWriter().write("TrandactionFail");
+		}
 		return null;
 	}
 
@@ -123,7 +122,7 @@ public class TransactionHistoryAction extends ActionSupport {
 	 * 
 	 * @param Transaction_history
 	 *            (no need thid)
-	 * @return Succeed:"TransactionSuccess"
+	 * @return Succeed:"TransactionSuccess", Fail: "TrandactionFail"
 	 */
 	@Action(value = "AddNewTransaction")
 	public String AddNewTransaction() throws IOException {
@@ -150,6 +149,8 @@ public class TransactionHistoryAction extends ActionSupport {
 				.addNewTranHis(tranhistory);
 		if (thid != null) {
 			response.getWriter().write("TransactionSuccess");
+		} else {
+			response.getWriter().write("TrandactionFail");
 		}
 		return null;
 	}
