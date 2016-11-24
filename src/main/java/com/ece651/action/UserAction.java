@@ -120,7 +120,9 @@ public class UserAction extends ActionSupport {
 		if (loginuser.getUid() != 0) {
 			// 首次登陆获取session来保存该用户的信息
 			session = request.getSession();
-			session.invalidate();
+			//session.invalidate();
+			session.setAttribute("username", loginuser.getUsername());
+			session.setAttribute("userid", loginuser.getUid());
 			// user封装成JSON,返回给客户端
 			JSONObject respObject = JSONObject.fromObject(loginuser);
 			this.response.setCharacterEncoding("UTF-8");
