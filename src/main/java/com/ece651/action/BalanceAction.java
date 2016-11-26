@@ -90,12 +90,7 @@ public class BalanceAction extends ActionSupport {
 				Transaction_history.class);
 		// 新建balance
 		balance = new Balance();
-<<<<<<< HEAD
 		// balance.setBuid(tranhistory.getThuid());
-=======
-		//balance.setBuid(tranhistory.getThuid());
-		session = request.getSession();
->>>>>>> bcc489cd7b1a558332716a3a7b35e30ef72a532e
 		balance.setBuid((int) session.getAttribute("userid"));
 		balance.setBcid(tranhistory.getCidin());// 入账
 		// balance.setBamount(tranhistory.getThamount());
@@ -168,7 +163,6 @@ public class BalanceAction extends ActionSupport {
 		while ((temp = br.readLine()) != null) {
 			sb.append(temp);
 		}
-		
 		br.close();
 		// 将获取到的数据转换为JSONObjec
 		System.out.println("blance..." + sb.toString());
@@ -180,12 +174,7 @@ public class BalanceAction extends ActionSupport {
 				Transaction_history.class);
 		// 新建balance
 		balance = new Balance();
-<<<<<<< HEAD
 		// balance.setBuid(tranhistory.getThuid());
-=======
-		//balance.setBuid(tranhistory.getThuid());
-		session = request.getSession();
->>>>>>> bcc489cd7b1a558332716a3a7b35e30ef72a532e
 		balance.setBuid((int) session.getAttribute("userid"));
 		balance.setBcid(tranhistory.getCidout());// 入账
 		// balance.setBamount(tranhistory.getThamount());
@@ -271,17 +260,11 @@ public class BalanceAction extends ActionSupport {
 			// set balance
 			balance = new Balance();
 			balance.setBuid(user.getUid());
-<<<<<<< HEAD
 			System.out.println(" bbbb   "+balance.getBuid());
 
 			List<Balance> balanceList = balanceService.searchAllBalOfUser(balance);
 			System.out.println(" bbbbbbb   "+balanceList);
 			if (balanceList.size() != 0) {
-=======
-			List <Balance> balanceList=new ArrayList<Balance>();
-			balanceList=balanceService.searchAllBalOfUser(balance);
-			if(balanceList.size()!=0){
->>>>>>> bcc489cd7b1a558332716a3a7b35e30ef72a532e
 				JSONArray jarray = new JSONArray();
 				for (Balance b : balanceList) {
 					JSONObject jsonb = JSONObject.fromObject(b);
