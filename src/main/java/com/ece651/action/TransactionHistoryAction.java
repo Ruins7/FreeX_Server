@@ -154,16 +154,31 @@ public class TransactionHistoryAction extends ActionSupport {
 		tranhistory = (Transaction_history) JSONObject.toBean(reqObject,
 				Transaction_history.class);
 		// 设置用户uid
+		session = request.getSession();
 		tranhistory.setThuid((int) session.getAttribute("userid"));
 		//设置时间
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date d = sdf.parse(sdf.format(new Date()));
 		tranhistory.setThtime(d);
 		// 更新Transaction_history
+<<<<<<< HEAD
 		List<Double> thid = transactionhistoryservice
 				.addNewTranHis(tranhistory);
 		if (thid.get(0) != 0) {
 			response.getWriter().write("TransactionSuccess");
+=======
+		List<Double> tranList=transactionhistoryservice
+				.addNewTranHis(tranhistory);
+		//Serializable thid = transactionhistoryservice.addNewTranHis(tranhistory);
+		if (tranList.size() != 0) {
+			JSONArray jarray = new JSONArray();
+			for (Double t : tranList) {
+				JSONObject jsonb = JSONObject.fromObject(t);
+				jarray.add(jsonb);
+			}
+			this.response.setCharacterEncoding("UTF-8");
+			this.response.getWriter().write(jarray.toString());
+>>>>>>> bcc489cd7b1a558332716a3a7b35e30ef72a532e
 		} else {
 			response.getWriter().write("TrandactionFail");
 		}
@@ -190,12 +205,14 @@ public class TransactionHistoryAction extends ActionSupport {
 		while ((temp = br.readLine()) != null) {
 			sb.append(temp);
 		}
+		
 		br.close();
 		// 将获取到的数据转换为JSONObjec
 		JSONObject reqObject = JSONObject.fromObject(sb.toString());
 		//将JSONObject转换为User对象
 		user = new User();
 		user = (User) JSONObject.toBean(reqObject, User.class);
+		session = request.getSession();
 		user.setUid((int) session.getAttribute("userid"));
 		// 创建Transaction_history对象
 		tranhistory = new Transaction_history();
@@ -207,7 +224,7 @@ public class TransactionHistoryAction extends ActionSupport {
 		// 查询Transaction_history
 		pageInfo = transactionhistoryservice.searchAllTranHisOfAUser(
 				tranhistory, pageInfo);
-		if (pageInfo != null) {
+		if (pageInfo.getResults().size() != 0) {
 			// 返回Transaction_history
 			JSONArray jarray = JSONArray.fromObject(pageInfo.getResults());
 			JSONObject respObject = JSONObject.fromObject(jarray);
