@@ -3,6 +3,7 @@ package com.ece651.action;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -153,19 +154,38 @@ public class TransactionHistoryAction extends ActionSupport {
 		tranhistory = new Transaction_history();
 		tranhistory = (Transaction_history) JSONObject.toBean(reqObject,
 				Transaction_history.class);
-		// 设置用户uid
+		session = request.getSession();
 		tranhistory.setThuid((int) session.getAttribute("userid"));
 		//设置时间
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date d = sdf.parse(sdf.format(new Date()));
 		tranhistory.setThtime(d);
-		// 更新Transaction_history
-		List<Double> thid = transactionhistoryservice
-				.addNewTranHis(tranhistory);
-		if (thid.get(0) != 0) {
-			response.getWriter().write("TransactionSuccess");
-		} else {
-			response.getWriter().write("TrandactionFail");
+		// 设置用户uid
+		balance = new Balance();
+		balance.setBuid((int) session.getAttribute("userid"));
+		balance.setBcid(tranhistory.getCidout());
+		balance = balanceService.searchOneCurrOfUser(balance);
+		//检查该币种余额是否足够
+		BigDecimal bd_b = new BigDecimal(balance.getBamount());
+		BigDecimal bd_t = new BigDecimal(tranhistory.getThamount());
+		int bret = bd_b.compareTo(bd_t);
+		if(bret>0){
+			//余额充足
+			List<Double> thList=transactionhistoryservice.addNewTranHis(tranhistory);
+			if(thList.get(0)!=0){
+				//换币种成功
+				JSONArray jarray = new JSONArray();
+				for(Double t: thList)
+				{
+					JSONObject jsonb = JSONObject.fromObject(t);
+					jarray.add(jsonb);
+				}
+			}else{
+				response.getWriter().write("TrandactionFail");
+			}
+		}else{
+			//余额不足
+			response.getWriter().write("MoneyNotEnough");
 		}
 		return null;
 	}
