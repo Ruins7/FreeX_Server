@@ -105,7 +105,8 @@ public class UserHistoryAction extends ActionSupport {
 		historyresult = (PageResults<User_history>) jsonlist.get(1);
 		// 查询user是否存在
 		user = new User();
-		user.setUid(userhistory.getUhuid());
+		//user.setUid(userhistory.getUhuid());
+		user.setUid((int) session.getAttribute("userid"));
 		user = userService.searchUserByID(user);
 		if (user.getUid() != 0) {
 			// success, user exists, then find the history
@@ -145,7 +146,7 @@ public class UserHistoryAction extends ActionSupport {
 		user = new User();
 		user = (User) JSONObject.toBean(reqObject, User.class);
 		userhistory = new User_history();
-		userhistory.setUhuid(user.getUid());
+		userhistory.setUhuid((int) session.getAttribute("userid"));
 		userhistory.setUhtime(new Date());
 		userhistory.setAction("Change Password");
 		userhistoyservice.addNewUserHis(userhistory);

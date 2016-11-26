@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
@@ -63,7 +65,7 @@ public class TransactionHistoryAction extends ActionSupport {
 	// change transaction history
 	// balance add history
 	@Action(value = "balanceAddHistory")
-	public String BalanceAddHistory() throws IOException {
+	public String BalanceAddHistory() throws IOException, ParseException {
 		/*
 		 * // 设置JSON格式 request.setCharacterEncoding("utf-8");
 		 * response.setContentType("text/json;charset=utf-8"); //
@@ -81,14 +83,17 @@ public class TransactionHistoryAction extends ActionSupport {
 		// 更新Transaction_history
 		tranhistory.setCidout(0);
 		tranhistory.setRate("1");
-		tranhistory.setThtime(new Date());
+		//Add time
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date d = sdf.parse(sdf.format(new Date()));
+		tranhistory.setThtime(d);
 		transactionhistoryservice.addNewTranHis(tranhistory);
 		return null;
 	}
 
 	// balance withdrawal history
 	@Action(value = "balancReduceHistory")
-	public String BalancReduceHistory() throws IOException {
+	public String BalancReduceHistory() throws IOException, ParseException {
 		/*
 		 * // 设置JSON格式 request.setCharacterEncoding("utf-8");
 		 * response.setContentType("text/json;charset=utf-8"); //
@@ -106,7 +111,10 @@ public class TransactionHistoryAction extends ActionSupport {
 		// 更新Transaction_history
 		tranhistory.setCidin(0);
 		tranhistory.setRate("1");
-		tranhistory.setThtime(new Date());
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date d = sdf.parse(sdf.format(new Date()));
+		tranhistory.setThtime(d);
+		
 		Serializable thid = transactionhistoryservice
 				.addNewTranHis(tranhistory);
 		if (thid != null) {
@@ -123,9 +131,10 @@ public class TransactionHistoryAction extends ActionSupport {
 	 * @param Transaction_history
 	 *            (no need thid)
 	 * @return Succeed:"TransactionSuccess", Fail: "TrandactionFail"
+	 * @throws ParseException 
 	 */
 	@Action(value = "AddNewTransaction")
-	public String AddNewTransaction() throws IOException {
+	public String AddNewTransaction() throws IOException, ParseException {
 		// 设置JSON格式
 		request.setCharacterEncoding("utf-8");
 		response.setContentType("text/json;charset=utf-8");
@@ -144,6 +153,10 @@ public class TransactionHistoryAction extends ActionSupport {
 		tranhistory = new Transaction_history();
 		tranhistory = (Transaction_history) JSONObject.toBean(reqObject,
 				Transaction_history.class);
+		//设置时间
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date d = sdf.parse(sdf.format(new Date()));
+		tranhistory.setThtime(d);
 		// 更新Transaction_history
 		Serializable thid = transactionhistoryservice
 				.addNewTranHis(tranhistory);
@@ -158,8 +171,8 @@ public class TransactionHistoryAction extends ActionSupport {
 	/**
 	 * search transaction history
 	 * 
-	 * @param Transaction_history
-	 *            (no need thid)
+	 * @param User (no need uid)
+	 *  
 	 * @return Succeed:"SearchTransactionSuccess", fial:searchTFail
 	 */
 	@Action(value = "searchTransactionHistory")
@@ -178,10 +191,13 @@ public class TransactionHistoryAction extends ActionSupport {
 		br.close();
 		// 将获取到的数据转换为JSONObjec
 		JSONObject reqObject = JSONObject.fromObject(sb.toString());
-		// 将JSONObject转换为对象
+		//将JSONObject转换为User对象
+		user = new User();
+		user = (User) JSONObject.toBean(reqObject, User.class);
+		user.setUid((int) session.getAttribute("userid"));
+		// 创建Transaction_history对象
 		tranhistory = new Transaction_history();
-		tranhistory = (Transaction_history) JSONObject.toBean(reqObject,
-				Transaction_history.class);
+		tranhistory.setThuid(user.getUid());
 		// 创建PageResults
 		PageResults<Transaction_history> pageInfo = new PageResults<Transaction_history>();
 		pageInfo.setPageNo(1);

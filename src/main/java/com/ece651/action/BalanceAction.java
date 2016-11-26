@@ -179,7 +179,8 @@ public class BalanceAction extends ActionSupport {
 		// balance = (Balance) JSONObject.toBean(reqObject, Balance.class);
 		// 调用userService，设置当前用户为balance中所指用户
 		user = new User();
-		user.setUid(tranhistory.getThuid());
+		user.setUid((int) session.getAttribute("userid"));
+		//user.setUid(tranhistory.getThuid());
 		user = userService.searchUserByID(user);
 		// 调用service层
 		// 调用balanceService层，获取当前用户的币种，如果没有则返回WithdrawalFailed，如果有则直接更改余额
@@ -250,6 +251,7 @@ public class BalanceAction extends ActionSupport {
 		// 将JSONObject转换为对象
 		user = new User();
 		user = (User) JSONObject.toBean(reqObject, User.class);
+		user.setUid((int) session.getAttribute("userid"));
 		//检测是否存在user
 		if(user.getUid()!=0)
 		{
