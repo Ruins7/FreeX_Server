@@ -154,6 +154,7 @@ public class TransactionHistoryAction extends ActionSupport {
 		tranhistory = (Transaction_history) JSONObject.toBean(reqObject,
 				Transaction_history.class);
 		// 设置用户uid
+		session = request.getSession();
 		tranhistory.setThuid((int) session.getAttribute("userid"));
 		//设置时间
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -196,6 +197,7 @@ public class TransactionHistoryAction extends ActionSupport {
 		//将JSONObject转换为User对象
 		user = new User();
 		user = (User) JSONObject.toBean(reqObject, User.class);
+		session = request.getSession();
 		user.setUid((int) session.getAttribute("userid"));
 		// 创建Transaction_history对象
 		tranhistory = new Transaction_history();
@@ -207,7 +209,7 @@ public class TransactionHistoryAction extends ActionSupport {
 		// 查询Transaction_history
 		pageInfo = transactionhistoryservice.searchAllTranHisOfAUser(
 				tranhistory, pageInfo);
-		if (pageInfo != null) {
+		if (pageInfo.getResults().size() != 0) {
 			// 返回Transaction_history
 			JSONArray jarray = JSONArray.fromObject(pageInfo.getResults());
 			JSONObject respObject = JSONObject.fromObject(jarray);

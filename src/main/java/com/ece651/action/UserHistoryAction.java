@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.struts2.ServletActionContext;
@@ -94,28 +95,25 @@ public class UserHistoryAction extends ActionSupport {
 		br.close();
 		// 将获取到的数据转换为JSONObjec
 		JSONObject reqObject = JSONObject.fromObject(sb.toString());
-		// 将JSONObject转换为 object list
-		jsonlist = new ArrayList();
-		jsonlist = (List) JSONObject.toBean(reqObject, List.class);
-		// object list中取出userhistory
-		userhistory = new User_history();
-		userhistory = (User_history) jsonlist.get(0);
-		// object list中取出historyresult
-		historyresult = new PageResults<User_history>();
-		historyresult = (PageResults<User_history>) jsonlist.get(1);
 		// 查询user是否存在
 		user = new User();
-		//user.setUid(userhistory.getUhuid());
+		user=(User) JSONObject.toBean(reqObject, User.class);
+		session = request.getSession();
 		user.setUid((int) session.getAttribute("userid"));
 		user = userService.searchUserByID(user);
 		if (user.getUid() != 0) {
 			// success, user exists, then find the history
+			userhistory = new User_history();
+			userhistory.setUhuid(user.getUid());
+			// object list中取出historyresult
+			historyresult = new PageResults<User_history>();
 			historyresult = userhistoyservice.searchAllUserHisOfAUser(
 					userhistory, historyresult);
-			jsonlist.clear();
-			jsonlist.add(userhistory);
-			jsonlist.add(historyresult);
-			JSONObject respObject = JSONObject.fromObject(jsonlist);
+			//写入JSONArray()
+			JSONArray jarray = new JSONArray();
+			jarray.add(userhistory);
+			jarray.add(historyresult);
+			JSONObject respObject = JSONObject.fromObject(jarray);
 			this.response.setCharacterEncoding("UTF-8");
 			this.response.getWriter().write(respObject.toString());
 			return null;
@@ -128,7 +126,7 @@ public class UserHistoryAction extends ActionSupport {
 	
 	@Action(value = "AddHisByUser")
 	public String AddHisByUser() throws IOException {
-		// 设置JSON格式
+		// 设置JSON格式 
 		request.setCharacterEncoding("utf-8");
 		response.setContentType("text/json;charset=utf-8");
 		// 通过bufferreader获取json数据

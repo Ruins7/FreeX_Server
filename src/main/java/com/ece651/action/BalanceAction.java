@@ -91,6 +91,7 @@ public class BalanceAction extends ActionSupport {
 		// 新建balance
 		balance = new Balance();
 		//balance.setBuid(tranhistory.getThuid());
+		session = request.getSession();
 		balance.setBuid((int) session.getAttribute("userid"));
 		balance.setBcid(tranhistory.getCidin());// 入账
 		// balance.setBamount(tranhistory.getThamount());
@@ -175,6 +176,7 @@ public class BalanceAction extends ActionSupport {
 		// 新建balance
 		balance = new Balance();
 		//balance.setBuid(tranhistory.getThuid());
+		session = request.getSession();
 		balance.setBuid((int) session.getAttribute("userid"));
 		balance.setBcid(tranhistory.getCidout());// 入账
 		// balance.setBamount(tranhistory.getThamount());
@@ -253,6 +255,7 @@ public class BalanceAction extends ActionSupport {
 		// 将JSONObject转换为对象
 		user = new User();
 		user = (User) JSONObject.toBean(reqObject, User.class);
+		session = request.getSession();
 		user.setUid((int) session.getAttribute("userid"));
 		//检测是否存在user
 		if(user.getUid()!=0)
@@ -262,7 +265,7 @@ public class BalanceAction extends ActionSupport {
 			balance.setBuid(user.getUid());
 			List <Balance> balanceList=new ArrayList<Balance>();
 			balanceList=balanceService.searchAllBalOfUser(balance);
-			if(balanceList!=null){
+			if(balanceList.size()!=0){
 				JSONArray jarray = new JSONArray();
 				for (Balance b : balanceList) {
 					JSONObject jsonb = JSONObject.fromObject(b);
