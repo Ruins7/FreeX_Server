@@ -1,0 +1,14 @@
+in sell currency pool
+12: USD>RMB
+13: USD>CAD
+21: RMB>USD
+23: RMB>CAD
+31: CAD>USD
+32: CAD>RMB
+
+Currency pool table(all integer, ex_rate and amount are * by 10000)
+user_id,ex_rate,amount,time
+
+Currency location table(all integer)
+trade_id,pool_loc,pool_preloc
+

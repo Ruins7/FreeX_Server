@@ -76,6 +76,7 @@ public class UserAction extends ActionSupport {
 			session = request.getSession();
 			session.setAttribute("username", loginuser.getUsername());
 			session.setAttribute("userid", loginuser.getUid());
+			System.out.println("session:  "+session.getId());
 			// user封装成JSON,返回给客户端
 			JSONObject respObject = JSONObject.fromObject(loginuser);
 			this.response.setCharacterEncoding("UTF-8");
