@@ -153,6 +153,8 @@ public class TransactionHistoryAction extends ActionSupport {
 		tranhistory = new Transaction_history();
 		tranhistory = (Transaction_history) JSONObject.toBean(reqObject,
 				Transaction_history.class);
+		// 设置用户uid
+		tranhistory.setThuid((int) session.getAttribute("userid"));
 		//设置时间
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date d = sdf.parse(sdf.format(new Date()));
