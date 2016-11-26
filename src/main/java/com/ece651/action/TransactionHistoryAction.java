@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -161,10 +162,17 @@ public class TransactionHistoryAction extends ActionSupport {
 		Date d = sdf.parse(sdf.format(new Date()));
 		tranhistory.setThtime(d);
 		// 更新Transaction_history
-		Serializable thid = transactionhistoryservice
+		List<Double> tranList=transactionhistoryservice
 				.addNewTranHis(tranhistory);
-		if (thid != null) {
-			response.getWriter().write("TransactionSuccess");
+		//Serializable thid = transactionhistoryservice.addNewTranHis(tranhistory);
+		if (tranList.size() != 0) {
+			JSONArray jarray = new JSONArray();
+			for (Double t : tranList) {
+				JSONObject jsonb = JSONObject.fromObject(t);
+				jarray.add(jsonb);
+			}
+			this.response.setCharacterEncoding("UTF-8");
+			this.response.getWriter().write(jarray.toString());
 		} else {
 			response.getWriter().write("TrandactionFail");
 		}
