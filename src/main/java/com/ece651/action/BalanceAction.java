@@ -90,7 +90,7 @@ public class BalanceAction extends ActionSupport {
 				Transaction_history.class);
 		// 新建balance
 		balance = new Balance();
-		//balance.setBuid(tranhistory.getThuid());
+		// balance.setBuid(tranhistory.getThuid());
 		balance.setBuid((int) session.getAttribute("userid"));
 		balance.setBcid(tranhistory.getCidin());// 入账
 		// balance.setBamount(tranhistory.getThamount());
@@ -115,8 +115,8 @@ public class BalanceAction extends ActionSupport {
 				JSONObject respObject = JSONObject.fromObject(balance);
 				this.response.setCharacterEncoding("UTF-8");
 				this.response.getWriter().write(respObject.toString());
-				//传tranhistory到下一个action
-				ActionContext.getContext().put("T",tranhistory);
+				// 传tranhistory到下一个action
+				ActionContext.getContext().put("T", tranhistory);
 				return SUCCESS;
 			} else {
 				// adding new currency failed
@@ -165,7 +165,7 @@ public class BalanceAction extends ActionSupport {
 		}
 		br.close();
 		// 将获取到的数据转换为JSONObjec
-		System.out.println("blance..."+sb.toString());
+		System.out.println("blance..." + sb.toString());
 		JSONObject reqObject = JSONObject.fromObject(sb.toString());
 		// 将JSONObject转换为对象
 		// 将JSONObject转换为对象
@@ -174,7 +174,7 @@ public class BalanceAction extends ActionSupport {
 				Transaction_history.class);
 		// 新建balance
 		balance = new Balance();
-		//balance.setBuid(tranhistory.getThuid());
+		// balance.setBuid(tranhistory.getThuid());
 		balance.setBuid((int) session.getAttribute("userid"));
 		balance.setBcid(tranhistory.getCidout());// 入账
 		// balance.setBamount(tranhistory.getThamount());
@@ -182,12 +182,12 @@ public class BalanceAction extends ActionSupport {
 		// 调用userService，设置当前用户为balance中所指用户
 		user = new User();
 		user.setUid((int) session.getAttribute("userid"));
-		//user.setUid(tranhistory.getThuid());
+		// user.setUid(tranhistory.getThuid());
 		user = userService.searchUserByID(user);
 		// 调用service层
 		// 调用balanceService层，获取当前用户的币种，如果没有则返回WithdrawalFailed，如果有则直接更改余额
 		balance = balanceService.searchOneCurrOfUser(balance);
-		System.out.println("blance"+balance);
+		System.out.println("blance" + balance);
 		if (balance != null) {
 			if (balance.getBid() == 0) {
 				// this currency does not exist
@@ -206,8 +206,8 @@ public class BalanceAction extends ActionSupport {
 						JSONObject respObject = JSONObject.fromObject(balance);
 						this.response.setCharacterEncoding("UTF-8");
 						this.response.getWriter().write(respObject.toString());
-						//传tranhistory到下一个action
-						ActionContext.getContext().put("T",tranhistory);
+						// 传tranhistory到下一个action
+						ActionContext.getContext().put("T", tranhistory);
 						return SUCCESS;
 					} else {
 						// failed
@@ -253,16 +253,18 @@ public class BalanceAction extends ActionSupport {
 		// 将JSONObject转换为对象
 		user = new User();
 		user = (User) JSONObject.toBean(reqObject, User.class);
+		session = request.getSession();
 		user.setUid((int) session.getAttribute("userid"));
-		//检测是否存在user
-		if(user.getUid()!=0)
-		{
-			//set balance
+		// 检测是否存在user
+		if (user.getUid() != 0) {
+			// set balance
 			balance = new Balance();
 			balance.setBuid(user.getUid());
-			List <Balance> balanceList=new ArrayList<Balance>();
-			balanceList=balanceService.searchAllBalOfUser(balance);
-			if(balanceList!=null){
+			System.out.println(" bbbb   "+balance.getBuid());
+
+			List<Balance> balanceList = balanceService.searchAllBalOfUser(balance);
+			System.out.println(" bbbbbbb   "+balanceList);
+			if (balanceList.size() != 0) {
 				JSONArray jarray = new JSONArray();
 				for (Balance b : balanceList) {
 					JSONObject jsonb = JSONObject.fromObject(b);
@@ -271,11 +273,11 @@ public class BalanceAction extends ActionSupport {
 				this.response.setCharacterEncoding("UTF-8");
 				this.response.getWriter().write(jarray.toString());
 				return null;
-			}else{
+			} else {
 				this.response.getWriter().write("FetchFail");
 				return null;
 			}
-		}else{
+		} else {
 			this.response.getWriter().write("FetchFail");
 			return null;
 		}

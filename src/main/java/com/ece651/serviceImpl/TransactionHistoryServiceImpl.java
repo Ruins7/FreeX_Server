@@ -4,7 +4,8 @@
 package com.ece651.serviceImpl;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.ece651.dao.TransactionHistoryDao;
 import com.ece651.entity.PageResults;
@@ -24,6 +25,7 @@ import com.ece651.toolsUnits.h2.Traderinfo;
 public class TransactionHistoryServiceImpl implements TransactionHistoryService {
 
 	private TransactionHistoryDao transactionHistoryDao;
+	private List<Double> list;
 
 	/**
 	 * 注入
@@ -41,21 +43,31 @@ public class TransactionHistoryServiceImpl implements TransactionHistoryService 
 	 * @return thid(Serializable)
 	 */
 	@Override
-	public Serializable addNewTranHis(Transaction_history transactionHistory) {
-		//TODO 添加逻辑
+	public List<Double> addNewTranHis(Transaction_history transactionHistory) {
+		// TODO 添加逻辑
+		list = new ArrayList<Double>();
 		Double amount = Double.valueOf(transactionHistory.getThamount());
 		Double rate = Double.valueOf(transactionHistory.getRate());
-		Traderinfo tradeinfo = new Traderinfo(transactionHistory.getThuid(),transactionHistory.getCidout()*10+transactionHistory.getCidin(),amount,rate, transactionHistory.getThtime().getDay());
+		Traderinfo tradeinfo = new Traderinfo(transactionHistory.getThuid(),
+				transactionHistory.getCidout() * 10
+						+ transactionHistory.getCidin(), amount, rate,
+				transactionHistory.getThtime().getDay());
 		Seller_Stack sellstack = new Seller_Stack();
 		sellstack = Trade.match(tradeinfo, sellstack);
 		int i = sellstack.stackpoptradere();
-			double amount_avail = sellstack.stackpops();
-			double amount_left = sellstack.stackpops();
-			double rate_result = amount_avail/(amount - amount_left);
-			//database
-			transactionHistory.setThamount((String.valueOf(amount_avail/rate_result)));
-			transactionHistory.setRate(String.valueOf(rate_result));
-		return transactionHistoryDao.insertNewTranHistory(transactionHistory);
+		double amount_avail = sellstack.stackpops();// in
+		double amount_left = sellstack.stackpops();// out
+		double rate_result = amount_avail / (amount - amount_left);
+
+		list.add(amount_avail);
+		list.add(amount_left);
+		list.add(rate_result);
+		// database
+		transactionHistory.setThamount((String.valueOf(amount_avail
+				/ rate_result)));
+		transactionHistory.setRate(String.valueOf(rate_result));
+		transactionHistoryDao.insertNewTranHistory(transactionHistory);
+		return list;
 	}
 
 	/**

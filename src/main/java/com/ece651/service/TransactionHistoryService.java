@@ -4,6 +4,7 @@
 package com.ece651.service;
 
 import java.io.Serializable;
+import java.util.List;
 
 import com.ece651.entity.PageResults;
 import com.ece651.entity.Transaction_history;
@@ -17,7 +18,7 @@ import com.ece651.entity.Transaction_history;
  */
 public interface TransactionHistoryService {
 
-	public Serializable addNewTranHis(Transaction_history transactionHistory);
+	public List<Double> addNewTranHis(Transaction_history transactionHistory);
 
 	public int deleTranHis(Transaction_history transactionHistory);
 

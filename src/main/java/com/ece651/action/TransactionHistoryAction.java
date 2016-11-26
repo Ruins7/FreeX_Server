@@ -3,10 +3,10 @@ package com.ece651.action;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -115,9 +115,9 @@ public class TransactionHistoryAction extends ActionSupport {
 		Date d = sdf.parse(sdf.format(new Date()));
 		tranhistory.setThtime(d);
 		
-		Serializable thid = transactionhistoryservice
+		List<Double> thid = transactionhistoryservice
 				.addNewTranHis(tranhistory);
-		if (thid != null) {
+		if (thid.get(0) != 0) {
 			response.getWriter().write("TransactionSuccess");
 		} else {
 			response.getWriter().write("TrandactionFail");
@@ -160,9 +160,9 @@ public class TransactionHistoryAction extends ActionSupport {
 		Date d = sdf.parse(sdf.format(new Date()));
 		tranhistory.setThtime(d);
 		// 更新Transaction_history
-		Serializable thid = transactionhistoryservice
+		List<Double> thid = transactionhistoryservice
 				.addNewTranHis(tranhistory);
-		if (thid != null) {
+		if (thid.get(0) != 0) {
 			response.getWriter().write("TransactionSuccess");
 		} else {
 			response.getWriter().write("TrandactionFail");
