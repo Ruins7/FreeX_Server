@@ -81,6 +81,7 @@ public class UserHistoryAction extends ActionSupport {
      */
 	@Action(value = "GetHisByUser")
 	public String GetHisByUser() throws IOException {
+		
 		// 设置JSON格式
 		request.setCharacterEncoding("utf-8");
 		response.setContentType("text/json;charset=utf-8");

@@ -164,6 +164,7 @@ public class BalanceAction extends ActionSupport {
 		while ((temp = br.readLine()) != null) {
 			sb.append(temp);
 		}
+		
 		br.close();
 		// 将获取到的数据转换为JSONObjec
 		System.out.println("blance..."+sb.toString());

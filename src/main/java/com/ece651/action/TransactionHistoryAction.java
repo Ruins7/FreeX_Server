@@ -191,6 +191,7 @@ public class TransactionHistoryAction extends ActionSupport {
 		while ((temp = br.readLine()) != null) {
 			sb.append(temp);
 		}
+		
 		br.close();
 		// 将获取到的数据转换为JSONObjec
 		JSONObject reqObject = JSONObject.fromObject(sb.toString());
