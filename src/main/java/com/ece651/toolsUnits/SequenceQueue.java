@@ -86,7 +86,7 @@ public class SequenceQueue<T> {
 		rear = 0;
 	}
 
-	public String toString() {
+	public String toString(){
 		if (empty()) {
 			return "[]";
 		} else {
