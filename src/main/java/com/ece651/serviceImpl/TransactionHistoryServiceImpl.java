@@ -4,6 +4,7 @@
 package com.ece651.serviceImpl;
 
 import java.io.Serializable;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +12,7 @@ import com.ece651.dao.TransactionHistoryDao;
 import com.ece651.entity.PageResults;
 import com.ece651.entity.Transaction_history;
 import com.ece651.service.TransactionHistoryService;
+import com.ece651.toolsUnits.h2.H2currenyPool;
 import com.ece651.toolsUnits.h2.Seller_Stack;
 import com.ece651.toolsUnits.h2.Trade;
 import com.ece651.toolsUnits.h2.Traderinfo;
@@ -45,20 +47,36 @@ public class TransactionHistoryServiceImpl implements TransactionHistoryService 
 	@Override
 	public List<Double> addNewTranHis(Transaction_history transactionHistory) {
 		// TODO 添加逻辑
+		System.out.println("ssdfsdfsdf----------------:" + transactionHistory.getThamount()+ "  "+transactionHistory.getThuid()+"  "+transactionHistory.getCidin()+"  "+transactionHistory.getCidout() );
+		try {
+			H2currenyPool.readtable();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
 		list = new ArrayList<Double>();
+		System.out.println("tradeifo amount test111");
 		Double amount = Double.valueOf(transactionHistory.getThamount());
-		Double rate = Double.valueOf(transactionHistory.getRate());
+		Double rate = Double.valueOf(0);
+		System.out.println("tradeifo amount test");
+		int cidtrade=transactionHistory.getCidout() * 10+ transactionHistory.getCidin();
+		
 		Traderinfo tradeinfo = new Traderinfo(transactionHistory.getThuid(),
-				transactionHistory.getCidout() * 10
-						+ transactionHistory.getCidin(), amount, rate,
-				transactionHistory.getThtime().getDay());
+				cidtrade, rate,amount,
+				0);
+		//transactionHistory.getThtime().getDay()
+		System.out.println("tradeifo amount");
+		//System.out.println("tradeifo amount" + tradeinfo.getamount()+" cid" +tradeinfo.getcid());
+
 		Seller_Stack sellstack = new Seller_Stack();
 		sellstack = Trade.match(tradeinfo, sellstack);
 		int i = sellstack.stackpoptradere();
 		double amount_avail = sellstack.stackpops();// in
 		double amount_left = sellstack.stackpops();// out
 		double rate_result = amount_avail / (amount - amount_left);
-
+System.out.println("avali----------------:" + amount_avail +"   amount_left:" +amount_left);
 		list.add(amount_avail);
 		list.add(amount_left);
 		list.add(rate_result);

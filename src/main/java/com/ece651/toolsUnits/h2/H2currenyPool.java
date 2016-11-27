@@ -31,9 +31,9 @@ public class H2currenyPool {
 	// initialze table for currency poll and currency id
 	public static void initialize() throws Exception {
 		int[] trade_id = { 12, 13, 21, 23, 31, 32 };
-
-		int[][] cur_pool = readtxtfile("src/cur_pool.txt", 1);
-		int[][] cur_loc = readtxtfile("src/cur_loc.txt", 2);
+		 
+		int[][] cur_pool = readtxtfile("F:\\Administrator\\workspaces\\FreeX_Server\\src\\main\\java\\cur_pool.txt", 1);
+		int[][] cur_loc = readtxtfile("F:\\Administrator\\workspaces\\FreeX_Server\\src\\main\\java\\cur_loc.txt", 2);
 		// System.out.println("cur_pool");
 		try {
 			createpoolloc(trade_id);
