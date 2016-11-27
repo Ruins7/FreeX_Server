@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -26,6 +27,7 @@ import com.ece651.entity.User;
 import com.ece651.service.BalanceService;
 import com.ece651.service.TransactionHistoryService;
 import com.ece651.service.UserService;
+import com.ece651.toolsUnits.SequenceQueue;
 import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
 
@@ -62,23 +64,11 @@ public class TransactionHistoryAction extends ActionSupport {
 	public void setBalanceService(BalanceService balanceService) {
 		this.balanceService = balanceService;
 	}
-
+	/*
 	// change transaction history
 	// balance add history
 	@Action(value = "balanceAddHistory")
 	public String BalanceAddHistory() throws IOException, ParseException {
-		/*
-		 * // 设置JSON格式 request.setCharacterEncoding("utf-8");
-		 * response.setContentType("text/json;charset=utf-8"); //
-		 * 通过bufferreader获取json数据 BufferedReader br = new BufferedReader(new
-		 * InputStreamReader( request.getInputStream(), "utf-8")); StringBuffer
-		 * sb = new StringBuffer(""); String temp = ""; while ((temp =
-		 * br.readLine()) != null) { sb.append(temp); } br.close(); //
-		 * 将获取到的数据转换为JSONObjec JSONObject reqObject =
-		 * JSONObject.fromObject(sb.toString()); // 将JSONObject转换为对象 tranhistory
-		 * = new Transaction_history(); tranhistory = (Transaction_history)
-		 * JSONObject.toBean(reqObject, Transaction_history.class);
-		 */
 		tranhistory = new Transaction_history();
 		tranhistory = (Transaction_history) ActionContext.getContext().get("T");
 		// 更新Transaction_history
@@ -95,18 +85,6 @@ public class TransactionHistoryAction extends ActionSupport {
 	// balance withdrawal history
 	@Action(value = "balancReduceHistory")
 	public String BalancReduceHistory() throws IOException, ParseException {
-		/*
-		 * // 设置JSON格式 request.setCharacterEncoding("utf-8");
-		 * response.setContentType("text/json;charset=utf-8"); //
-		 * 通过bufferreader获取json数据 BufferedReader br = new BufferedReader(new
-		 * InputStreamReader( request.getInputStream(), "utf-8")); StringBuffer
-		 * sb = new StringBuffer(""); String temp = ""; while ((temp =
-		 * br.readLine()) != null) { sb.append(temp); } br.close(); //
-		 * 将获取到的数据转换为JSONObjec JSONObject reqObject =
-		 * JSONObject.fromObject(sb.toString()); // 将JSONObject转换为对象 tranhistory
-		 * = new Transaction_history(); tranhistory = (Transaction_history)
-		 * JSONObject.toBean(reqObject, Transaction_history.class);
-		 */
 		tranhistory = new Transaction_history();
 		tranhistory = (Transaction_history) ActionContext.getContext().get("T");
 		// 更新Transaction_history
@@ -125,6 +103,7 @@ public class TransactionHistoryAction extends ActionSupport {
 		}
 		return null;
 	}
+	*/
 
 	/**
 	 * add new transaction history
@@ -149,7 +128,6 @@ public class TransactionHistoryAction extends ActionSupport {
 		}
 		br.close();
 		// 将获取到的数据转换为JSONObjec
-
 		JSONObject reqObject = JSONObject.fromObject(sb.toString());
 		// 将JSONObject转换为对象
 		tranhistory = new Transaction_history();
@@ -172,15 +150,25 @@ public class TransactionHistoryAction extends ActionSupport {
 		int bret = bd_b.compareTo(bd_t);
 		if (bret >= 0) {
 			// 余额充足
-			List<Double> thList = transactionhistoryservice
+			SequenceQueue<Double> sqList = transactionhistoryservice
 					.addNewTranHis(tranhistory);
-			if (thList.get(0) != 0) {
+			List<Double> list = new ArrayList<Double>();
+			list.add(sqList.element());// list[0]
+			list.add(sqList.element());// list[1]
+			list.add(sqList.element());// list[2]
+			sqList.add(list.get(0));
+			sqList.add(list.get(1));
+			sqList.add(list.get(2));
+			// store sqList into session
+			session = request.getSession();
+			session.setAttribute("SequenceQueue", sqList);
+			if (list.get(0) != 0) {
 				// 换币种成功
 				// 更改用户的balance
 				Balance balance1 = new Balance();
 				balance1.setBuid(balance.getBuid());
 				balance.setBcid(tranhistory.getCidout());// 花出去的钱
-				BigDecimal bout_1 = new BigDecimal(thList.get(1));// 有多少没有换成功
+				BigDecimal bout_1 = new BigDecimal(list.get(1));// 有多少没有换成功
 				balance.setBamount(bd_b.subtract(bd_t).add(bout_1).toString());
 				balanceService.withdrawal(balance);
 
@@ -191,7 +179,7 @@ public class TransactionHistoryAction extends ActionSupport {
 				balance1 = balanceService.searchOneCurrOfUser(balance1);
 				System.out.println("amount .......  " + balance1);
 
-				BigDecimal bd_1 = new BigDecimal(thList.get(0));// 增加的货币量
+				BigDecimal bd_1 = new BigDecimal(list.get(0));// 增加的货币量
 				BigDecimal bd_2 = new BigDecimal(balance1.getBamount());// 原来的货币量
 
 				System.out.println("bd1    " + bd_1);
@@ -203,7 +191,7 @@ public class TransactionHistoryAction extends ActionSupport {
 				// 返回List
 				JSONObject jsonb = new JSONObject();
 				int i = 1;
-				for (Double t : thList) {
+				for (Double t : list) {
 					jsonb.put(i, t.toString());
 					i++;
 				}
@@ -245,29 +233,54 @@ public class TransactionHistoryAction extends ActionSupport {
 		JSONObject reqObject = JSONObject.fromObject(sb.toString());
 		// 判断获得的数据是否为1或者0
 		if (reqObject.getInt("flag") == 1) {
-			// 执行交易
-			Stack<String> stack = new Stack<String>();// 需要替换
 			session = request.getSession();
-			stack = (Stack<String>) session.getAttribute("stack");
-			Transaction_history tranhis = new Transaction_history();
-			tranhis = (Transaction_history) session.getAttribute("th");
-			// 返回stack 和 transactionHistory
-			// to do
-
-			// 成功：返回"ExecuteSuccess"
-			this.response.getWriter().write("ExecuteSuccess");
+			// check: SequenceQueue,Transaction_history exist or not
+			if ((session.getAttribute("SequenceQueue") != null)
+					& (session.getAttribute("Transaction_history")) != null) {
+				//if SequenceQueue,Transaction_history exist
+				SequenceQueue<Double> sq = new SequenceQueue<Double>();
+				sq = (SequenceQueue<Double>) session
+						.getAttribute("SequenceQueue");
+				tranhistory=(Transaction_history) session.getAttribute("Transaction_history");
+				//execute 
+				Boolean bret=transactionhistoryservice.addNewTranHisForSure(tranhistory, sq, true);
+				if(bret){
+					//success
+					this.response.getWriter().write("Success");
+					session.removeAttribute("SequenceQueue");
+					session.removeAttribute("Transaction_history");
+				}else{
+					//fail
+					this.response.getWriter().write("Fail");
+				}
+			}else{
+				//if SequenceQueue,Transaction_history not exist
+				this.response.getWriter().write("ExecuteFail");
+			}
 		} else {
-			// 取消交易
-			// 获取Session中的stack和transaction_History，返回给后台
-			Stack<String> stack = new Stack<String>();// 需要替换
-			session = request.getSession();
-			stack = (Stack<String>) session.getAttribute("stack");
-			Transaction_history tranhis = new Transaction_history();
-			tranhis = (Transaction_history) session.getAttribute("th");
-			// 调用后台函数返回 to do
-
-			// 交易失败
-			this.response.getWriter().write("ExecuteFail");
+			// cancel this transaction
+			if ((session.getAttribute("SequenceQueue") != null)
+					& (session.getAttribute("Transaction_history")) != null) {
+				//if SequenceQueue,Transaction_history exist
+				SequenceQueue<Double> sq = new SequenceQueue<Double>();
+				sq = (SequenceQueue<Double>) session
+						.getAttribute("SequenceQueue");
+				tranhistory=(Transaction_history) session.getAttribute("Transaction_history");
+				//execute 
+				Boolean bret=transactionhistoryservice.addNewTranHisForSure(tranhistory, sq, false);
+				session.removeAttribute("SequenceQueue");
+				session.removeAttribute("Transaction_history");
+				this.response.getWriter().write("Success");
+			}else{
+				//if SequenceQueue,Transaction_history not exist
+				this.response.getWriter().write("Fail");
+				if(session.getAttribute("SequenceQueue")!=null){
+					session.removeAttribute("SequenceQueue");
+				}
+				if(session.getAttribute("Transaction_history")!=null){
+					session.removeAttribute("Transaction_history");
+				}
+			}
 		}
 		return null;
 	}
