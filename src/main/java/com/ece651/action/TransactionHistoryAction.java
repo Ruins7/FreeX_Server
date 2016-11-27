@@ -125,6 +125,7 @@ public class TransactionHistoryAction extends ActionSupport {
 		}
 		return null;
 	}
+	
 
 	/**
 	 * add new transaction history
