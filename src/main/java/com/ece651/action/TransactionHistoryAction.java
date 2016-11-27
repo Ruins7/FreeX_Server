@@ -141,16 +141,20 @@ public class TransactionHistoryAction extends ActionSupport {
 			SequenceQueue<Double> sqList = transactionhistoryservice
 					.addNewTranHis(tranhistory);
 			List<Double> list = new ArrayList<Double>();
-			list.add(sqList.element());// list[0]
+			list.add(1.0);
+			list.add(1.0);
+			list.add(1.0);
+			list.set(2, sqList.element());// list[0]
 			sqList.remove();
-			sqList.add(list.get(0));
-			list.add(sqList.element());// list[1]
+			list.set(1, sqList.element());// list[1]
 			sqList.remove();
-			sqList.add(list.get(1));
-			list.add(sqList.element());// list[2]
+			list.set(0, sqList.element());// list[2] 
 			sqList.remove();
+			
 			sqList.add(list.get(2));
-
+			sqList.add(list.get(1));
+			sqList.add(list.get(0));
+			System.out.println("sqList:    "+sqList);
 			// store sqList into session
 			session = request.getSession();
 			session.setAttribute("Transaction_history", tranhistory);
@@ -162,6 +166,7 @@ public class TransactionHistoryAction extends ActionSupport {
 				JSONObject jsonb = new JSONObject();
 				int i = 1;
 				for (Double t : list) {
+					System.out.println("t:     "+t.toString());
 					jsonb.put(i, t.toString());
 					i++;
 				}
@@ -220,6 +225,7 @@ public class TransactionHistoryAction extends ActionSupport {
 					// success
 					List<Double> list = new ArrayList<Double>();
 					list = (List<Double>) session.getAttribute("list");
+					System.out.println("List:    " + list.toString());
 					// 设置用户uid
 					balance = new Balance();
 					balance.setBuid((int) session.getAttribute("userid"));

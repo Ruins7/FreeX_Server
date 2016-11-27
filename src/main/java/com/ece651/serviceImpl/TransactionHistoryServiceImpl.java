@@ -122,11 +122,11 @@ public class TransactionHistoryServiceImpl implements TransactionHistoryService 
 			// add exception
 		}
 
-		double amount_avail = queue.element();
+		double rate_result = queue.element();
 		queue.remove();
 		double amount_left = queue.element();
 		queue.remove();
-		double rate_result = queue.element();
+		double amount_avail  = queue.element();
 		queue.remove();
 		
 
