@@ -189,9 +189,11 @@ public class TransactionHistoryAction extends ActionSupport {
 								
 				//返回List
 				JSONObject jsonb=new JSONObject();
+				int i=1;
 				for(Double t: thList)
 				{
-					jsonb.put("1",t.toString());
+					jsonb.put(i,t.toString());
+					i++;
 				}
 				this.response.setCharacterEncoding("UTF-8");
 				this.response.getWriter().write(jsonb.toString());
