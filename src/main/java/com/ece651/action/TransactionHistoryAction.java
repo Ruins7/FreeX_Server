@@ -84,7 +84,7 @@ public class TransactionHistoryAction extends ActionSupport {
 		// 更新Transaction_history
 		tranhistory.setCidout(0);
 		tranhistory.setRate("1");
-		// Add time
+		//Add time
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date d = sdf.parse(sdf.format(new Date()));
 		tranhistory.setThtime(d);
@@ -115,7 +115,7 @@ public class TransactionHistoryAction extends ActionSupport {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date d = sdf.parse(sdf.format(new Date()));
 		tranhistory.setThtime(d);
-
+		
 		List<Double> thid = transactionhistoryservice
 				.addNewTranHis(tranhistory);
 		if (thid.get(0) != 0) {
@@ -132,7 +132,7 @@ public class TransactionHistoryAction extends ActionSupport {
 	 * @param Transaction_history
 	 *            (no need thid)
 	 * @return Succeed:"TransactionSuccess", Fail: "TrandactionFail"
-	 * @throws ParseException
+	 * @throws ParseException 
 	 */
 	@Action(value = "AddNewTransaction")
 	public String AddNewTransaction() throws IOException, ParseException {
@@ -157,7 +157,7 @@ public class TransactionHistoryAction extends ActionSupport {
 				Transaction_history.class);
 		session = request.getSession();
 		tranhistory.setThuid((int) session.getAttribute("userid"));
-		// 设置时间
+		//设置时间
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date d = sdf.parse(sdf.format(new Date()));
 		tranhistory.setThtime(d);
@@ -166,28 +166,40 @@ public class TransactionHistoryAction extends ActionSupport {
 		balance.setBuid((int) session.getAttribute("userid"));
 		balance.setBcid(tranhistory.getCidout());
 		balance = balanceService.searchOneCurrOfUser(balance);
-		// 检查该币种余额是否足够
+		//检查该币种余额是否足够
 		BigDecimal bd_b = new BigDecimal(balance.getBamount());
 		BigDecimal bd_t = new BigDecimal(tranhistory.getThamount());
 		int bret = bd_b.compareTo(bd_t);
-		System.out.println("bret  --------     "+bret);
-		if (bret > 0) {
-			// 余额充足
-			
-			List<Double> thList = transactionhistoryservice
-					.addNewTranHis(tranhistory);
-			if (thList.get(0) != 0) {
-				// 换币种成功
-				JSONArray jarray = new JSONArray();
-				for (Double t : thList) {
-					JSONObject jsonb = JSONObject.fromObject(t.toString());
-					jarray.add(jsonb);
+		if(bret>=0){
+			//余额充足
+			List<Double> thList=transactionhistoryservice.addNewTranHis(tranhistory);
+			if(thList.get(0)!=0){
+				//换币种成功
+				//更改用户的balance
+				balance.setBcid(tranhistory.getCidout());//花出去的钱
+				balance.setBamount(thList.get(1).toString());
+				balanceService.withdrawal(balance);
+				
+				balance.setBcid(tranhistory.getCidin());//获取的钱
+				balance = balanceService.searchOneCurrOfUser(balance);
+				BigDecimal bd_1=new BigDecimal(thList.get(0));//增加的货币量
+				BigDecimal bd_2=new BigDecimal(balance.getBamount());//原来的货币量
+				balance.setBamount(bd_2.add(bd_1).toString());
+				balanceService.deposit(balance);
+								
+				//返回List
+				JSONObject jsonb=new JSONObject();
+				for(Double t: thList)
+				{
+					jsonb.put("1",t.toString());
 				}
-			} else {
-				response.getWriter().write("TrandactionFail");
+				this.response.setCharacterEncoding("UTF-8");
+				this.response.getWriter().write(jsonb.toString());
+			}else{
+				response.getWriter().write("TransactionFail");
 			}
-		} else {
-			// 余额不足
+		}else{
+			//余额不足
 			response.getWriter().write("MoneyNotEnough");
 		}
 		return null;
@@ -196,9 +208,8 @@ public class TransactionHistoryAction extends ActionSupport {
 	/**
 	 * search transaction history
 	 * 
-	 * @param User
-	 *            (no need uid)
-	 * 
+	 * @param User (no need uid)
+	 *  
 	 * @return Succeed:"SearchTransactionSuccess", fial:searchTFail
 	 */
 	@Action(value = "searchTransactionHistory")
@@ -218,7 +229,7 @@ public class TransactionHistoryAction extends ActionSupport {
 		br.close();
 		// 将获取到的数据转换为JSONObjec
 		JSONObject reqObject = JSONObject.fromObject(sb.toString());
-		// 将JSONObject转换为User对象
+		//将JSONObject转换为User对象
 		user = new User();
 		user = (User) JSONObject.toBean(reqObject, User.class);
 		user.setUid((int) session.getAttribute("userid"));
