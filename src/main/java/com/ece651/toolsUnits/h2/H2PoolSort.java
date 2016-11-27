@@ -1,21 +1,22 @@
 package com.ece651.toolsUnits.h2;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.sql.*;
-import java.util.ArrayList;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Scanner;
 
 import org.h2.jdbcx.JdbcConnectionPool;
-
-import java.util.Queue;
 
 public class H2PoolSort {
 	private static final String DB_DRIVER = "org.h2.Driver";
 	private static final String DB_CONNECTION = "jdbc:h2:mem:poolsort;DB_CLOSE_DELAY=-1";
 	private static final String DB_USER = "root";
 	private static final String DB_PASSWORD = "pass";// this need to be stored somewhere
-	private static final int table_length=2;
+	private static final int table_length=1000;
 	public static void sort(int cid) throws SQLException
 	{
 		Connection connection = getPoolConnection();
@@ -102,7 +103,7 @@ public class H2PoolSort {
 		for (int i=0; i<trade_id.length; i++)
 		{
 			//this will be changed to j<2000 for real testing
-			for (int j=0; j<4; j++)
+			for (int j=0; j<table_length; j++)
 			{
 				stmt.execute("INSERT INTO Currency_pool( user_id,ex_rate,amount,time)VALUES( 0,0,0,0)");            
 			}
@@ -161,7 +162,7 @@ public class H2PoolSort {
 		Scanner input=null;
 		if (filenum==1)
 		{
-			int [][] a= new int [24][4];
+			int [][] a= new int [6000][4];
 			try {
 				input = new Scanner (file);
 				int i =0;
@@ -175,6 +176,7 @@ public class H2PoolSort {
 						a [i][j]=colReader.nextInt();
 						j++;
 					}
+					Scanner colReaders = new Scanner(input.nextLine());
 					i++;
 					//a.add(col);
 					colReader.close();

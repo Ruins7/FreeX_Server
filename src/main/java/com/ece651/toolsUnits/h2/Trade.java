@@ -122,13 +122,13 @@ public class Trade {
 		lists.stackpushs(totalAmount);
 		
 		//output the updated table
-		System.out.println("Read table");
-		try {
-			H2currenyPool.readtable();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		System.out.println("Read table");
+//		try {
+//			H2currenyPool.readtable();
+//		} catch (SQLException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 		if (amountleft==0)
 		{
 			result_id=1;

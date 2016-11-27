@@ -176,17 +176,31 @@ public class TransactionHistoryAction extends ActionSupport {
 			if(thList.get(0)!=0){
 				//换币种成功
 				//更改用户的balance
+				Balance balance1 = new Balance();
+				balance1.setBuid(balance.getBuid());
 				balance.setBcid(tranhistory.getCidout());//花出去的钱
 				BigDecimal bout_1=new BigDecimal(thList.get(1));//有多少没有换成功
 				balance.setBamount(bd_b.subtract(bd_t).add(bout_1).toString());
 				balanceService.withdrawal(balance);
 				
-				balance.setBcid(tranhistory.getCidin());//获取的钱
-				balance = balanceService.searchOneCurrOfUser(balance);
+				
+				
+				System.out.println("tranhistory.getCidin()    "+tranhistory.getCidin());
+				balance1.setBcid(tranhistory.getCidin());//获取的钱
+				
+				
+				balance1 = balanceService.searchOneCurrOfUser(balance1);
+				System.out.println("amount .......  "+balance1);
+				
 				BigDecimal bd_1=new BigDecimal(thList.get(0));//增加的货币量
-				BigDecimal bd_2=new BigDecimal(balance.getBamount());//原来的货币量
-				balance.setBamount(bd_2.add(bd_1).toString());
-				balanceService.deposit(balance);
+				BigDecimal bd_2=new BigDecimal(balance1.getBamount());//原来的货币量
+				
+				System.out.println("bd1    "+bd_1);
+				System.out.println("bd2    "+bd_2);
+
+				
+				balance1.setBamount(bd_2.add(bd_1).toString());
+				balanceService.deposit(balance1);
 								
 				//返回List
 				JSONObject jsonb=new JSONObject();

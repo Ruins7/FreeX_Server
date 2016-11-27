@@ -7,15 +7,18 @@ import java.io.Serializable;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 
 import com.ece651.dao.TransactionHistoryDao;
 import com.ece651.entity.PageResults;
 import com.ece651.entity.Transaction_history;
 import com.ece651.service.TransactionHistoryService;
+import com.ece651.toolsUnits.SequenceQueue;
 import com.ece651.toolsUnits.h2.H2currenyPool;
 import com.ece651.toolsUnits.h2.Seller_Stack;
 import com.ece651.toolsUnits.h2.Trade;
 import com.ece651.toolsUnits.h2.Traderinfo;
+import com.sun.xml.internal.bind.util.Which;
 
 /**
  * @ClassName: TransactionHistoryServiceImpl.java
@@ -45,47 +48,95 @@ public class TransactionHistoryServiceImpl implements TransactionHistoryService 
 	 * @return thid(Serializable)
 	 */
 	@Override
-	public List<Double> addNewTranHis(Transaction_history transactionHistory) {
-		// TODO 添加逻辑
-		System.out.println("ssdfsdfsdf----------------:" + transactionHistory.getThamount()+ "  "+transactionHistory.getThuid()+"  "+transactionHistory.getCidin()+"  "+transactionHistory.getCidout() );
-		try {
-			H2currenyPool.readtable();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		
-		list = new ArrayList<Double>();
-		System.out.println("tradeifo amount test111");
+	public SequenceQueue<Double> addNewTranHis(
+			Transaction_history transactionHistory) {
+		// try {
+		// H2currenyPool.readtable();
+		// } catch (SQLException e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
+
 		Double amount = Double.valueOf(transactionHistory.getThamount());
 		Double rate = Double.valueOf(0);
 		System.out.println("tradeifo amount test");
-		int cidtrade=transactionHistory.getCidout() * 10+ transactionHistory.getCidin();
-		
+		int cidtrade = transactionHistory.getCidout() * 10
+				+ transactionHistory.getCidin();
+
 		Traderinfo tradeinfo = new Traderinfo(transactionHistory.getThuid(),
-				cidtrade, rate,amount,
-				0);
-		//transactionHistory.getThtime().getDay()
+				cidtrade, rate, amount, 0);
+		// transactionHistory.getThtime().getDay()
 		System.out.println("tradeifo amount");
-		//System.out.println("tradeifo amount" + tradeinfo.getamount()+" cid" +tradeinfo.getcid());
+		// System.out.println("tradeifo amount" + tradeinfo.getamount()+" cid"
+		// +tradeinfo.getcid());
 
 		Seller_Stack sellstack = new Seller_Stack();
 		sellstack = Trade.match(tradeinfo, sellstack);
-		int i = sellstack.stackpoptradere();
+
+		SequenceQueue<Double> queue = new SequenceQueue<Double>();
+
 		double amount_avail = sellstack.stackpops();// in
 		double amount_left = sellstack.stackpops();// out
 		double rate_result = amount_avail / (amount - amount_left);
-System.out.println("avali----------------:" + amount_avail +"   amount_left:" +amount_left);
-		list.add(amount_avail);
-		list.add(amount_left);
-		list.add(rate_result);
-		// database
-		transactionHistory.setThamount((String.valueOf(amount_avail
-				/ rate_result)));
-		transactionHistory.setRate(String.valueOf(rate_result));
-		transactionHistoryDao.insertNewTranHistory(transactionHistory);
-		return list;
+
+		queue.add(rate_result);
+		queue.add(amount_left);
+		queue.add(amount_avail);
+
+		while (!sellstack.ac.empty()) {
+			queue.add((double) sellstack.stackpoptradere());
+		}
+
+		// sellstack.ac.clear();
+
+		return queue;
+	}
+
+	@Override
+	public Boolean addNewTranHisForSure(Transaction_history transactionHistory,
+			SequenceQueue<Double> queue, boolean ifproceed) {
+		// TODO Auto-generated method stub
+		boolean result = false;
+		while (queue.length() >= 5) {
+			Traderinfo sellinfo = new Traderinfo(0, 0, 0, 0, 0);
+			sellinfo.settime((int)Math.round(queue.element()));
+
+			double amount = ((double) queue.element()) / 10000;
+			System.out.println("amount pop" + amount);
+			sellinfo.setamount(amount);
+			double rate = ((double) queue.element()) / 10000;
+			sellinfo.setrate(rate);
+			sellinfo.setcid((int)Math.round(queue.element()));
+			sellinfo.setID((int)Math.round(queue.element()));
+			
+			try {
+				H2currenyPool.update_notrade(sellinfo);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			// add exception
+		}
+
+		double amount_avail = queue.element();
+		double amount_left = queue.element();
+		double rate_result = queue.element();
+
+		if (ifproceed) {
+
+			// database
+			transactionHistory.setThamount((String.valueOf(amount_avail
+					/ rate_result)));
+			transactionHistory.setRate(String.valueOf(rate_result));
+			Serializable ss = transactionHistoryDao
+					.insertNewTranHistory(transactionHistory);
+			if (ss == null) {
+				result = false;
+			}
+			result = true;
+		}
+
+		return result;
 	}
 
 	/**

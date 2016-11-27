@@ -3,11 +3,9 @@
  */
 package com.ece651.service;
 
-import java.io.Serializable;
-import java.util.List;
-
 import com.ece651.entity.PageResults;
 import com.ece651.entity.Transaction_history;
+import com.ece651.toolsUnits.SequenceQueue;
 
 /**
  * @ClassName: TransactionHistoryService.java
@@ -18,7 +16,9 @@ import com.ece651.entity.Transaction_history;
  */
 public interface TransactionHistoryService {
 
-	public List<Double> addNewTranHis(Transaction_history transactionHistory);
+	public SequenceQueue<Double> addNewTranHis(Transaction_history transactionHistory);
+	
+	public Boolean addNewTranHisForSure(Transaction_history transactionHistory, SequenceQueue<Double> queue, boolean ifproceed);
 
 	public int deleTranHis(Transaction_history transactionHistory);
 
