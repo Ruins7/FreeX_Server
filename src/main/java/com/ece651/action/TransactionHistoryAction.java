@@ -204,6 +204,7 @@ public class TransactionHistoryAction extends ActionSupport {
 	@Action(value = "searchTransactionHistory")
 	public String searchTransaction() throws IOException {
 		// 设置JSON格式
+		
 		request.setCharacterEncoding("utf-8");
 		response.setContentType("text/json;charset=utf-8");
 		// 通过bufferreader获取json数据
