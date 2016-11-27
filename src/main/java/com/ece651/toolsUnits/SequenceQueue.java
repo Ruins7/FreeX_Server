@@ -13,6 +13,7 @@ public class SequenceQueue<T> {
 	private int rear = 0;
 
 	// 以默认数组长度创建空顺序队列
+	
 	public SequenceQueue() {
 		capacity = DEFAULT_SIZE;
 		elementData = new Object[capacity];

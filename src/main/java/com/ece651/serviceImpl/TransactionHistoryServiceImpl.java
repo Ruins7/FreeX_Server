@@ -48,7 +48,7 @@ public class TransactionHistoryServiceImpl implements TransactionHistoryService 
 	 * @return thid(Serializable)
 	 */
 	@Override
-	public SequenceQueue<Double> addNewTranHis(
+	public SequenceQueue<Double>addNewTranHis(
 			Transaction_history transactionHistory) {
 		// try {
 		// H2currenyPool.readtable();
