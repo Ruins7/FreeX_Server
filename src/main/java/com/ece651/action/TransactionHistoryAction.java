@@ -64,46 +64,34 @@ public class TransactionHistoryAction extends ActionSupport {
 	public void setBalanceService(BalanceService balanceService) {
 		this.balanceService = balanceService;
 	}
+
 	/*
-	// change transaction history
-	// balance add history
-	@Action(value = "balanceAddHistory")
-	public String BalanceAddHistory() throws IOException, ParseException {
-		tranhistory = new Transaction_history();
-		tranhistory = (Transaction_history) ActionContext.getContext().get("T");
-		// 更新Transaction_history
-		tranhistory.setCidout(0);
-		tranhistory.setRate("1");
-		// Add time
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		Date d = sdf.parse(sdf.format(new Date()));
-		tranhistory.setThtime(d);
-		transactionhistoryservice.addNewTranHis(tranhistory);
-		return null;
-	}
-
-	// balance withdrawal history
-	@Action(value = "balancReduceHistory")
-	public String BalancReduceHistory() throws IOException, ParseException {
-		tranhistory = new Transaction_history();
-		tranhistory = (Transaction_history) ActionContext.getContext().get("T");
-		// 更新Transaction_history
-		tranhistory.setCidin(0);
-		tranhistory.setRate("1");
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		Date d = sdf.parse(sdf.format(new Date()));
-		tranhistory.setThtime(d);
-
-		List<Double> thid = transactionhistoryservice
-				.addNewTranHis(tranhistory);
-		if (thid.get(0) != 0) {
-			response.getWriter().write("TransactionSuccess");
-		} else {
-			response.getWriter().write("TrandactionFail");
-		}
-		return null;
-	}
-	*/
+	 * // change transaction history // balance add history
+	 * 
+	 * @Action(value = "balanceAddHistory") public String BalanceAddHistory()
+	 * throws IOException, ParseException { tranhistory = new
+	 * Transaction_history(); tranhistory = (Transaction_history)
+	 * ActionContext.getContext().get("T"); // 更新Transaction_history
+	 * tranhistory.setCidout(0); tranhistory.setRate("1"); // Add time
+	 * SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); Date
+	 * d = sdf.parse(sdf.format(new Date())); tranhistory.setThtime(d);
+	 * transactionhistoryservice.addNewTranHis(tranhistory); return null; }
+	 * 
+	 * // balance withdrawal history
+	 * 
+	 * @Action(value = "balancReduceHistory") public String
+	 * BalancReduceHistory() throws IOException, ParseException { tranhistory =
+	 * new Transaction_history(); tranhistory = (Transaction_history)
+	 * ActionContext.getContext().get("T"); // 更新Transaction_history
+	 * tranhistory.setCidin(0); tranhistory.setRate("1"); SimpleDateFormat sdf =
+	 * new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); Date d =
+	 * sdf.parse(sdf.format(new Date())); tranhistory.setThtime(d);
+	 * 
+	 * List<Double> thid = transactionhistoryservice
+	 * .addNewTranHis(tranhistory); if (thid.get(0) != 0) {
+	 * response.getWriter().write("TransactionSuccess"); } else {
+	 * response.getWriter().write("TrandactionFail"); } return null; }
+	 */
 
 	/**
 	 * add new transaction history
@@ -162,7 +150,7 @@ public class TransactionHistoryAction extends ActionSupport {
 			list.add(sqList.element());// list[2]
 			sqList.remove();
 			sqList.add(list.get(2));
-			
+
 			// store sqList into session
 			session = request.getSession();
 			session.setAttribute("Transaction_history", tranhistory);
@@ -218,18 +206,20 @@ public class TransactionHistoryAction extends ActionSupport {
 			session = request.getSession();
 			// check: SequenceQueue,Transaction_history exist or not
 			if ((session.getAttribute("SequenceQueue") != null)
-					& (session.getAttribute("Transaction_history")) != null) {
-				//if SequenceQueue,Transaction_history exist
+					&& session.getAttribute("Transaction_history") != null) {
+				// if SequenceQueue,Transaction_history exist
 				SequenceQueue<Double> sq = new SequenceQueue<Double>();
 				sq = (SequenceQueue<Double>) session
 						.getAttribute("SequenceQueue");
-				tranhistory=(Transaction_history) session.getAttribute("Transaction_history");
-				//execute 
-				Boolean bret=transactionhistoryservice.addNewTranHisForSure(tranhistory, sq, true);
-				if(bret){
-					//success
-					List<Double> list=new ArrayList<Double>();
-					list=(List<Double>) session.getAttribute("list");
+				tranhistory = (Transaction_history) session
+						.getAttribute("Transaction_history");
+				// execute
+				Boolean bret = transactionhistoryservice.addNewTranHisForSure(
+						tranhistory, sq, true);
+				if (bret) {
+					// success
+					List<Double> list = new ArrayList<Double>();
+					list = (List<Double>) session.getAttribute("list");
 					// 设置用户uid
 					balance = new Balance();
 					balance.setBuid((int) session.getAttribute("userid"));
@@ -243,7 +233,8 @@ public class TransactionHistoryAction extends ActionSupport {
 					balance1.setBuid(balance.getBuid());
 					balance.setBcid(tranhistory.getCidout());// 花出去的钱
 					BigDecimal bout_1 = new BigDecimal(list.get(1));// 有多少没有换成功
-					balance.setBamount(bd_b.subtract(bd_t).add(bout_1).toString());
+					balance.setBamount(bd_b.subtract(bd_t).add(bout_1)
+							.toString());
 					balanceService.withdrawal(balance);
 
 					System.out.println("tranhistory.getCidin()    "
@@ -261,40 +252,42 @@ public class TransactionHistoryAction extends ActionSupport {
 
 					balance1.setBamount(bd_2.add(bd_1).toString());
 					balanceService.deposit(balance1);
-					///
-					
+					// /
+
 					this.response.getWriter().write("Success");
 					session.removeAttribute("SequenceQueue");
 					session.removeAttribute("Transaction_history");
-				}else{
-					//fail
+				} else {
+					// fail
 					this.response.getWriter().write("Fail");
 				}
-			}else{
-				//if SequenceQueue,Transaction_history not exist
+			} else {
+				// if SequenceQueue,Transaction_history not exist
 				this.response.getWriter().write("Fail");
 			}
 		} else {
 			// cancel this transaction
 			if ((session.getAttribute("SequenceQueue") != null)
 					& (session.getAttribute("Transaction_history")) != null) {
-				//if SequenceQueue,Transaction_history exist
+				// if SequenceQueue,Transaction_history exist
 				SequenceQueue<Double> sq = new SequenceQueue<Double>();
 				sq = (SequenceQueue<Double>) session
 						.getAttribute("SequenceQueue");
-				tranhistory=(Transaction_history) session.getAttribute("Transaction_history");
-				//execute 
-				Boolean bret=transactionhistoryservice.addNewTranHisForSure(tranhistory, sq, false);
+				tranhistory = (Transaction_history) session
+						.getAttribute("Transaction_history");
+				// execute
+				Boolean bret = transactionhistoryservice.addNewTranHisForSure(
+						tranhistory, sq, false);
 				session.removeAttribute("SequenceQueue");
 				session.removeAttribute("Transaction_history");
 				this.response.getWriter().write("Success");
-			}else{
-				//if SequenceQueue,Transaction_history not exist
+			} else {
+				// if SequenceQueue,Transaction_history not exist
 				this.response.getWriter().write("Fail");
-				if(session.getAttribute("SequenceQueue")!=null){
+				if (session.getAttribute("SequenceQueue") != null) {
 					session.removeAttribute("SequenceQueue");
 				}
-				if(session.getAttribute("Transaction_history")!=null){
+				if (session.getAttribute("Transaction_history") != null) {
 					session.removeAttribute("Transaction_history");
 				}
 			}

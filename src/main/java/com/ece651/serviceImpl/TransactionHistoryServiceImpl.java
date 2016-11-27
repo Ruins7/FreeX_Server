@@ -96,17 +96,22 @@ public class TransactionHistoryServiceImpl implements TransactionHistoryService 
 			SequenceQueue<Double> queue, boolean ifproceed) {
 		// TODO Auto-generated method stub
 		boolean result = false;
+		
 		while (queue.length() >= 5) {
 			Traderinfo sellinfo = new Traderinfo(0, 0, 0, 0, 0);
 			sellinfo.settime((int)Math.round(queue.element()));
-
+			queue.remove();
 			double amount = ((double) queue.element()) / 10000;
+			queue.remove();
 			System.out.println("amount pop" + amount);
 			sellinfo.setamount(amount);
 			double rate = ((double) queue.element()) / 10000;
+			queue.remove();
 			sellinfo.setrate(rate);
 			sellinfo.setcid((int)Math.round(queue.element()));
+			queue.remove();
 			sellinfo.setID((int)Math.round(queue.element()));
+			queue.remove();
 			
 			try {
 				H2currenyPool.update_notrade(sellinfo);
@@ -118,8 +123,12 @@ public class TransactionHistoryServiceImpl implements TransactionHistoryService 
 		}
 
 		double amount_avail = queue.element();
+		queue.remove();
 		double amount_left = queue.element();
+		queue.remove();
 		double rate_result = queue.element();
+		queue.remove();
+		
 
 		if (ifproceed) {
 
