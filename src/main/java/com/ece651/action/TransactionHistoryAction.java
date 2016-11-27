@@ -177,7 +177,8 @@ public class TransactionHistoryAction extends ActionSupport {
 				//换币种成功
 				//更改用户的balance
 				balance.setBcid(tranhistory.getCidout());//花出去的钱
-				balance.setBamount(thList.get(1).toString());
+				BigDecimal bout_1=new BigDecimal(thList.get(1));//有多少没有换成功
+				balance.setBamount(bd_b.subtract(bd_t).add(bout_1).toString());
 				balanceService.withdrawal(balance);
 				
 				balance.setBcid(tranhistory.getCidin());//获取的钱
