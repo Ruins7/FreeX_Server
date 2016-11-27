@@ -169,19 +169,33 @@ public class TransactionHistoryAction extends ActionSupport {
 		BigDecimal bd_b = new BigDecimal(balance.getBamount());
 		BigDecimal bd_t = new BigDecimal(tranhistory.getThamount());
 		int bret = bd_b.compareTo(bd_t);
-		if(bret>0){
+		if(bret>=0){
 			//余额充足
 			List<Double> thList=transactionhistoryservice.addNewTranHis(tranhistory);
 			if(thList.get(0)!=0){
 				//换币种成功
-				JSONArray jarray = new JSONArray();
+				//更改用户的balance
+				balance.setBcid(tranhistory.getCidout());//花出去的钱
+				balance.setBamount(thList.get(1).toString());
+				balanceService.withdrawal(balance);
+				
+				balance.setBcid(tranhistory.getCidin());//获取的钱
+				balance = balanceService.searchOneCurrOfUser(balance);
+				BigDecimal bd_1=new BigDecimal(thList.get(0));//增加的货币量
+				BigDecimal bd_2=new BigDecimal(balance.getBamount());//原来的货币量
+				balance.setBamount(bd_2.add(bd_1).toString());
+				balanceService.deposit(balance);
+								
+				//返回List
+				JSONObject jsonb=new JSONObject();
 				for(Double t: thList)
 				{
-					JSONObject jsonb = JSONObject.fromObject(t);
-					jarray.add(jsonb);
+					jsonb.put("1",t.toString());
 				}
+				this.response.setCharacterEncoding("UTF-8");
+				this.response.getWriter().write(jsonb.toString());
 			}else{
-				response.getWriter().write("TrandactionFail");
+				response.getWriter().write("TransactionFail");
 			}
 		}else{
 			//余额不足
