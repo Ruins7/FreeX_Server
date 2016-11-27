@@ -161,33 +161,11 @@ public class TransactionHistoryAction extends ActionSupport {
 			sqList.add(list.get(2));
 			// store sqList into session
 			session = request.getSession();
+			session.setAttribute("Transaction_history", tranhistory);
 			session.setAttribute("SequenceQueue", sqList);
+			session.setAttribute("list", list);
 			if (list.get(0) != 0) {
 				// 换币种成功
-				// 更改用户的balance
-				Balance balance1 = new Balance();
-				balance1.setBuid(balance.getBuid());
-				balance.setBcid(tranhistory.getCidout());// 花出去的钱
-				BigDecimal bout_1 = new BigDecimal(list.get(1));// 有多少没有换成功
-				balance.setBamount(bd_b.subtract(bd_t).add(bout_1).toString());
-				balanceService.withdrawal(balance);
-
-				System.out.println("tranhistory.getCidin()    "
-						+ tranhistory.getCidin());
-				balance1.setBcid(tranhistory.getCidin());// 获取的钱
-
-				balance1 = balanceService.searchOneCurrOfUser(balance1);
-				System.out.println("amount .......  " + balance1);
-
-				BigDecimal bd_1 = new BigDecimal(list.get(0));// 增加的货币量
-				BigDecimal bd_2 = new BigDecimal(balance1.getBamount());// 原来的货币量
-
-				System.out.println("bd1    " + bd_1);
-				System.out.println("bd2    " + bd_2);
-
-				balance1.setBamount(bd_2.add(bd_1).toString());
-				balanceService.deposit(balance1);
-
 				// 返回List
 				JSONObject jsonb = new JSONObject();
 				int i = 1;
@@ -246,6 +224,41 @@ public class TransactionHistoryAction extends ActionSupport {
 				Boolean bret=transactionhistoryservice.addNewTranHisForSure(tranhistory, sq, true);
 				if(bret){
 					//success
+					List<Double> list=new ArrayList<Double>();
+					list=(List<Double>) session.getAttribute("list");
+					// 设置用户uid
+					balance = new Balance();
+					balance.setBuid((int) session.getAttribute("userid"));
+					balance.setBcid(tranhistory.getCidout());
+					balance = balanceService.searchOneCurrOfUser(balance);
+					// 检查该币种余额是否足够
+					BigDecimal bd_b = new BigDecimal(balance.getBamount());
+					BigDecimal bd_t = new BigDecimal(tranhistory.getThamount());
+					// 更改用户的balance
+					Balance balance1 = new Balance();
+					balance1.setBuid(balance.getBuid());
+					balance.setBcid(tranhistory.getCidout());// 花出去的钱
+					BigDecimal bout_1 = new BigDecimal(list.get(1));// 有多少没有换成功
+					balance.setBamount(bd_b.subtract(bd_t).add(bout_1).toString());
+					balanceService.withdrawal(balance);
+
+					System.out.println("tranhistory.getCidin()    "
+							+ tranhistory.getCidin());
+					balance1.setBcid(tranhistory.getCidin());// 获取的钱
+
+					balance1 = balanceService.searchOneCurrOfUser(balance1);
+					System.out.println("amount .......  " + balance1);
+
+					BigDecimal bd_1 = new BigDecimal(list.get(0));// 增加的货币量
+					BigDecimal bd_2 = new BigDecimal(balance1.getBamount());// 原来的货币量
+
+					System.out.println("bd1    " + bd_1);
+					System.out.println("bd2    " + bd_2);
+
+					balance1.setBamount(bd_2.add(bd_1).toString());
+					balanceService.deposit(balance1);
+					///
+					
 					this.response.getWriter().write("Success");
 					session.removeAttribute("SequenceQueue");
 					session.removeAttribute("Transaction_history");
@@ -255,7 +268,7 @@ public class TransactionHistoryAction extends ActionSupport {
 				}
 			}else{
 				//if SequenceQueue,Transaction_history not exist
-				this.response.getWriter().write("ExecuteFail");
+				this.response.getWriter().write("Fail");
 			}
 		} else {
 			// cancel this transaction
