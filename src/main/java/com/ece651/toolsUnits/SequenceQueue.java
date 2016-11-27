@@ -3,7 +3,7 @@ package com.ece651.toolsUnits;
 import java.util.Arrays;
 
 public class SequenceQueue<T> {
-	private int DEFAULT_SIZE = 10;
+	private int DEFAULT_SIZE = 100;
 	// 保存数组的长度。
 	private int capacity;
 	// 定义一个数组用于保存顺序队列的元素

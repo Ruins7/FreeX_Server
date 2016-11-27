@@ -11,6 +11,7 @@ import com.ece651.dao.TransactionHistoryDao;
 import com.ece651.entity.PageResults;
 import com.ece651.entity.Transaction_history;
 import com.ece651.service.TransactionHistoryService;
+import com.ece651.toolsUnits.SequenceQueue;
 import com.ece651.toolsUnits.h2.H2currenyPool;
 import com.ece651.toolsUnits.h2.Seller_Stack;
 import com.ece651.toolsUnits.h2.Trade;
@@ -69,8 +70,10 @@ public class TransactionHistoryServiceImpl implements TransactionHistoryService 
 		Seller_Stack sellstack = new Seller_Stack();
 		sellstack = Trade.match(tradeinfo, sellstack);
 
+		int i = sellstack.stackpoptradere();
 		SequenceQueue<Double> queue = new SequenceQueue<Double>();
-
+		
+		
 		double amount_avail = sellstack.stackpops();// in
 		double amount_left = sellstack.stackpops();// out
 		double rate_result = amount_avail / (amount - amount_left);

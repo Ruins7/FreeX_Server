@@ -154,11 +154,15 @@ public class TransactionHistoryAction extends ActionSupport {
 					.addNewTranHis(tranhistory);
 			List<Double> list = new ArrayList<Double>();
 			list.add(sqList.element());// list[0]
-			list.add(sqList.element());// list[1]
-			list.add(sqList.element());// list[2]
+			sqList.remove();
 			sqList.add(list.get(0));
+			list.add(sqList.element());// list[1]
+			sqList.remove();
 			sqList.add(list.get(1));
+			list.add(sqList.element());// list[2]
+			sqList.remove();
 			sqList.add(list.get(2));
+			
 			// store sqList into session
 			session = request.getSession();
 			session.setAttribute("Transaction_history", tranhistory);
