@@ -89,6 +89,7 @@ public class BalanceAction extends ActionSupport {
 				Transaction_history.class);
 		// 新建balance
 		balance = new Balance();
+		session = request.getSession();
 		// balance.setBuid(tranhistory.getThuid());
 		balance.setBuid((int) session.getAttribute("userid"));
 		balance.setBcid(tranhistory.getCidin());// 入账
@@ -174,6 +175,7 @@ public class BalanceAction extends ActionSupport {
 		// 新建balance
 		balance = new Balance();
 		// balance.setBuid(tranhistory.getThuid());
+		session = request.getSession();
 		balance.setBuid((int) session.getAttribute("userid"));
 		balance.setBcid(tranhistory.getCidout());// 入账
 		// balance.setBamount(tranhistory.getThamount());
