@@ -33,7 +33,7 @@ import com.opensymphony.xwork2.ActionSupport;
  * @ClassName         UserHistoryAction.java
  * @Description       UserHistory: GetHisByUser,AddHisByUser 
  * @author            Zhao
- * @time              2016年11月10日 下午4:30:10
+ * @time              2016.11.10 4:30:10 pm
  * @version			  v1.0
  * 
  */
@@ -55,7 +55,7 @@ public class UserHistoryAction extends ActionSupport {
 	private TransactionHistoryService transactionhistoryservice;
 	private UserHistoryService userhistoyservice;
 	
-	// set注入
+	// set annotation
 	public void setUserService(UserService userService) {
 		this.userService = userService;
 	}
@@ -74,18 +74,12 @@ public class UserHistoryAction extends ActionSupport {
 	}
 
 	
-	/**
-     * login
-     * @param  List[User_history,PageResults]
-     * @return succeed:List[User_history,PageResults]; failed:GetHistoryByUserFail
-     */
+	// get history information by user name
 	@Action(value = "GetHisByUser")
 	public String GetHisByUser() throws IOException {
 		
-		// 设置JSON格式
 		request.setCharacterEncoding("utf-8");
 		response.setContentType("text/json;charset=utf-8");
-		// 通过bufferreader获取json数据
 		BufferedReader br = new BufferedReader(new InputStreamReader(
 				request.getInputStream(), "utf-8"));
 		StringBuffer sb = new StringBuffer("");
@@ -94,9 +88,8 @@ public class UserHistoryAction extends ActionSupport {
 			sb.append(temp);
 		}
 		br.close();
-		// 将获取到的数据转换为JSONObjec
 		JSONObject reqObject = JSONObject.fromObject(sb.toString());
-		// 查询user是否存在
+		// check user exists or not
 		user = new User();
 		user=(User) JSONObject.toBean(reqObject, User.class);
 		session = request.getSession();
@@ -106,11 +99,11 @@ public class UserHistoryAction extends ActionSupport {
 			// success, user exists, then find the history
 			userhistory = new User_history();
 			userhistory.setUhuid(user.getUid());
-			// object list中取出historyresult
+			// get historyresult from object list 
 			historyresult = new PageResults<User_history>();
 			historyresult = userhistoyservice.searchAllUserHisOfAUser(
 					userhistory, historyresult);
-			//写入JSONArray()
+			//write into JSONArray()
 			JSONArray jarray = new JSONArray();
 			jarray.add(userhistory);
 			jarray.add(historyresult);
@@ -119,18 +112,16 @@ public class UserHistoryAction extends ActionSupport {
 			this.response.getWriter().write(respObject.toString());
 			return null;
 		} else {
-			// failed,no user
+			// failed,no user, return "GetHistoryByUserFail"
 			response.getWriter().write("GetHistoryByUserFail");
 			return null;
 		}
 	}
-	
+	// add new user history information
 	@Action(value = "AddHisByUser")
 	public String AddHisByUser() throws IOException {
-		// 设置JSON格式 
 		request.setCharacterEncoding("utf-8");
 		response.setContentType("text/json;charset=utf-8");
-		// 通过bufferreader获取json数据
 		BufferedReader br = new BufferedReader(new InputStreamReader(
 				request.getInputStream(), "utf-8"));
 		StringBuffer sb = new StringBuffer("");
@@ -139,9 +130,7 @@ public class UserHistoryAction extends ActionSupport {
 			sb.append(temp);
 		}
 		br.close();
-		// 将获取到的数据转换为JSONObjec
 		JSONObject reqObject = JSONObject.fromObject(sb.toString());
-		// 将JSONObject转换为对象
 		user = new User();
 		user = (User) JSONObject.toBean(reqObject, User.class);
 		userhistory = new User_history();

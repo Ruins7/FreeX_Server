@@ -35,7 +35,7 @@ import com.opensymphony.xwork2.ActionSupport;
  * @ClassName TransactionHistoryAction.java
  * @Description tansaction history action
  * @author Zhao
- * @time 2016年11月8日 上午9:52:13
+ * @time 2016.11.8 9:52:13 am
  * @version v1.0
  */
 
@@ -51,7 +51,7 @@ public class TransactionHistoryAction extends ActionSupport {
 	private BalanceService balanceService;
 	private TransactionHistoryService transactionhistoryservice;
 
-	// set注入
+	// set annotation
 	public void setUserService(UserService userService) {
 		this.userService = userService;
 	}
@@ -103,10 +103,8 @@ public class TransactionHistoryAction extends ActionSupport {
 	 */
 	@Action(value = "AddNewTransaction")
 	public String AddNewTransaction() throws IOException, ParseException {
-		// 设置JSON格式
 		request.setCharacterEncoding("utf-8");
 		response.setContentType("text/json;charset=utf-8");
-		// 通过bufferreader获取json数据
 		BufferedReader br = new BufferedReader(new InputStreamReader(
 				request.getInputStream(), "utf-8"));
 		StringBuffer sb = new StringBuffer("");
@@ -115,29 +113,27 @@ public class TransactionHistoryAction extends ActionSupport {
 			sb.append(temp);
 		}
 		br.close();
-		// 将获取到的数据转换为JSONObjec
 		JSONObject reqObject = JSONObject.fromObject(sb.toString());
-		// 将JSONObject转换为对象
 		tranhistory = new Transaction_history();
 		tranhistory = (Transaction_history) JSONObject.toBean(reqObject,
 				Transaction_history.class);
 		session = request.getSession();
 		tranhistory.setThuid((int) session.getAttribute("userid"));
-		// 设置时间
+		// set time
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date d = sdf.parse(sdf.format(new Date()));
 		tranhistory.setThtime(d);
-		// 设置用户uid
+		// set uid of user
 		balance = new Balance();
 		balance.setBuid((int) session.getAttribute("userid"));
 		balance.setBcid(tranhistory.getCidout());
 		balance = balanceService.searchOneCurrOfUser(balance);
-		// 检查该币种余额是否足够
+		// check if money is enough of not
 		BigDecimal bd_b = new BigDecimal(balance.getBamount());
 		BigDecimal bd_t = new BigDecimal(tranhistory.getThamount());
 		int bret = bd_b.compareTo(bd_t);
 		if (bret >= 0) {
-			// 余额充足
+			// enough money
 			SequenceQueue<Double> sqList = transactionhistoryservice
 					.addNewTranHis(tranhistory);
 			List<Double> list = new ArrayList<Double>();
@@ -161,8 +157,7 @@ public class TransactionHistoryAction extends ActionSupport {
 			session.setAttribute("SequenceQueue", sqList);
 			session.setAttribute("list", list);
 			if (list.get(0) != 0) {
-				// 换币种成功
-				// 返回List
+				// succeed, return tranhistory (List)
 				JSONObject jsonb = new JSONObject();
 				int i = 1;
 				for (Double t : list) {
@@ -173,17 +168,18 @@ public class TransactionHistoryAction extends ActionSupport {
 				this.response.setCharacterEncoding("UTF-8");
 				this.response.getWriter().write(jsonb.toString());
 			} else {
+				//Failed, return "TransactionFail"
 				response.getWriter().write("TransactionFail");
 			}
 		} else {
-			// 余额不足
+			// money is not enough, return "MoneyNotEnough" 
 			response.getWriter().write("MoneyNotEnough");
 		}
 		return null;
 	}
 
 	/**
-	 * 选择进行交易或者取消交易
+	 * cancel or execute Transaction  
 	 * 
 	 * @param "flag":1; "flag":0
 	 * 
@@ -192,10 +188,8 @@ public class TransactionHistoryAction extends ActionSupport {
 	 */
 	@Action(value = "ExecuteNewTransaction")
 	public String ExecuteNewTransaction() throws IOException, ParseException {
-		// 设置JSON格式
 		request.setCharacterEncoding("utf-8");
 		response.setContentType("text/json;charset=utf-8");
-		// 通过bufferreader获取json数据
 		BufferedReader br = new BufferedReader(new InputStreamReader(
 				request.getInputStream(), "utf-8"));
 		StringBuffer sb = new StringBuffer("");
@@ -204,9 +198,7 @@ public class TransactionHistoryAction extends ActionSupport {
 			sb.append(temp);
 		}
 		br.close();
-		// 将获取到的数据转换为JSONObjec
 		JSONObject reqObject = JSONObject.fromObject(sb.toString());
-		// 判断获得的数据是否为1或者0
 		if (reqObject.getInt("flag") == 1) {
 			session = request.getSession();
 			// check: SequenceQueue,Transaction_history exist or not
@@ -226,45 +218,43 @@ public class TransactionHistoryAction extends ActionSupport {
 					List<Double> list = new ArrayList<Double>();
 					list = (List<Double>) session.getAttribute("list");
 					System.out.println("List:    " + list.toString());
-					// 设置用户uid
 					balance = new Balance();
 					balance.setBuid((int) session.getAttribute("userid"));
 					balance.setBcid(tranhistory.getCidout());
 					balance = balanceService.searchOneCurrOfUser(balance);
-					// 检查该币种余额是否足够
+					// check if there is enough money or not
 					BigDecimal bd_b = new BigDecimal(balance.getBamount());
 					BigDecimal bd_t = new BigDecimal(tranhistory.getThamount());
-					// 更改用户的balance
+					// change the user balance 
 					Balance balance1 = new Balance();
 					balance1.setBuid(balance.getBuid());
-					balance.setBcid(tranhistory.getCidout());// 花出去的钱
-					BigDecimal bout_1 = new BigDecimal(list.get(1));// 有多少没有换成功
+					balance.setBcid(tranhistory.getCidout());
+					BigDecimal bout_1 = new BigDecimal(list.get(1));
 					balance.setBamount(bd_b.subtract(bd_t).add(bout_1)
 							.toString());
 					balanceService.withdrawal(balance);
 
 					System.out.println("tranhistory.getCidin()    "
 							+ tranhistory.getCidin());
-					balance1.setBcid(tranhistory.getCidin());// 获取的钱
+					balance1.setBcid(tranhistory.getCidin());
 
 					balance1 = balanceService.searchOneCurrOfUser(balance1);
 					System.out.println("amount .......  " + balance1);
 
-					BigDecimal bd_1 = new BigDecimal(list.get(0));// 增加的货币量
-					BigDecimal bd_2 = new BigDecimal(balance1.getBamount());// 原来的货币量
+					BigDecimal bd_1 = new BigDecimal(list.get(0));
+					BigDecimal bd_2 = new BigDecimal(balance1.getBamount());
 
 					System.out.println("bd1    " + bd_1);
 					System.out.println("bd2    " + bd_2);
 
 					balance1.setBamount(bd_2.add(bd_1).toString());
 					balanceService.deposit(balance1);
-					// /
-
+		
 					this.response.getWriter().write("Success");
 					session.removeAttribute("SequenceQueue");
 					session.removeAttribute("Transaction_history");
 				} else {
-					// fail
+					// fail, return "Fail"
 					this.response.getWriter().write("Fail");
 				}
 			} else {
@@ -311,11 +301,8 @@ public class TransactionHistoryAction extends ActionSupport {
 	 */
 	@Action(value = "searchTransactionHistory")
 	public String searchTransaction() throws IOException {
-		// 设置JSON格式
-
 		request.setCharacterEncoding("utf-8");
 		response.setContentType("text/json;charset=utf-8");
-		// 通过bufferreader获取json数据
 		BufferedReader br = new BufferedReader(new InputStreamReader(
 				request.getInputStream(), "utf-8"));
 		StringBuffer sb = new StringBuffer("");
@@ -324,30 +311,29 @@ public class TransactionHistoryAction extends ActionSupport {
 			sb.append(temp);
 		}
 		br.close();
-		// 将获取到的数据转换为JSONObjec
 		JSONObject reqObject = JSONObject.fromObject(sb.toString());
-		// 将JSONObject转换为User对象
 		user = new User();
 		user = (User) JSONObject.toBean(reqObject, User.class);
 		user.setUid((int) session.getAttribute("userid"));
-		// 创建Transaction_history对象
+		// create a new Transaction_history object
 		tranhistory = new Transaction_history();
 		tranhistory.setThuid(user.getUid());
-		// 创建PageResults
+		// create a PageResults object to set the result data
 		PageResults<Transaction_history> pageInfo = new PageResults<Transaction_history>();
 		pageInfo.setPageNo(1);
 		pageInfo.setPageSize(100);
-		// 查询Transaction_history
+		// check Transaction_history
 		pageInfo = transactionhistoryservice.searchAllTranHisOfAUser(
 				tranhistory, pageInfo);
 		if (pageInfo != null) {
-			// 返回Transaction_history
+			// if succeed, return Transaction_history
 			JSONArray jarray = JSONArray.fromObject(pageInfo.getResults());
 			JSONObject respObject = JSONObject.fromObject(jarray);
 			this.response.setCharacterEncoding("UTF-8");
 			this.response.getWriter().write(respObject.toString());
 			return null;
 		} else {
+			// if failed, return "searchFail"
 			this.response.getWriter().write("searchTFail");
 			return null;
 		}

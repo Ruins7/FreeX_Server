@@ -31,7 +31,7 @@ import com.opensymphony.xwork2.ActionSupport;
  * @ClassName BalanceAction.java
  * @Description deposit,withdrawal
  * @author Zhao
- * @time 2016年11月8日 下午1:20:53
+ * @time 2016.11.8 1:20:53 pm
  * @version v1.0
  */
 public class BalanceAction extends ActionSupport {
@@ -46,7 +46,7 @@ public class BalanceAction extends ActionSupport {
 	private BalanceService balanceService;
 	private TransactionHistoryService transactionhistoryservice;
 
-	// set注入
+	// set annotation
 	public void setUserService(UserService userService) {
 		this.userService = userService;
 	}
@@ -69,10 +69,9 @@ public class BalanceAction extends ActionSupport {
 	 */
 	@Action(value = "deposit", results = { @Result(name = "success", type = "chain", location = "balanceAddHistory") })
 	public String deposit() throws IOException {
-		// 设置JSON格式
 		request.setCharacterEncoding("utf-8");
 		response.setContentType("text/json;charset=utf-8");
-		// 通过bufferreader获取json数据
+		// get request object (json)
 		BufferedReader br = new BufferedReader(new InputStreamReader(
 				request.getInputStream(), "utf-8"));
 		StringBuffer sb = new StringBuffer("");
@@ -81,31 +80,24 @@ public class BalanceAction extends ActionSupport {
 			sb.append(temp);
 		}
 		br.close();
-		// 将获取到的数据转换为JSONObjec
 		JSONObject reqObject = JSONObject.fromObject(sb.toString());
-		// 将JSONObject转换为对象
 		tranhistory = new Transaction_history();
 		tranhistory = (Transaction_history) JSONObject.toBean(reqObject,
 				Transaction_history.class);
-		// 新建balance
 		balance = new Balance();
 		session = request.getSession();
-		// balance.setBuid(tranhistory.getThuid());
 		balance.setBuid((int) session.getAttribute("userid"));
-		balance.setBcid(tranhistory.getCidin());// 入账
-		// balance.setBamount(tranhistory.getThamount());
-		// balance = (Balance) JSONObject.toBean(reqObject, Balance.class);
-		// 调用userService，设置当前用户为balance中所指用户
+		balance.setBcid(tranhistory.getCidin());
 		user = new User();
 		user.setUid((int) session.getAttribute("userid"));
 		user = userService.searchUserByID(user);
-		// 调用balanceService层，获取当前用户的币种，如果没有则添加，如果有则直接更改余额
+		// use methods of balanceService to get the current currency
 		balance = balanceService.searchOneCurrOfUser(balance);
 		if (balance == null) {
-			// this currency does not exist
+			// if the currency does not exist
 			balance = new Balance();
 			balance.setBuid(tranhistory.getThuid());
-			balance.setBcid(tranhistory.getCidin());// 入账
+			balance.setBcid(tranhistory.getCidin());
 			balance.setBamount(tranhistory.getThamount());
 
 			Serializable bid = balanceService.addNewCurrencyBalance(balance);
@@ -115,11 +107,11 @@ public class BalanceAction extends ActionSupport {
 				JSONObject respObject = JSONObject.fromObject(balance);
 				this.response.setCharacterEncoding("UTF-8");
 				this.response.getWriter().write(respObject.toString());
-				// 传tranhistory到下一个action
+				// transfer tranhistory to next action
 				ActionContext.getContext().put("T", tranhistory);
 				return SUCCESS;
 			} else {
-				// adding new currency failed
+				// adding new currency failed, return "DepositFail"
 				this.response.getWriter().write("DepositFail");
 				return null;
 			}
@@ -130,13 +122,13 @@ public class BalanceAction extends ActionSupport {
 			balance.setBamount(bd_b.add(bd_t).toString());
 			int ret = balanceService.deposit(balance);
 			if (ret == 1) {
-				// succeed
+				// succeed, return balance
 				JSONObject respObject = JSONObject.fromObject(balance);
 				this.response.setCharacterEncoding("UTF-8");
 				this.response.getWriter().write(respObject.toString());
 				return SUCCESS;
 			} else {
-				// failed
+				// failed, return "DepositFail"
 				this.response.getWriter().write("DepositFail");
 				return null;
 			}
@@ -152,10 +144,8 @@ public class BalanceAction extends ActionSupport {
 	 */
 	@Action(value = "withdrawal", results = { @Result(name = "success", type = "chain", location = "balancReduceHistory") })
 	public String withdrawal() throws IOException {
-		// 设置JSON格式
 		request.setCharacterEncoding("utf-8");
 		response.setContentType("text/json;charset=utf-8");
-		// 通过bufferreader获取json数据
 		BufferedReader br = new BufferedReader(new InputStreamReader(
 				request.getInputStream(), "utf-8"));
 		StringBuffer sb = new StringBuffer("");
@@ -164,29 +154,19 @@ public class BalanceAction extends ActionSupport {
 			sb.append(temp);
 		}
 		br.close();
-		// 将获取到的数据转换为JSONObjec
 		System.out.println("blance..." + sb.toString());
 		JSONObject reqObject = JSONObject.fromObject(sb.toString());
-		// 将JSONObject转换为对象
-		// 将JSONObject转换为对象
 		tranhistory = new Transaction_history();
 		tranhistory = (Transaction_history) JSONObject.toBean(reqObject,
 				Transaction_history.class);
-		// 新建balance
 		balance = new Balance();
-		// balance.setBuid(tranhistory.getThuid());
 		session = request.getSession();
 		balance.setBuid((int) session.getAttribute("userid"));
-		balance.setBcid(tranhistory.getCidout());// 入账
-		// balance.setBamount(tranhistory.getThamount());
-		// balance = (Balance) JSONObject.toBean(reqObject, Balance.class);
-		// 调用userService，设置当前用户为balance中所指用户
+		balance.setBcid(tranhistory.getCidout());
 		user = new User();
 		user.setUid((int) session.getAttribute("userid"));
-		// user.setUid(tranhistory.getThuid());
 		user = userService.searchUserByID(user);
-		// 调用service层
-		// 调用balanceService层，获取当前用户的币种，如果没有则返回WithdrawalFailed，如果有则直接更改余额
+		// use methods of balanceService to get the current currency
 		balance = balanceService.searchOneCurrOfUser(balance);
 		System.out.println("blance" + balance);
 		if (balance != null) {
@@ -203,25 +183,27 @@ public class BalanceAction extends ActionSupport {
 					balance.setBamount(bd_b.subtract(bd_t).toString());
 					int ret = balanceService.withdrawal(balance);
 					if (ret == 1) {
-						// succeed
+						// succeed, return balance
 						JSONObject respObject = JSONObject.fromObject(balance);
 						this.response.setCharacterEncoding("UTF-8");
 						this.response.getWriter().write(respObject.toString());
-						// 传tranhistory到下一个action
+						// transfer tranhistory to next action
 						ActionContext.getContext().put("T", tranhistory);
 						return SUCCESS;
 					} else {
-						// failed
+						// failed, return "WithdrawalFail"
 						this.response.getWriter().write("WithdrawalFail");
 						return null;
 					}
 				} else {
+					// failed, return "WithdrawalFail"
 					this.response.getWriter().write("WithdrawalFail");
 					return null;
 				}
 
 			}
 		} else {
+			// failed, return "WithdrawalFail"
 			this.response.getWriter().write("WithdrawalFail");
 			return null;
 		}
@@ -237,10 +219,8 @@ public class BalanceAction extends ActionSupport {
 	 */
 	@Action(value = "fetchBalance")
 	public String fetchBalance() throws IOException {
-		// 设置JSON格式
 		request.setCharacterEncoding("utf-8");
 		response.setContentType("text/json;charset=utf-8");
-		// 通过bufferreader获取json数据
 		BufferedReader br = new BufferedReader(new InputStreamReader(
 				request.getInputStream(), "utf-8"));
 		StringBuffer sb = new StringBuffer("");
@@ -249,14 +229,11 @@ public class BalanceAction extends ActionSupport {
 			sb.append(temp);
 		}
 		br.close();
-		// 将获取到的数据转换为JSONObjec
 		JSONObject reqObject = JSONObject.fromObject(sb.toString());
-		// 将JSONObject转换为对象
 		user = new User();
 		user = (User) JSONObject.toBean(reqObject, User.class);
 		session = request.getSession();
 		user.setUid((int) session.getAttribute("userid"));
-		// 检测是否存在user
 		if (user.getUid() != 0) {
 			// set balance
 			balance = new Balance();
@@ -266,6 +243,7 @@ public class BalanceAction extends ActionSupport {
 			List<Balance> balanceList = balanceService.searchAllBalOfUser(balance);
 			System.out.println(" bbbbbbb   "+balanceList);
 			if (balanceList.size() != 0) {
+				// succeed, return balances (JSONArray)
 				JSONArray jarray = new JSONArray();
 				for (Balance b : balanceList) {
 					JSONObject jsonb = JSONObject.fromObject(b);
@@ -275,10 +253,12 @@ public class BalanceAction extends ActionSupport {
 				this.response.getWriter().write(jarray.toString());
 				return null;
 			} else {
+				//failed, return "FetchFail"
 				this.response.getWriter().write("FetchFail");
 				return null;
 			}
 		} else {
+			//failed, return "FetchFail"
 			this.response.getWriter().write("FetchFail");
 			return null;
 		}

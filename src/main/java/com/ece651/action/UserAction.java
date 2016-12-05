@@ -23,7 +23,7 @@ import com.opensymphony.xwork2.ActionSupport;
  * @ClassName         UserAction.java
  * @Description       User: login, register,changepassword
  * @author            Zhao
- * @time              2016年11月7日 下午8:20:53
+ * @time              2016.11.7 8:20:53 pm
  * @version			  v1.0
  */
 
@@ -35,7 +35,7 @@ public class UserAction extends ActionSupport {
 	private HttpServletResponse response = ServletActionContext.getResponse();
 	private UserService userService;
 
-	// set注入
+	// set annotation
 	public void setUserService(UserService userService) {
 		this.userService = userService;
 	}
@@ -48,10 +48,9 @@ public class UserAction extends ActionSupport {
 	@Action(value = "login")
 	public String login() throws IOException {
 		System.out.println("login....");
-		// 设置JSON格式
 		request.setCharacterEncoding("utf-8");
 		response.setContentType("text/json;charset=utf-8");
-		// 通过bufferreader获取json数据
+		// get json data
 		BufferedReader br = new BufferedReader(new InputStreamReader(
 				request.getInputStream(), "utf-8"));
 		StringBuffer sb = new StringBuffer("");
@@ -61,30 +60,24 @@ public class UserAction extends ActionSupport {
 		}
 		
 		br.close();
-		// 将获取到的数据转换为JSONObjec
+		// transfer data to JSONObjec
 		JSONObject reqObject = JSONObject.fromObject(sb.toString());
-		// 将JSONObject转换为对象
 		loginuser = new User();
 		loginuser = (User) JSONObject.toBean(reqObject, User.class);
 		System.out.println("user:"+loginuser.getUsername() +"  "+ loginuser.getPassword());
-		// 调用service层
 		loginuser = userService.login(loginuser);
-
-		// JSONObject respObject=new JSONObject();
-		// 结果判断
 		if (loginuser.getUid() != 0) {
-			// 首次登陆获取session来保存该用户的信息
+			// use session to story user information
 			session = request.getSession();
 			session.setAttribute("username", loginuser.getUsername());
 			session.setAttribute("userid", loginuser.getUid());
 			System.out.println("session:  "+session.getId());
-			// user封装成JSON,返回给客户端
 			JSONObject respObject = JSONObject.fromObject(loginuser);
 			this.response.setCharacterEncoding("UTF-8");
 			this.response.getWriter().write(respObject.toString());
 			return null;
 		} else {
-			// 返回到登录界面,返回值为empty
+			// if failed, return "LoginFail"
 			response.getWriter().write("LoginFail");
 			return null;
 		}
@@ -97,10 +90,8 @@ public class UserAction extends ActionSupport {
      */
 	@Action(value = "logout")
 	public String logout() throws IOException {
-		// 设置JSON格式
 		request.setCharacterEncoding("utf-8");
 		response.setContentType("text/json;charset=utf-8");
-		// 通过bufferreader获取json数据
 		BufferedReader br = new BufferedReader(new InputStreamReader(
 				request.getInputStream(), "utf-8"));
 		StringBuffer sb = new StringBuffer("");
@@ -109,29 +100,22 @@ public class UserAction extends ActionSupport {
 			sb.append(temp);
 		}
 		br.close();
-		// 将获取到的数据转换为JSONObjec
 		JSONObject reqObject = JSONObject.fromObject(sb.toString());
-		// 将JSONObject转换为对象
 		loginuser = new User();
 		loginuser = (User) JSONObject.toBean(reqObject, User.class);
-		// 调用service层
 		loginuser = userService.login(loginuser);
-
-		// JSONObject respObject=new JSONObject();
-		// 结果判断
 		if (loginuser.getUid() != 0) {
-			// 首次登陆获取session来保存该用户的信息
+			// use session to store user information
 			session = request.getSession();
-			//session.invalidate();
 			session.setAttribute("username", loginuser.getUsername());
 			session.setAttribute("userid", loginuser.getUid());
-			// user封装成JSON,返回给客户端
+			// if succeed return user object
 			JSONObject respObject = JSONObject.fromObject(loginuser);
 			this.response.setCharacterEncoding("UTF-8");
 			this.response.getWriter().write(respObject.toString());
 			return null;
 		} else {
-			// 返回到登录界面,返回值为empty
+			// if failed, return "LogoutFail"
 			response.getWriter().write("LogoutFail");
 			return null;
 		}
@@ -145,10 +129,8 @@ public class UserAction extends ActionSupport {
 	@Action(value = "register")
 	public String register() throws IOException {
 		System.out.println("register....");
-		// 设置JSON格式
 		request.setCharacterEncoding("utf-8");
 		response.setContentType("text/json;charset=utf-8");
-		// 通过bufferreader获取json数据
 		BufferedReader br = new BufferedReader(new InputStreamReader(
 				request.getInputStream(), "utf-8"));
 		StringBuffer sb = new StringBuffer("");
@@ -157,27 +139,23 @@ public class UserAction extends ActionSupport {
 			sb.append(temp);
 		}
 		br.close();
-		// 将获取到的数据转换为JSONObjec
 		System.out.println("register...."+sb.toString());
 		JSONObject reqObject = JSONObject.fromObject(sb.toString());
-		// 将JSONObject转换为对象
 		loginuser = new User();
 		loginuser = (User) JSONObject.toBean(reqObject, User.class);
-		// 调用service层
 		Serializable uid = userService.signup(loginuser);
-		// 结果判断
 		if (uid != null) {
-			// 首次登陆获取session来保存该用户的信息
+			//use session to get user information
 			session = request.getSession();
 			session.setAttribute("username", loginuser.getUsername());
 			session.setAttribute("userid", loginuser.getUid());
-			// user封装成JSON,返回给客户端
+			// if succeed return user object
 			JSONObject respObject = JSONObject.fromObject(loginuser);
 			this.response.setCharacterEncoding("UTF-8");
 			this.response.getWriter().write(respObject.toString());
 			return null;
 		} else {
-			// 注册失败时返回;
+			// if failed, return "RegisterFail"
 			response.getWriter().write("RegisterFail");
 			return null;
 		}
