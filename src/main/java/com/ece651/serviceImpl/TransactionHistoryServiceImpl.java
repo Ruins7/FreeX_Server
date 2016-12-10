@@ -90,6 +90,18 @@ public class TransactionHistoryServiceImpl implements TransactionHistoryService 
 
 		return queue;
 	}
+	
+	@Override
+	public boolean addNewTranHisSimple(Transaction_history transactionHistory) {
+		// TODO Auto-generated method stub
+		Serializable ss = null;
+		Boolean b = false;
+		ss = transactionHistoryDao.insertNewTranHistory(transactionHistory);
+		if(ss != null){
+			b = true;
+		}
+		return b;
+	}
 
 	@Override
 	public Boolean addNewTranHisForSure(Transaction_history transactionHistory,
@@ -233,5 +245,7 @@ public class TransactionHistoryServiceImpl implements TransactionHistoryService 
 
 		return transactionHistoryDao.findMoreByCondition(cidoutandin, pageInfo);
 	}
+
+	
 
 }

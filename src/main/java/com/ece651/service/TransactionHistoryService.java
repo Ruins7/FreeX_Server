@@ -18,6 +18,8 @@ public interface TransactionHistoryService {
 
 	public SequenceQueue<Double> addNewTranHis(Transaction_history transactionHistory);
 	
+	public boolean addNewTranHisSimple(Transaction_history transactionHistory);
+	
 	public Boolean addNewTranHisForSure(Transaction_history transactionHistory, SequenceQueue<Double> queue, boolean ifproceed);
 
 	public int deleTranHis(Transaction_history transactionHistory);
