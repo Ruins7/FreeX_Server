@@ -65,33 +65,43 @@ public class TransactionHistoryAction extends ActionSupport {
 		this.balanceService = balanceService;
 	}
 
-	/*
-	 * // change transaction history // balance add history
-	 * 
-	 * @Action(value = "balanceAddHistory") public String BalanceAddHistory()
-	 * throws IOException, ParseException { tranhistory = new
-	 * Transaction_history(); tranhistory = (Transaction_history)
-	 * ActionContext.getContext().get("T"); // 更新Transaction_history
-	 * tranhistory.setCidout(0); tranhistory.setRate("1"); // Add time
-	 * SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); Date
-	 * d = sdf.parse(sdf.format(new Date())); tranhistory.setThtime(d);
-	 * transactionhistoryservice.addNewTranHis(tranhistory); return null; }
-	 * 
-	 * // balance withdrawal history
-	 * 
-	 * @Action(value = "balancReduceHistory") public String
-	 * BalancReduceHistory() throws IOException, ParseException { tranhistory =
-	 * new Transaction_history(); tranhistory = (Transaction_history)
-	 * ActionContext.getContext().get("T"); // 更新Transaction_history
-	 * tranhistory.setCidin(0); tranhistory.setRate("1"); SimpleDateFormat sdf =
-	 * new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"); Date d =
-	 * sdf.parse(sdf.format(new Date())); tranhistory.setThtime(d);
-	 * 
-	 * List<Double> thid = transactionhistoryservice
-	 * .addNewTranHis(tranhistory); if (thid.get(0) != 0) {
-	 * response.getWriter().write("TransactionSuccess"); } else {
-	 * response.getWriter().write("TrandactionFail"); } return null; }
-	 */
+	
+	 // change transaction history // balance add history
+	 
+/*	@Action(value = "balanceAddHistory")
+	public String BalanceAddHistory() throws IOException, ParseException {
+		tranhistory = new Transaction_history();
+		tranhistory = (Transaction_history) ActionContext.getContext().get("T"); // 更新Transaction_history
+		tranhistory.setCidout(0);
+		tranhistory.setRate("1"); // Add time
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date d = sdf.parse(sdf.format(new Date()));
+		tranhistory.setThtime(d);
+		transactionhistoryservice.addNewTranHis(tranhistory);
+		return null;
+	}
+
+	// balance withdrawal history
+
+	@Action(value = "balancReduceHistory")
+	public String BalancReduceHistory() throws IOException, ParseException {
+		tranhistory = new Transaction_history();
+		tranhistory = (Transaction_history) ActionContext.getContext().get("T"); // 更新Transaction_history
+		tranhistory.setCidin(0);
+		tranhistory.setRate("1");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date d = sdf.parse(sdf.format(new Date()));
+		tranhistory.setThtime(d);
+
+		SequenceQueue<Double> thid = transactionhistoryservice
+				.addNewTranHis(tranhistory);
+		if (thid.get(0) != 0) {
+			response.getWriter().write("TransactionSuccess");
+		} else {
+			response.getWriter().write("TrandactionFail");
+		}
+		return null;
+	}*/
 
 	/**
 	 * add new transaction history
@@ -290,7 +300,172 @@ public class TransactionHistoryAction extends ActionSupport {
 		}
 		return null;
 	}
+	
+	/**
+	 * add QR transactionhistory 
+	 * 
+	 * @param JSONARRY--Transaction_history
+	 *            (no need thid)
+	 * @return Succeed:"TransactionSuccess", Fail: "TrandactionFail"
+	 * @throws ParseException
+	 */
+	@Action(value = "AddQRTransaction")
+	public String AddQRTransaction() throws IOException, ParseException {
+		request.setCharacterEncoding("utf-8");
+		response.setContentType("text/json;charset=utf-8");
+		BufferedReader br = new BufferedReader(new InputStreamReader(
+				request.getInputStream(), "utf-8"));
+		StringBuffer sb = new StringBuffer("");
+		String temp = "";
+		while ((temp = br.readLine()) != null) {
+			sb.append(temp);
+		}
+		br.close();
+		// get JSONArray object
+		JSONArray reqObject= JSONArray.fromObject(sb.toString());
+		Transaction_history tran1 = new Transaction_history();
+		Transaction_history tran2 = new Transaction_history();
+		// get tansaction_historys
+		tran1=(Transaction_history) reqObject.get(0);
+		tran2=(Transaction_history) reqObject.get(1);
+		//set time into tran1 and tran2
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		Date d = sdf.parse(sdf.format(new Date()));
+		tran1.setThtime(d);
+		tran2.setThtime(d);
+		// set balance1: uid ; cid_out
+		Balance balance1 = new Balance();
+		balance1.setBuid(tran1.getThuid());
+		balance1.setBcid(tran1.getCidout());
+		// set balance2: uid ; cid_out
+		Balance balance2 = new Balance();
+		balance2.setBuid(tran2.getThuid());
+		balance2.setBcid(tran2.getCidout());
+		//search balance1, balance2
+		balance1 = balanceService.searchOneCurrOfUser(balance1);
+		balance2 = balanceService.searchOneCurrOfUser(balance2);
+		//tran1:check if money enough or not
+		BigDecimal bd_b1 = new BigDecimal(balance1.getBamount());
+		BigDecimal bd_t1 = new BigDecimal(tran1.getThamount());
+		int bret1 = bd_b1.compareTo(bd_t1);
+		//tran2:check if money enough or not
+		BigDecimal bd_b2 = new BigDecimal(balance2.getBamount());
+		BigDecimal bd_t2 = new BigDecimal(tran2.getThamount());
+		int bret2 = bd_b2.compareTo(bd_t2);
+		//do this transaction
+		if(bret1>=0 && bret2>=0){
+			//money enough
+			//search tran1
+			SequenceQueue<Double> sqList1 = transactionhistoryservice
+					.addNewTranHis(tran1);
+			List<Double> list1 = new ArrayList<Double>();
+			list1.add(1.0);
+			list1.add(1.0);
+			list1.add(1.0);
+			list1.set(2, sqList1.element());// list[0]
+			sqList1.remove();
+			list1.set(1, sqList1.element());// list[1]
+			sqList1.remove();
+			list1.set(0, sqList1.element());// list[2]
+			sqList1.remove();
+			sqList1.add(list1.get(2));
+			sqList1.add(list1.get(1));
+			sqList1.add(list1.get(0));
+			System.out.println("sqList1:    " + sqList1);
+			//search tran2
+			SequenceQueue<Double> sqList2 = transactionhistoryservice
+					.addNewTranHis(tran2);
+			List<Double> list2 = new ArrayList<Double>();
+			list2.add(1.0);
+			list2.add(1.0);
+			list2.add(1.0);
+			list2.set(2, sqList2.element());// list[0]
+			sqList2.remove();
+			list2.set(1, sqList2.element());// list[1]
+			sqList2.remove();
+			list2.set(0, sqList2.element());// list[2]
+			sqList2.remove();
+			sqList2.add(list2.get(2));
+			sqList2.add(list2.get(1));
+			sqList2.add(list2.get(0));
+			System.out.println("sqList2:    " + sqList2);
+			//
+			if (list1.get(0) != 0 && list2.get(0) != 0) {
+				Boolean bs1 = transactionhistoryservice.addNewTranHisForSure(
+						tran1, sqList1, true);
+				if(bs1){
+					//the first transaction succeed
+					Boolean bs2 = transactionhistoryservice.addNewTranHisForSure(
+							tran2, sqList2, true);
+					if(bs2){
+						// check if there is enough money or not
+						//change balance1
+						BigDecimal bd_b11 = new BigDecimal(balance1.getBamount());
+						BigDecimal bd_t11 = new BigDecimal(tran1.getThamount());
+						// change the user balance 
+						BigDecimal bout_11 = new BigDecimal(list1.get(1));
+						balance1.setBamount(bd_b11.subtract(bd_t11).add(bout_11)
+								.toString());
+						balanceService.withdrawal(balance1);
 
+						System.out.println("tranhistory.getCidin()    "
+								+ tranhistory.getCidin());
+						balance1.setBcid(tranhistory.getCidin());
+
+						balance1 = balanceService.searchOneCurrOfUser(balance1);
+						System.out.println("amount .......  " + balance1);
+
+						BigDecimal bd_1 = new BigDecimal(list1.get(0));
+						BigDecimal bd_2 = new BigDecimal(balance1.getBamount());
+
+						System.out.println("bd1    " + bd_1);
+						System.out.println("bd2    " + bd_2);
+
+						balance1.setBamount(bd_2.add(bd_1).toString());
+						balanceService.deposit(balance1);
+						
+						//change balance2
+						BigDecimal bd_b22 = new BigDecimal(balance2.getBamount());
+						BigDecimal bd_t22 = new BigDecimal(tran2.getThamount());
+						// change the user balance 
+						BigDecimal bout_22 = new BigDecimal(list2.get(1));
+						balance2.setBamount(bd_b22.subtract(bd_t22).add(bout_22)
+								.toString());
+						balanceService.withdrawal(balance2);
+
+						System.out.println("tranhistory.getCidin()    "
+								+ tranhistory.getCidin());
+						balance2.setBcid(tranhistory.getCidin());
+
+						balance2 = balanceService.searchOneCurrOfUser(balance2);
+						System.out.println("amount .......  " + balance2);
+						BigDecimal bd_12 = new BigDecimal(list2.get(0));
+						BigDecimal bd_22 = new BigDecimal(balance2.getBamount());
+						System.out.println("bd1    " + bd_12);
+						System.out.println("bd2    " + bd_22);
+						balance2.setBamount(bd_22.add(bd_12).toString());
+						balanceService.deposit(balance2);
+						this.response.getWriter().write("Success");						
+					}else{
+						//the second transaction failed
+						response.getWriter().write("TransactionFail");
+					}
+				}else{
+					//the first transaction failed
+					response.getWriter().write("TransactionFail");
+				}
+				
+				
+			}else{
+				//failed;
+				response.getWriter().write("TransactionFail");
+			}
+		}else{
+			//not enough
+			response.getWriter().write("MoneyNotEnough");
+		}
+		return null;
+	}
 	/**
 	 * search transaction history
 	 * 
