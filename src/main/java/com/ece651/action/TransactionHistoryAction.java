@@ -352,27 +352,35 @@ public class TransactionHistoryAction extends ActionSupport {
 			//change user1
 			Balance balance11=new Balance();
 			balance11.setBuid(balance1.getBid());
-			balance11.setBcid(balance1.getBcid());
-			balance11.setBamount(tran1.getThamount());
+			balance11.setBcid(tran1.getCidout());
+			BigDecimal bd_result1=bd_b1.subtract(bd_t1);
+			balance11.setBamount(bd_result1.toString());
 			balanceService.withdrawal(balance11);
 			
 			Balance balance12=new Balance();
 			balance12.setBuid(balance1.getBid());
-			balance12.setBcid(balance1.getBcid());
-			balance12.setBamount(tran2.getThamount());
+			balance12.setBcid(tran1.getCidin());
+			balance12 = balanceService.searchOneCurrOfUser(balance12);
+			BigDecimal bd_b12=new BigDecimal(balance12.getBamount());
+			BigDecimal bd_result2=bd_b12.add(bd_t2);
+			balance12.setBamount(bd_result2.toString());
 			balanceService.deposit(balance12);
 			
 			//change user2
 			Balance balance21=new Balance();
 			balance21.setBuid(balance2.getBid());
 			balance21.setBcid(balance2.getBcid());
-			balance21.setBamount(tran2.getThamount());
+			BigDecimal bd_result3=bd_b2.subtract(bd_t2);
+			balance21.setBamount(bd_result3.toString());
 			balanceService.withdrawal(balance21);
 			
 			Balance balance22=new Balance();
 			balance22.setBuid(balance2.getBid());
-			balance22.setBcid(balance2.getBcid());
-			balance22.setBamount(tran1.getThamount());
+			balance22.setBcid(tran2.getCidin());
+			balance22 = balanceService.searchOneCurrOfUser(balance22);
+			BigDecimal bd_b22=new BigDecimal(balance22.getBamount());
+			BigDecimal bd_result4=bd_b22.add(bd_t1);
+			balance22.setBamount(bd_result4.toString());
 			balanceService.deposit(balance22);
 			
 			//
