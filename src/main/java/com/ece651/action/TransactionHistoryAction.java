@@ -68,7 +68,7 @@ public class TransactionHistoryAction extends ActionSupport {
 	
 	 // change transaction history // balance add history
 	 
-/*	@Action(value = "balanceAddHistory")
+	@Action(value = "balanceAddHistory")
 	public String BalanceAddHistory() throws IOException, ParseException {
 		tranhistory = new Transaction_history();
 		tranhistory = (Transaction_history) ActionContext.getContext().get("T"); // 更新Transaction_history
@@ -77,7 +77,7 @@ public class TransactionHistoryAction extends ActionSupport {
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		Date d = sdf.parse(sdf.format(new Date()));
 		tranhistory.setThtime(d);
-		transactionhistoryservice.addNewTranHis(tranhistory);
+		transactionhistoryservice.addNewTranHisSimple(tranhistory);
 		return null;
 	}
 
@@ -93,15 +93,9 @@ public class TransactionHistoryAction extends ActionSupport {
 		Date d = sdf.parse(sdf.format(new Date()));
 		tranhistory.setThtime(d);
 
-		SequenceQueue<Double> thid = transactionhistoryservice
-				.addNewTranHis(tranhistory);
-		if (thid.get(0) != 0) {
-			response.getWriter().write("TransactionSuccess");
-		} else {
-			response.getWriter().write("TrandactionFail");
-		}
+		transactionhistoryservice.addNewTranHisSimple(tranhistory);
 		return null;
-	}*/
+	}
 
 	/**
 	 * add new transaction history
@@ -355,107 +349,39 @@ public class TransactionHistoryAction extends ActionSupport {
 		//do this transaction
 		if(bret1>=0 && bret2>=0){
 			//money enough
-			//search tran1
-			SequenceQueue<Double> sqList1 = transactionhistoryservice
-					.addNewTranHis(tran1);
-			List<Double> list1 = new ArrayList<Double>();
-			list1.add(1.0);
-			list1.add(1.0);
-			list1.add(1.0);
-			list1.set(2, sqList1.element());// list[0]
-			sqList1.remove();
-			list1.set(1, sqList1.element());// list[1]
-			sqList1.remove();
-			list1.set(0, sqList1.element());// list[2]
-			sqList1.remove();
-			sqList1.add(list1.get(2));
-			sqList1.add(list1.get(1));
-			sqList1.add(list1.get(0));
-			System.out.println("sqList1:    " + sqList1);
-			//search tran2
-			SequenceQueue<Double> sqList2 = transactionhistoryservice
-					.addNewTranHis(tran2);
-			List<Double> list2 = new ArrayList<Double>();
-			list2.add(1.0);
-			list2.add(1.0);
-			list2.add(1.0);
-			list2.set(2, sqList2.element());// list[0]
-			sqList2.remove();
-			list2.set(1, sqList2.element());// list[1]
-			sqList2.remove();
-			list2.set(0, sqList2.element());// list[2]
-			sqList2.remove();
-			sqList2.add(list2.get(2));
-			sqList2.add(list2.get(1));
-			sqList2.add(list2.get(0));
-			System.out.println("sqList2:    " + sqList2);
+			//change user1
+			Balance balance11=new Balance();
+			balance11.setBuid(balance1.getBid());
+			balance11.setBcid(balance1.getBcid());
+			balance11.setBamount(tran1.getThamount());
+			balanceService.withdrawal(balance11);
+			
+			Balance balance12=new Balance();
+			balance12.setBuid(balance1.getBid());
+			balance12.setBcid(balance1.getBcid());
+			balance12.setBamount(tran2.getThamount());
+			balanceService.deposit(balance12);
+			
+			//change user2
+			Balance balance21=new Balance();
+			balance21.setBuid(balance2.getBid());
+			balance21.setBcid(balance2.getBcid());
+			balance21.setBamount(tran2.getThamount());
+			balanceService.withdrawal(balance21);
+			
+			Balance balance22=new Balance();
+			balance22.setBuid(balance2.getBid());
+			balance22.setBcid(balance2.getBcid());
+			balance22.setBamount(tran1.getThamount());
+			balanceService.deposit(balance22);
+			
 			//
-			if (list1.get(0) != 0 && list2.get(0) != 0) {
-				Boolean bs1 = transactionhistoryservice.addNewTranHisForSure(
-						tran1, sqList1, true);
-				if(bs1){
-					//the first transaction succeed
-					Boolean bs2 = transactionhistoryservice.addNewTranHisForSure(
-							tran2, sqList2, true);
-					if(bs2){
-						// check if there is enough money or not
-						//change balance1
-						BigDecimal bd_b11 = new BigDecimal(balance1.getBamount());
-						BigDecimal bd_t11 = new BigDecimal(tran1.getThamount());
-						// change the user balance 
-						BigDecimal bout_11 = new BigDecimal(list1.get(1));
-						balance1.setBamount(bd_b11.subtract(bd_t11).add(bout_11)
-								.toString());
-						balanceService.withdrawal(balance1);
-
-						System.out.println("tranhistory.getCidin()    "
-								+ tranhistory.getCidin());
-						balance1.setBcid(tranhistory.getCidin());
-
-						balance1 = balanceService.searchOneCurrOfUser(balance1);
-						System.out.println("amount .......  " + balance1);
-
-						BigDecimal bd_1 = new BigDecimal(list1.get(0));
-						BigDecimal bd_2 = new BigDecimal(balance1.getBamount());
-
-						System.out.println("bd1    " + bd_1);
-						System.out.println("bd2    " + bd_2);
-
-						balance1.setBamount(bd_2.add(bd_1).toString());
-						balanceService.deposit(balance1);
-						
-						//change balance2
-						BigDecimal bd_b22 = new BigDecimal(balance2.getBamount());
-						BigDecimal bd_t22 = new BigDecimal(tran2.getThamount());
-						// change the user balance 
-						BigDecimal bout_22 = new BigDecimal(list2.get(1));
-						balance2.setBamount(bd_b22.subtract(bd_t22).add(bout_22)
-								.toString());
-						balanceService.withdrawal(balance2);
-
-						System.out.println("tranhistory.getCidin()    "
-								+ tranhistory.getCidin());
-						balance2.setBcid(tranhistory.getCidin());
-
-						balance2 = balanceService.searchOneCurrOfUser(balance2);
-						System.out.println("amount .......  " + balance2);
-						BigDecimal bd_12 = new BigDecimal(list2.get(0));
-						BigDecimal bd_22 = new BigDecimal(balance2.getBamount());
-						System.out.println("bd1    " + bd_12);
-						System.out.println("bd2    " + bd_22);
-						balance2.setBamount(bd_22.add(bd_12).toString());
-						balanceService.deposit(balance2);
-						this.response.getWriter().write("Success");						
-					}else{
-						//the second transaction failed
-						response.getWriter().write("TransactionFail");
-					}
-				}else{
-					//the first transaction failed
-					response.getWriter().write("TransactionFail");
-				}
-				
-				
+			Boolean bs1 = transactionhistoryservice.addNewTranHisSimple(tran1);
+			Boolean bs2 = transactionhistoryservice.addNewTranHisSimple(tran2);
+			
+			if(bs1 && bs2){
+				//success
+				response.getWriter().write("Success");
 			}else{
 				//failed;
 				response.getWriter().write("TransactionFail");
