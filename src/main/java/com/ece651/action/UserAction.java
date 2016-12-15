@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Serializable;
+import java.util.Iterator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -15,7 +16,9 @@ import org.apache.struts2.ServletActionContext;
 import org.apache.struts2.convention.annotation.Action;
 import org.apache.struts2.convention.annotation.Result;
 
+import com.ece651.entity.Balance;
 import com.ece651.entity.User;
+import com.ece651.service.BalanceService;
 import com.ece651.service.UserService;
 import com.opensymphony.xwork2.ActionSupport;
 
@@ -34,6 +37,17 @@ public class UserAction extends ActionSupport {
 	private HttpServletRequest request = ServletActionContext.getRequest();
 	private HttpServletResponse response = ServletActionContext.getResponse();
 	private UserService userService;
+	private BalanceService balanceService;
+	
+	
+
+	public BalanceService getBalanceService() {
+		return balanceService;
+	}
+
+	public void setBalanceService(BalanceService balanceService) {
+		this.balanceService = balanceService;
+	}
 
 	// set annotation
 	public void setUserService(UserService userService) {
@@ -149,6 +163,18 @@ public class UserAction extends ActionSupport {
 			session = request.getSession();
 			session.setAttribute("username", loginuser.getUsername());
 			session.setAttribute("userid", loginuser.getUid());
+			
+			Balance balance = new Balance();
+			balance.setBuid((int) session.getAttribute("userid"));
+			balance.setBamount("0.00000000");
+			for (int i = 1; i <= 3; i++) {
+				
+				balance.setBcid(i);
+				//balance = balanceService.searchOneCurrOfUser(balance);
+				
+				balanceService.addNewCurrencyBalance(balance);
+			}
+			
 			// if succeed return user object
 			JSONObject respObject = JSONObject.fromObject(loginuser);
 			this.response.setCharacterEncoding("UTF-8");

@@ -19,7 +19,7 @@ import com.ece651.toolsUnits.h2.Traderinfo;
 
 /**
  * @ClassName: TransactionHistoryServiceImpl.java
- * @Description: Transaction_history对象的业务逻辑类
+ * @Description: Transaction_history object service layer
  * @author Freddy Lee
  * @version V1.0
  * @Date 2016.10.16 11:31:24 AM
@@ -30,7 +30,7 @@ public class TransactionHistoryServiceImpl implements TransactionHistoryService 
 	private List<Double> list;
 
 	/**
-	 * 注入
+	 * injection
 	 */
 	public void setTransactionHistoryDao(
 			TransactionHistoryDao transactionHistoryDao) {
@@ -38,8 +38,7 @@ public class TransactionHistoryServiceImpl implements TransactionHistoryService 
 	}
 
 	/**
-	 * 新增交易记录
-	 * 
+	 * add new transaction history
 	 * @param Transaction_history
 	 *            (no need thid)
 	 * @return thid(Serializable)
@@ -160,7 +159,7 @@ public class TransactionHistoryServiceImpl implements TransactionHistoryService 
 	}
 
 	/**
-	 * 删除交易记录
+	 * delete transaction history
 	 * 
 	 * @param Transaction_history
 	 * @return int,1=true,0=false
@@ -173,8 +172,7 @@ public class TransactionHistoryServiceImpl implements TransactionHistoryService 
 	}
 
 	/**
-	 * 查询所有交易记录(分页)
-	 * 
+	 * search all transaction history by page
 	 * @param PageResults
 	 * @return PageResults<Transaction_history>
 	 */
@@ -187,8 +185,7 @@ public class TransactionHistoryServiceImpl implements TransactionHistoryService 
 	}
 
 	/**
-	 * 查询某个user所有交易记录(分页)
-	 * 
+	 * search a user transaction history by page
 	 * @param Transaction_history
 	 *            , PageResults
 	 * @return PageResults<Transaction_history>
@@ -202,8 +199,7 @@ public class TransactionHistoryServiceImpl implements TransactionHistoryService 
 	}
 
 	/**
-	 * 查询某个币种所有卖出的交易记录(分页)
-	 * 
+	 * search all sell out transaction history for a certain currency by page
 	 * @param Transaction_history
 	 *            , PageResults
 	 * @return PageResults<Transaction_history>
@@ -217,8 +213,7 @@ public class TransactionHistoryServiceImpl implements TransactionHistoryService 
 	}
 
 	/**
-	 * 查询某个币种所有买入的交易记录(分页)
-	 * 
+	 * search all buy in transaction history for a certain currency by page
 	 * @param Transaction_history
 	 *            , PageResults
 	 * @return PageResults<Transaction_history>
@@ -232,8 +227,7 @@ public class TransactionHistoryServiceImpl implements TransactionHistoryService 
 	}
 
 	/**
-	 * 查询某个币种所有买入卖出的交易记录(分页)
-	 * 
+	 * search all buy in and sell out transaction history for a certain currency by page
 	 * @param Transaction_history
 	 *            (cidout and cidin), PageResults
 	 * @return PageResults<Transaction_history>

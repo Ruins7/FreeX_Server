@@ -12,7 +12,7 @@ import com.ece651.service.UserHistoryService;
 
 /**
  * @ClassName:     UserHistoryServiceImpl.java
- * @Description:   User_history对象的业务逻辑类 
+ * @Description:   User_history object service layer
  * @author         Freddy Lee
  * @version        V1.0  
  * @Date           2016.10.16  5:14:54 PM 
@@ -22,14 +22,14 @@ public class UserHistoryServiceImpl implements UserHistoryService{
 	private UserHistoryDao userHistoryDao;
 	
 	/**
-     * 注入
+     * Injection
      */
 	public void setUserHistoryDao(UserHistoryDao userHistoryDao) {
 		this.userHistoryDao = userHistoryDao;
 	}
 
 	/**
-     * 新增user记录
+     * add new user history
      * @param User_history(no need uhid)
      * @return uhid(Serializable)
      */
@@ -41,7 +41,7 @@ public class UserHistoryServiceImpl implements UserHistoryService{
 	}
 
 	/**
-     * 删除user记录
+     * delete user histroy
      * @param User_history(no need uhid)
      * @return int 1=true, 0=false;
      */
@@ -53,7 +53,7 @@ public class UserHistoryServiceImpl implements UserHistoryService{
 	}
 
 	/**
-     * 查询所有user的user记录
+     * search all users histroy
      * @param PageResults
      * @return PageResults<User_history>
      */
@@ -65,7 +65,7 @@ public class UserHistoryServiceImpl implements UserHistoryService{
 	}
 
 	/**
-     * 查询某个user的user记录
+     * search a user history of a user
      * @param PageResults, User_history
      * @return PageResults<User_history>
      */

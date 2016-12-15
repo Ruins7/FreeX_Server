@@ -10,7 +10,7 @@ import com.ece651.service.UserService;
 
 /**
  * @ClassName:     UserServiceImpl.java
- * @Description:   User对象的业务逻辑类 
+ * @Description:   User object service layer
  * @author         Freddy Lee
  * @version        V1.0  
  * @Date           2016.10.15   2:38:12 PM
@@ -20,14 +20,14 @@ public class UserServiceImpl implements UserService {
     private UserDao userDao;
     
     /**
-     * set注入方法
+     * Injection
      */
     public void setUserDao(UserDao userDao) {
 		this.userDao = userDao;
 	}
 
     /**
-     * 新增用户
+     * add new user
      * @param user(no need uid)
      * @return Serializable userid
      */
@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	 /**
-     * 更新用户
+     * update user
      * @param user
      * @return int,1=true,0=false
      */
@@ -51,7 +51,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	/**
-     * 删除用户
+     * delete user
      * @param user
      * @return int, 1=true,0=false
      */
@@ -63,7 +63,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	/**
-     * 根据id查找用户
+     * find user by id
      * @param user
      * @return user
      */
@@ -75,8 +75,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	/**
-     * 根据username查找用户
-     * 根据用户名查找用户(注册时用户名唯一)
+     * find user by username(username is unique when sign up)
      * @param user
      * @return user
      */
@@ -88,7 +87,7 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	/**
-     * 根据email查找用户(忘记密码)
+     * find user by email
      * @param user
      * @return user
      */
@@ -100,8 +99,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	/**
-     * 根据username & password查找用户
-     * 根据用户名和密码查找用户(登录)
+     * find user by username and password
      * @param user
      * @return user
      */
@@ -113,7 +111,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	/**
-     * 根据条件查找用户，分页
+     * find user by conditions by page
      * @param user, PageResults
      * @return PageResults
      */
@@ -125,7 +123,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	/**
-     * 条件查询所有user
+     * find users by conditions
      * @param user
      * @return List<User>
      */

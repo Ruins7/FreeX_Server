@@ -12,7 +12,7 @@ import com.ece651.service.BalanceService;
 
 /**
  * @ClassName:     BalanceServiceImpl.java
- * @Description:   Balance对象的业务逻辑类 
+ * @Description:   Balance 
  * @author         Freddy Lee
  * @version        V1.0  
  * @Date           2016.10.15  6:37:33 PM
@@ -29,7 +29,7 @@ public class BalanceServiceImpl implements BalanceService{
 	}
 
 	/**
-     * 新增币种余额
+     * add new currency balance
      * @param Balance(no need bid)
      * @return bid(Serializable)
      */
@@ -41,7 +41,7 @@ public class BalanceServiceImpl implements BalanceService{
 	}
 
 	/**
-     * 存钱(已经存在该币种，update)
+     * deposit(this currency has already existed, update)
      * @param Balance
      * @return int,1=true,0=false
      */
@@ -54,7 +54,7 @@ public class BalanceServiceImpl implements BalanceService{
 	}
 	
 	/**
-	 * 取钱
+	 * withdraw
 	 * @param Balance
 	 * @return int,1=true,0=false
 	 */
@@ -67,7 +67,7 @@ public class BalanceServiceImpl implements BalanceService{
 	}
 
 	/**
-	 * 删除某一个币种的余额记录，只有当该币种的余额为0 才可以调用（在service层检查余额是否为0）
+	 * delete a certain currency balance (only available when the balance amount is 0, check if amount is 0 at service layer)
 	 * @param Balance
 	 * @return int,1=true,0=false
 	 */
@@ -80,7 +80,7 @@ public class BalanceServiceImpl implements BalanceService{
 	}
 
 	/**
-	 * 查询某个用户所有的币种余额
+	 * search all currency balance amount of a user
 	 * @param Balance
 	 * @return List<Balance>
 	 */
@@ -92,7 +92,7 @@ public class BalanceServiceImpl implements BalanceService{
 	}
 
 	/**
-	 * 查询某个用户某一币种余额(交易，取钱之前的检查)
+	 * search a currency balance amount of a user(check before transaction and withdraw)
 	 * @param Balance
 	 * @return Balance
 	 */
@@ -104,7 +104,7 @@ public class BalanceServiceImpl implements BalanceService{
 	}
 
 	/**
-	 * 查询某个用户是否已经存在某一币种余额(存钱之前检查)
+	 * check if a user already has a certain currency balance(check before deposit)
 	 * @param Balance(buid,bcid)
 	 * @return Balance
 	 */

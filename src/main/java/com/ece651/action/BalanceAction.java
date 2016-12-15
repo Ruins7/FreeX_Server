@@ -241,7 +241,10 @@ public class BalanceAction extends ActionSupport {
 			System.out.println(" bbbb   "+balance.getBuid());
 
 			List<Balance> balanceList = balanceService.searchAllBalOfUser(balance);
-			System.out.println(" bbbbbbb   "+balanceList);
+			for (int i = 0; i < balanceList.size(); i++) {
+				System.out.println(" bbbbbbb   "+balanceList.get(i).getBuid()+"  "+balanceList.get(i).getBcid()+"  "+balanceList.get(i).getBamount());
+			}
+			
 			if (balanceList.size() != 0) {
 				// succeed, return balances (JSONArray)
 				JSONArray jarray = new JSONArray();
