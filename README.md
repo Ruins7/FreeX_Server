@@ -1,6 +1,6 @@
 ## FreeX_Server ##
 
- ###Simulating the money exchange platform on the mobile. 
+ ### Simulating the money exchange platform on the mobile. 
  
  This is the backend of the entire project.
 
