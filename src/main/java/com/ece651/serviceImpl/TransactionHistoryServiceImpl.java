@@ -85,8 +85,8 @@ public class TransactionHistoryServiceImpl implements TransactionHistoryService 
 			queue.add((double) sellstack.stackpoptradere());
 		}
 
+		//stack clear to varify the next round		
 		// sellstack.ac.clear();
-
 		return queue;
 	}
 	
